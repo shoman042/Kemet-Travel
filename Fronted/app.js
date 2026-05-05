@@ -1337,6 +1337,7 @@
         <nav class="max-w-7xl mx-auto grid grid-cols-3 items-center px-8 py-5">
           <a class="text-2xl font-serif italic justify-self-start" href="${routes.home}">Kemet Travel</a>
           <div class="hidden md:flex items-center justify-center gap-6 text-sm font-serif">
+            <a class="transition-all hover:text-primary hover:-translate-y-0.5" href="${routes.home}">Home</a>
             <a class="transition-all hover:text-primary hover:-translate-y-0.5" href="${routes.explore}">Explore</a>
             <a class="transition-all hover:text-primary hover:-translate-y-0.5" href="${routes.myTrip}">My Trip</a>
             <a class="transition-all hover:text-primary hover:-translate-y-0.5" href="${routes.trips}">Trips</a>
@@ -1360,6 +1361,7 @@
         </div>
         <nav class="mobile-menu-nav">
           <a href="${routes.explore}">Explore</a>
+          <a href="${routes.home}">Home</a>
           <a href="${routes.myTrip}">My Trip</a>
           <a href="${routes.trips}">Trips</a>
           ${auth ? `<a href="${routes.dashboard}">Dashboard</a>` : ''}
