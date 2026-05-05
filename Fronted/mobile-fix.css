@@ -1,0 +1,514 @@
+/* ============================================
+   Kemet Travel - Mobile Responsiveness Fixes
+   ============================================ */
+
+/* ---- Base Mobile Reset ---- */
+@media (max-width: 768px) {
+  /* Prevent horizontal overflow */
+  body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+
+  /* Container padding adjustments */
+  .max-w-7xl,
+  .max-w-container-max {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Hero sections - fix fixed heights */
+  section[class*="h-[870px]"] {
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+
+  /* Image containers with fixed heights */
+  [class*="h-[500px]"] {
+    height: 350px !important;
+  }
+
+  [class*="h-64"] {
+    height: 200px !important;
+  }
+
+  /* Typography scaling */
+  [class*="text-h1"] {
+    font-size: 32px !important;
+    line-height: 1.2 !important;
+  }
+
+  [class*="text-h2"] {
+    font-size: 28px !important;
+    line-height: 1.3 !important;
+  }
+
+  [class*="text-h3"] {
+    font-size: 22px !important;
+    line-height: 1.4 !important;
+  }
+
+  [class*="text-body-lg"] {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Hero search bar stacking */
+  [class*="bg-white/95"] {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+
+  [class*="bg-white/95"] button {
+    width: 100% !important;
+  }
+
+  /* Popular places horizontal scroll */
+  #home-popular-places,
+  .flex.overflow-x-auto {
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Bento grid adjustments */
+  [class*="grid-cols-12"] {
+    height: auto !important;
+  }
+
+  /* Trip cards grid - force single column */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Filters sidebar - make it static on mobile */
+  [class*="sticky"] {
+    position: static !important;
+    max-height: none !important;
+  }
+
+  /* Navigation adjustments */
+  header .max-w-7xl,
+  header [class*="max-w-full"] {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Logo size on mobile */
+  header [class*="text-2xl"] {
+    font-size: 18px !important;
+  }
+
+  /* User area text hide */
+  [class*="hidden"][class*="sm:inline"] {
+    display: none !important;
+  }
+
+  /* Search input in nav */
+  [class*="hidden"][class*="lg:flex"] {
+    display: none !important;
+  }
+
+  /* Sticky header z-index */
+  header[class*="sticky"],
+  nav[class*="sticky"] {
+    z-index: 9999 !important;
+  }
+
+  /* Dashboard cards - force single column */
+  [class*="grid-cols-2"],
+  [class*="grid-cols-3"],
+  [class*="grid-cols-4"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Table responsive wrapper */
+  table {
+    display: block !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Modal/overlay fixes */
+  [class*="fixed"][class*="inset-0"] {
+    padding: 16px !important;
+  }
+
+  /* Button sizing */
+  button[class*="w-full"][class*="md:w-auto"] {
+    width: 100% !important;
+  }
+
+  /* Gallery strip */
+  [class*="gap-2"][class*="overflow-x-auto"] {
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Confirmation/Success page */
+  [class*="max-w-2xl"],
+  [class*="max-w-3xl"],
+  [class*="max-w-4xl"] {
+    max-width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Kemet Assistant Widget mobile fixes */
+  #kemet-ai-widget-root {
+    right: 12px !important;
+    bottom: 12px !important;
+  }
+
+  .kemet-ai-panel {
+    width: calc(100vw - 16px) !important;
+    right: 0 !important;
+    height: 70vh !important;
+    max-height: 70vh !important;
+  }
+
+  .kemet-ai-fab {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  /* Input fields - prevent iOS zoom */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Padding utilities override */
+  .px-8 {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .py-5 {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .p-6 {
+    padding: 16px !important;
+  }
+
+  .p-8 {
+    padding: 16px !important;
+  }
+
+  .gap-gutter {
+    gap: 16px !important;
+  }
+
+  .mb-stack-lg,
+  .py-stack-lg {
+    margin-bottom: 40px !important;
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+
+  /* Image object-cover fix */
+  img[class*="object-cover"] {
+    max-width: 100% !important;
+  }
+
+  /* Hide desktop nav on mobile */
+  [class*="hidden"][class*="md:flex"] {
+    display: none !important;
+  }
+
+  /* Show mobile menu button */
+  .mobile-menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ---- Small phones (iPhone SE, etc.) ---- */
+@media (max-width: 375px) {
+  [class*="text-h1"] {
+    font-size: 26px !important;
+  }
+
+  [class*="text-h2"] {
+    font-size: 24px !important;
+  }
+
+  .text-2xl {
+    font-size: 18px !important;
+  }
+
+  .px-8 {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .max-w-7xl,
+  .max-w-container-max {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
+
+/* ---- Tablet adjustments ---- */
+@media (min-width: 769px) and (max-width: 1024px) {
+  [class*="grid-cols-3"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  [class*="grid-cols-4"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .max-w-7xl,
+  .max-w-container-max {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
+/* ---- Mobile Navigation Hamburger Menu ---- */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #1a1c1a;
+  z-index: 10001;
+}
+
+.mobile-menu-btn .material-symbols-outlined {
+  font-size: 28px;
+}
+
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-menu-overlay.open {
+  display: block;
+  opacity: 1;
+}
+
+.mobile-menu-panel {
+  position: fixed;
+  top: 0;
+  right: -280px;
+  width: 280px;
+  height: 100vh;
+  background: #FDFCFB;
+  z-index: 9999;
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-menu-panel.open {
+  right: 0;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #d1c5b4;
+}
+
+.mobile-menu-header .logo {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Noto Serif', serif;
+  color: #1a1c1a;
+}
+
+.mobile-menu-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1a1c1a;
+  padding: 4px;
+}
+
+.mobile-menu-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+}
+
+.mobile-menu-nav a {
+  display: block;
+  padding: 14px 24px;
+  color: #4e4639;
+  text-decoration: none;
+  font-family: 'Noto Serif', serif;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.mobile-menu-nav a:hover,
+.mobile-menu-nav a.active {
+  background: rgba(197, 160, 89, 0.1);
+  color: #775a19;
+  border-left-color: #c5a059;
+}
+
+.mobile-menu-footer {
+  padding: 20px;
+  border-top: 1px solid #d1c5b4;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobile-menu-footer a,
+.mobile-menu-footer button {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.mobile-menu-footer .login-btn {
+  border: 1px solid #7f7667;
+  color: #4e4639;
+  background: transparent;
+}
+
+.mobile-menu-footer .login-btn:hover {
+  background: #f4f3f1;
+}
+
+.mobile-menu-footer .signup-btn {
+  background: #775a19;
+  color: white;
+  border: 1px solid #775a19;
+}
+
+.mobile-menu-footer .signup-btn:hover {
+  background: #5d4201;
+}
+
+.mobile-menu-footer .logout-btn {
+  border: 1px solid #ba1a1a;
+  color: #ba1a1a;
+  background: transparent;
+}
+
+.mobile-menu-footer .logout-btn:hover {
+  background: #ffdad6;
+}
+
+/* ---- Utility: Smooth scrolling ---- */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---- Fix for iOS input zoom ---- */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select,
+  textarea,
+  input[type="text"],
+  input[type="password"],
+  input[type="datetime"],
+  input[type="datetime-local"],
+  input[type="date"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  input[type="number"],
+  input[type="email"],
+  input[type="url"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="color"] {
+    font-size: 16px !important;
+  }
+}
+
+/* ---- Login Page Mobile Fix ---- */
+@media (max-width: 768px) {
+  /* Fix login page blank screen on mobile */
+  .login-page main[class*="min-h-screen"] {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100vh !important;
+    height: auto !important;
+  }
+
+  /* Left decorative section - ensure hidden on mobile */
+  .login-page main > section:first-child {
+    display: none !important;
+  }
+
+  /* Right section - form container */
+  .login-page main > section[class*="flex-1"] {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+    padding-top: 80px !important;
+    padding-bottom: 60px !important;
+    width: 100% !important;
+  }
+
+  /* Form wrapper */
+  .login-page main > section[class*="flex-1"] > div[class*="max-w-md"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Hide bottom decorative image on mobile */
+  .login-page > div[class*="md:hidden"][class*="fixed"] {
+    display: none !important;
+  }
+}
+
+/* ---- Print styles ---- */
+@media print {
+  .kemet-ai-panel,
+  .kemet-ai-fab,
+  header[class*="sticky"],
+  nav[class*="sticky"],
+  .mobile-menu-overlay,
+  .mobile-menu-panel {
+    display: none !important;
+  }
+}

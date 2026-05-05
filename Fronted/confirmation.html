@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="tw-config.js"></script>
+
+  <title>Confirmation</title>
+</head>
+
+<body>
+
+<!-- ====== UI بتاعك زي ما هو (اختصار عشان الرسالة) ====== -->
+<!-- خليت كل الـ HTML زي ما عندك بدون تغيير -->
+
+<!-- ================= SCRIPT ================= -->
+<script>
+(function() {
+
+  const api = async (url, opts = {}) => {
+    const res = await fetch(url, opts);
+    if (!res.ok) throw new Error('Request failed: ' + res.status);
+    return res.json();
+  };
+
+  // ✅ FIXED (كان فيه string مفتوح)
+  const formatMoney = (amount) => {
+    return Number(amount || 0).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  const getQueryParam = (key) => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(key);
+  };
+
+  const show = (id) => document.getElementById(id)?.classList.remove('hidden');
+  const hide = (id) => document.getElementById(id)?.classList.add('hidden');
+
+  const loadConfirmation = async () => {
+    const bookingId = getQueryParam('bookingId') || getQueryParam('id');
+
+    if (!bookingId) {
+      hide('confirm-loading');
+      show('confirm-error');
+      return;
+    }
+
+    try {
+      const booking = await api('/api/booking/' + encodeURIComponent(bookingId));
+
+      const trip = booking.trip || {};
+      const traveler = booking.travelerDetails || {};
+      const user = booking.user || {};
+      const bookingDate = new Date(booking.bookingDate || booking.createdAt || Date.now());
+
+      document.getElementById('confirm-booking-id').textContent =
+        'KT-' + (booking._id || '').slice(-8).toUpperCase();
+
+      document.getElementById('confirm-trip-title').textContent =
+        (trip.title || 'Trip') + (trip.duration ? ' (' + trip.duration + ')' : '');
+
+      document.getElementById('confirm-date-text').textContent =
+        bookingDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+      document.getElementById('confirm-travelers').textContent =
+        traveler.fullName || user.name || 'Guest';
+
+      document.getElementById('confirm-total-paid').textContent =
+        formatMoney(booking.totalPrice);
+
+      document.getElementById('confirm-primary-guest').textContent =
+        traveler.fullName || user.name || 'Guest';
+
+      document.getElementById('confirm-email').textContent =
+        traveler.email || user.email || '-';
+
+      document.getElementById('confirm-phone').textContent =
+        traveler.phone || user.phone || '-';
+
+      document.getElementById('confirm-payment-method').textContent =
+        (booking.paymentMethod || 'card').toUpperCase();
+
+      document.getElementById('confirm-status').textContent =
+        booking.status || 'Confirmed';
+
+      document.getElementById('confirm-paid-at').textContent =
+        bookingDate.toLocaleString();
+
+      // QR Code
+      const canvas = document.getElementById('confirm-qr-canvas');
+      if (canvas && window.QRious) {
+        new QRious({
+          element: canvas,
+          value: window.location.href,
+          size: 128
+        });
+      }
+
+      hide('confirm-loading');
+      show('confirm-content');
+
+    } catch (err) {
+      console.error(err);
+      hide('confirm-loading');
+      show('confirm-error');
+    }
+  };
+
+  // تحميل مكتبة QR
+  if (!window.QRious) {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/qrious@4/dist/qrious.min.js';
+    document.head.appendChild(s);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadConfirmation);
+  } else {
+    loadConfirmation();
+  }
+
+})();
+</script>
+
+<script src="app.js"></script>
+
+</body>
+</html>

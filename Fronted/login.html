@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://images.unsplash.com">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<title>Login | Kemet Luxury Travel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="tw-config.js"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .form-input-luxury {
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 1px solid #d1c5b4;
+            background: transparent;
+            transition: border-color 0.3s ease;
+        }
+        .form-input-luxury:focus {
+            box-shadow: none;
+            border-color: #c5a059;
+            outline: none;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-fix.css">
+</head>
+<body class="login-page bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<main class="min-h-screen flex flex-col md:flex-row md:overflow-hidden bg-surface">
+<section class="hidden md:flex relative w-1/2 lg:w-3/5 items-center justify-center bg-inverse-surface overflow-hidden">
+<img alt="The Great Sphinx and Pyramids of Giza at dusk under a purple and orange sky" class="absolute inset-0 w-full h-full object-cover opacity-70" data-alt="dramatic wide shot of the great pyramids of giza at dusk with glowing orange sky and deep purple silhouettes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt5Q5FqayxlccoJHk41GOWTmmgK7SKNESrs-PFLHEcznJLv9R78qQq5alxzJdBhitjlwxhbGVa83mHJKsu4MQY1F4WUF9KRP_V3OTJyYWbQTmFvNbF-MyiOjuj5uVCAntJ0SZI31qfYJGa8s7yPBAC87LlUPu8GQz9JE6GHsk4z3Ie8E_VwVVoxPwTP7wMfJBvASH2mEqepFVOl5tpuG3kyPI5IlL6SbbauawJMO7XHAkBOIcu9sYKsnVJj1AP4JKDQ4flcXsMuWs"/ loading="lazy">
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-transparent"></div>
+<div class="relative z-10 px-margin-desktop max-w-2xl text-white">
+<p class="font-label-caps text-label-caps mb-stack-sm tracking-[0.2em] uppercase text-primary-fixed">The Ancient Awaits</p>
+<h1 class="font-h1 text-h1 mb-stack-md leading-tight">Embark on a timeless journey through Egypt.</h1>
+<div class="h-1 w-24 bg-primary-container mb-stack-md"></div>
+<p class="font-body-lg text-body-lg text-surface-container-low/90">Experience the monumental heritage of the Nile with the world's most exclusive luxury concierge service.</p>
+</div>
+<div class="absolute bottom-12 left-12 flex items-center gap-4 text-surface-container-lowest/60">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-caps text-[10px] tracking-widest">KEMET LUXURY TRAVEL</span>
+</div>
+</section>
+<section class="flex-1 flex flex-col bg-surface px-6 py-12 md:px-16 lg:px-24 justify-center relative">
+<div class="md:hidden absolute top-8 left-8">
+<span class="font-h3 text-h3 text-primary tracking-tighter">KEMET TRAVEL</span>
+</div>
+<div class="max-w-md w-full mx-auto">
+<header class="mb-stack-lg">
+<div class="hidden md:block mb-stack-md">
+<span class="font-h3 text-h3 text-primary tracking-tighter">KEMET TRAVEL</span>
+</div>
+<h2 class="font-h2 text-h2 mb-2 text-on-surface">Welcome Back</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Access your curated itineraries and private experiences.</p>
+</header>
+<form class="space-y-stack-md">
+<div class="relative group">
+<label class="font-label-caps text-label-caps text-on-surface-variant/70 block mb-1" for="email">Email Address</label>
+<input autocomplete="email" class="form-input-luxury w-full py-3 font-body-md text-on-surface placeholder-on-surface-variant/30" id="email" name="email" placeholder="example@gmail.com" required="" type="email"/>
+</div>
+<div class="relative group">
+<div class="flex justify-between items-end mb-1">
+<label class="font-label-caps text-label-caps text-on-surface-variant/70" for="password">Password</label>
+<a class="font-label-caps text-[11px] text-primary hover:text-primary/90 transition-colors uppercase tracking-wider" href="#">Forgot?</a>
+</div>
+<input autocomplete="current-password" class="form-input-luxury w-full py-3 font-body-md text-on-surface placeholder-on-surface-variant/30" id="password" name="password" placeholder="Enter your password" required="" type="password"/>
+</div>
+<div class="flex items-center gap-3 py-2">
+<input class="w-4 h-4 rounded-sm border-outline text-primary focus:ring-primary/20" id="remember" name="remember" type="checkbox"/>
+<label class="font-body-md text-sm text-on-surface-variant" for="remember">Remember me for 30 days</label>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-on-primary font-label-caps py-5 rounded-none shadow-lg shadow-primary/20 transition-all duration-300 transform active:scale-[0.98] tracking-[0.15em] uppercase" type="submit">
+                        Sign In
+                    </button>
+</form>
+<div class="mt-stack-lg pt-stack-md border-t border-outline-variant/30 flex flex-col items-center gap-4">
+<p class="font-body-md text-sm text-on-surface-variant">New to Kemet Luxury?</p>
+<a class="font-label-caps text-primary border border-primary/30 px-10 py-3 hover:bg-primary/5 transition-all duration-300 tracking-widest uppercase" href="signup.html">
+                        Create Account
+                    </a>
+</div>
+</div>
+</section>
+</main>
+<div class="md:hidden block">
+<img alt="The Nile River at dusk with traditional felucca sailboats" class="fixed bottom-0 left-0 w-full h-1/4 object-cover opacity-20 pointer-events-none grayscale" data-alt="serene view of the nile river at golden hour with traditional felucca sailboats and warm desert sunset colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTjkZpOQi0HlhKgfGmTy9kPAbceQBAEyZT5XrgOfWVPMa9CqRMsb48SoOtbbbf3DkkH3iXZ3aN4oAgD9UlUFcshVqtzJy5NIemwyVn5DQcr8s5IerQL_ftyHdvRHZPLcA1MlzPnhJUWe9C4DNIL_clZZTDKwUvSj7RKvd0fEDw7AJMxGpGJQp0UIyKVOvPGHJEQqRiPNhMKxBD-2SSY-MLrHM8ySOqHW9x7vM4TNbHDEUb4URSyi9tQjXifMoKWn-gFMmvH2awVok"/ loading="lazy">
+</div>
+<script src="app.js"></script>
+</body></html>

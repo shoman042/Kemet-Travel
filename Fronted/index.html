@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script src="tw-config.js"></script>
+  <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+    <link rel="stylesheet" href="mobile-fix.css">
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Navigation Header -->
+<header class="bg-[#FDFCFB] border-b border-stone-200 shadow-sm shadow-indigo-900/10 sticky top-0 z-50">
+<div class="flex justify-between items-center px-8 py-5 max-w-7xl mx-auto">
+<div class="text-2xl font-h1 italic text-stone-900 tracking-widest uppercase">Kemet Travel</div>
+<nav class="hidden md:flex items-center space-x-8">
+<a class="text-stone-500 hover:text-stone-900 transition-all duration-300 font-body-md" href="home.html">Explore</a>
+<a class="text-stone-500 hover:text-stone-900 transition-all duration-300 font-body-md" href="my_trip_planner.html">My Trip</a>
+<a class="text-stone-500 hover:text-stone-900 transition-all duration-300 font-body-md" href="trips_catalog.html">Trips</a>
+</nav>
+<div class="flex items-center space-x-6">
+<button class="text-stone-800 scale-100 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="travel_explore">travel_explore</span>
+</button>
+<div class="flex items-center space-x-2 bg-surface-container rounded-full px-4 py-2 cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="account_circle">account_circle</span>
+<span class="text-stone-800 font-medium">User Area</span>
+</div>
+</div>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative h-[870px] flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0 bg-[#2C1A0E]">
+<video
+  autoplay
+  muted
+  loop
+  playsinline
+  class="w-full h-full object-cover scale-105 opacity-0 transition-opacity duration-700"
+  oncanplay="this.style.opacity='1'">
+  <source src="https://www.pexels.com/download/video/4205790/" type="video/mp4"/>
+</video>
+<div class="absolute inset-0 bg-black/40 bg-gradient-to-t from-black/60 to-transparent"></div>
+</div>
+<div class="relative z-10 w-full max-w-4xl px-8 text-center text-white">
+<h1 class="font-h1 text-h1 mb-6 drop-shadow-lg">Whispers of the Eternal Nile</h1>
+<p class="font-body-lg text-body-lg mb-10 text-stone-100 max-w-2xl mx-auto opacity-90">Experience the monumental weight of history and the effortless luxury of contemporary Egyptian travel.</p>
+<div class="bg-white/95 backdrop-blur-md p-2 rounded-xl shadow-2xl flex flex-col md:flex-row gap-2 max-w-3xl mx-auto mb-8">
+<div class="flex-1 flex items-center px-4 py-3 border-b md:border-b-0 md:border-r border-stone-200">
+<span class="material-symbols-outlined text-primary mr-3" data-icon="location_on">location_on</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-stone-800 font-body-md placeholder:text-stone-400" placeholder="Where to, explorer?" type="text"/>
+</div>
+<button class="bg-[#C5A059] text-white px-10 py-3 rounded-lg font-bold font-label-caps hover:bg-primary transition-all active:scale-95">
+                        START PLANNING
+                    </button>
+</div>
+<div class="flex flex-wrap justify-center gap-3">
+<button class="bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-1.5 rounded-full text-sm font-medium hover:bg-white/20 transition-all">Cairo</button>
+<button class="bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-1.5 rounded-full text-sm font-medium hover:bg-white/20 transition-all">Luxor</button>
+<button class="bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-1.5 rounded-full text-sm font-medium hover:bg-white/20 transition-all">Aswan</button>
+<button class="bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-1.5 rounded-full text-sm font-medium hover:bg-white/20 transition-all">Sharm El Sheikh</button>
+</div>
+</div>
+</section>
+<!-- Popular Destinations -->
+<section class="py-stack-lg bg-surface">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex justify-between items-end mb-10">
+<div>
+<span class="text-primary font-label-caps tracking-widest uppercase mb-2 block">Curated Collections</span>
+<h2 class="font-h2 text-h2 text-on-surface">Popular Destinations</h2>
+</div>
+<div class="flex gap-2">
+<button class="p-2 border border-outline rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-2 border border-outline rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<div id="home-popular-places" class="flex overflow-x-auto hide-scrollbar gap-gutter pb-8 -mx-8 px-8">
+<!-- Cairo Card -->
+<div class="min-w-[320px] md:min-w-[400px] group cursor-pointer">
+<div class="relative h-[500px] overflow-hidden rounded-xl mb-4 shadow-sm transition-all group-hover:shadow-xl">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="vibrant street view of old cairo with mosque minarets in background and busy market stalls in soft sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLxW4QH9Kgv7RUUGFqOXH_yGfULmupukrpUM-1MtujoWBoEtGX_yGLHOR-6VyI7XDZut2DuJUElwpNbgkQoxTIpjzGMd8vlT5xSz1LB8u7oKUF79lmjKsLK1xECjWDYAg_wN7kX_q9N_xyBZFFMSWysSOkQvamIoc_lftv16Ar9-sT5HdqiO6fcCo08EN0GS6nTPNUErJBwJ5Ep_hjNDgy_0Em7EiqbJH2NoYWdutET4_RcfN4uWD_4Y8hUmRPSNGLBuB-YuMEf4U"/ loading="lazy">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white">
+<h3 class="font-h3 text-h3 mb-1">Cairo</h3>
+<p class="text-stone-300 font-body-md">The Mother of the World</p>
+</div>
+</div>
+</div>
+<!-- Luxor Card -->
+<div class="min-w-[320px] md:min-w-[400px] group cursor-pointer">
+<div class="relative h-[500px] overflow-hidden rounded-xl mb-4 shadow-sm transition-all group-hover:shadow-xl">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="aerial view of the luxor temple ruins at dusk with lit pillars reflecting golden light against a deep blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC2ItatpzjOuC810H4DiK-UF2bfVg9KdfJwymrjAQK-TZM2iqKOhLyjbVcyEPJi6k7eeJdug0CLNRjBblOCYobWw5PIVqatW3EmQULE2T-1fGoOP7godsTFB5NDUbqUXO0yvujp0c2qSeE8Vkx8qFYTMFmNqiLNE-9PbBNSPbE66cFXYiYZLApbmXjFwj1UCv2QXldFwiMvxWiONcIEuU0smkzPBz_nyZMhSlcRri7ZSQfFUdFigxyGepyWR4gJWJdIGPBRGGpGu0"/ loading="lazy">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white">
+<h3 class="font-h3 text-h3 mb-1">Luxor</h3>
+<p class="text-stone-300 font-body-md">The World's Largest Open Air Museum</p>
+</div>
+</div>
+</div>
+<!-- Alexandria Card -->
+<div class="min-w-[320px] md:min-w-[400px] group cursor-pointer">
+<div class="relative h-[500px] overflow-hidden rounded-xl mb-4 shadow-sm transition-all group-hover:shadow-xl">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="scenic view of alexandria corniche coastline with Mediterranean waves crashing against stone walls and white colonial architecture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDjIBCV2bAh1l-XuXxg7DdFN61K2tMkl1D-knXeJ-LufLEMdyUqZwOah-I4jW6bQ_ntiV7RZlEI8iSErVUdPoZN7YtRUmhfq7hCirVVpNBGACJIHJ9FbW6Hy5F1WdKKEyT6S6Hfkp1DImsPDgIOvh1HwJyXZTcSiTi7LcjfXlRGxxk-S7nIKO6OSksO94SAEkgz7-wcSdMynTdDUiVFZ_Avd3zjNTAsXhf7RT2ayNtq5s-l12XxIUdz57OMNomOir8OxjhsHFI7Bk"/ loading="lazy">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white">
+<h3 class="font-h3 text-h3 mb-1">Alexandria</h3>
+<p class="text-stone-300 font-body-md">Pearl of the Mediterranean</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Top Experiences (Bento Style) -->
+<section class="py-stack-lg bg-surface-container-low">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex justify-between items-end mb-10">
+<div>
+<span class="text-primary font-label-caps tracking-widest uppercase mb-2 block">Handpicked Moments</span>
+<h2 class="font-h2 text-h2 text-on-surface">Top Experiences</h2>
+</div>
+<div class="flex gap-2" data-section-arrows="Top Experiences">
+<button data-arrow-dir="left" class="p-2 border border-outline rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button data-arrow-dir="right" class="p-2 border border-outline rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<div id="home-top-experiences" class="grid grid-cols-1 md:grid-cols-12 gap-6 h-[500px] md:h-[700px]">
+<div class="md:col-span-8 relative rounded-xl overflow-hidden group shadow-md hover:shadow-xl transition-all">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" data-alt="luxury nile cruise ship deck at sunset with elegant furniture and gourmet dinner settings overlooking the river bank" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOraVwu4k8yROXAmC9lQmw9zu6Il-afptwWLzS8I8TXQqAzT5TbR1TgMIq-oj4UAlXEnwTZsMfmuPRBStEK89m-QooiQdJ4XYzZZVyUAOZknTJfZpYwbHtKI7T4WOpFVW6uCUkeaKsKpTMQ2bk6d2XWlsqbxTefb2gJSwh_GvXSb_wG4W-yTtLh1H42Gm_IpKE9-QDBEiRNPwzVzh0DWk0DyHD-FhNR34ctkBj9a8VVuJTyB1Ey-5BScZ4JYs_925uLzhYDSNHMWg"/ loading="lazy">
+<div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex flex-col justify-end p-10">
+<span class="inline-block bg-[#C5A059]/90 text-white text-xs font-bold px-3 py-1 rounded-full mb-4 w-fit">NILE CRUISE</span>
+<h3 class="text-white font-h2 text-h2 mb-4">Nile Dinner Cruise</h3>
+<p class="text-stone-200 max-w-md mb-6">A culinary journey through ancient waters under the starlit Egyptian sky.</p>
+<button class="flex items-center text-[#C5A059] font-bold group/btn">
+                                Explore Experience <span class="material-symbols-outlined ml-2 group-hover/btn:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="md:col-span-4 flex flex-col gap-6">
+<div class="flex-1 relative rounded-xl overflow-hidden group shadow-md">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="interior view of the valley of the kings tomb with detailed colorful hieroglyphics and ancient wall paintings" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmXzdjaCLTp2EmAmv3N7FSFdssk3WhDGCOaVeWoAwcVyoHC1FZGJThnvcObZ5iPPmf-paNinyzohyuC7qgmzd62Jb7TlR6E17Ez6Z7R2VLqPPVIMfSASHy1rlOPXSPq4_LwJx-IB3MnlkYg3JoWrQ4R-1VhLkSi_IKvMU0BZ6vLLjNSJYYG3JH7LteEF6Aw91whBbxWeIKsBnii_nJ_V_F9J5UnCW7lbW3I2S-tsc-ukriejtvg8fompuhCaXz5ayJ_-48ZiLxptk"/ loading="lazy">
+<div class="absolute inset-0 bg-black/40 p-6 flex flex-col justify-end text-white">
+<h4 class="font-h3 text-h3 mb-1">Valley of the Kings</h4>
+<p class="text-stone-300 text-sm">Archaeological Wonders</p>
+</div>
+</div>
+<div class="flex-1 relative rounded-xl overflow-hidden group shadow-md">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="overhead view of a vibrant egyptian spice market with colorful heaps of spices and traditional textiles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJNhDakS7qM01ccfHBoKHRhkmjloQcIYcUc3bXFKBAsAdeHVxYKteqD-a0UiDaljC5Zb6BibIMlRsK2_e_7aK6MaKaQUDI5Po-BzA-POoWoJB-3vRn3JTi90qH_eIDyR1QjLPYTfAdKtbXCjrV9XLMRJ8vzcWoRFWPO1WUpLTztQ4HR7JLOQk9a755HGUwJ5CUVBNf-jXsm30D_-kezslHuJqfIiVnJG7t1KjvX3EuEBzYgkohPMqt-bPGFxrg_bNEcnj7-j2u_AI"/ loading="lazy">
+<div class="absolute inset-0 bg-black/40 p-6 flex flex-col justify-end text-white">
+<h4 class="font-h3 text-h3 mb-1">Khan el-Khalili Market</h4>
+<p class="text-stone-300 text-sm">Traditional Treasures</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Ready Trips -->
+<section class="py-stack-lg bg-surface">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex items-center gap-8 mb-16">
+<h2 class="font-h2 text-h2 text-on-surface whitespace-nowrap">Ready Journeys</h2>
+<div class="h-px bg-stone-200 flex-1"></div>
+<a class="text-primary font-bold hover:underline" href="#"></a>
+</div>
+<div id="home-ready-journeys" class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Package 1 -->
+<div class="bg-white rounded-xl shadow-sm overflow-hidden border border-stone-100 hover:shadow-lg transition-all duration-300">
+<div class="h-64 relative">
+<img class="w-full h-full object-cover" data-alt="stunning golden hour view of the sphinx and pyramids in the background with clear blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0XoEusnRJ-BU1XWbCYaMTS7Pg7Sg1sOrWiw13bAaaeFjosZ2iecq-M29xxtPJnLxGVUlM0u59Lasc_DWaG7i4M0wFjZ3xNVEfNV4msbmkiCn6SzHOA9di28X8c54AhZD_0jIt_XpeyYHvXjevV8cpokjTS5BmhqqibZjEmP2RXEE9AMY3l7TvGoSLMVLfqZ7sb7c0BiMtlpzOBcdS0PE2DLNDmiZmyQThk3nO-hY_J1QLdQqjIJjaUWHYWvhJtjKkccp59gagMvc"/ loading="lazy">
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-sm">
+                                7 Days
+                            </div>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-2 mb-3">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">Heritage</span>
+<span class="bg-primary-fixed text-on-primary-fixed text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">Luxury</span>
+</div>
+<h3 class="font-h3 text-h3 mb-4 text-on-surface">Ancient Wonders Tour</h3>
+<p class="text-on-surface-variant mb-6 text-sm">Follow the path of pharaohs from the Giza plateau to the hidden tombs of Luxor.</p>
+<div class="flex justify-between items-center pt-6 border-t border-stone-100">
+<div>
+<span class="text-xs text-stone-400 block uppercase font-bold tracking-tighter">Starting from</span>
+<span class="text-xl font-h3 text-primary">$1,890</span>
+</div>
+<button class="bg-[#C5A059] text-white p-3 rounded-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Package 2 -->
+<div class="bg-white rounded-xl shadow-sm overflow-hidden border border-stone-100 hover:shadow-lg transition-all duration-300">
+<div class="h-64 relative">
+<img class="w-full h-full object-cover" data-alt="white sand beach and turquoise water of sharm el sheikh with luxury resort umbrellas in the foreground" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHegEuZ7OVgtflLBBJ3EM9N171POXQeePLnNciFllvhrIx404grsu35VksYrWM0tsevzb0usFR9wt_Wq4ye6DP8xga12oMWn3qBzXZxZivkz5pFRoBqv_8MBf72OmsoI2rzJamhCwqvgZI1u09GVvwIGaxX61RuDwUwfDpNWReyW-liYb_sS3aZ5rBpj1RM3R4zLXracXJn-NYSZanhJGjSSPkLKiLuxhkU5KCFyBapMC99stHLWAsSq4Cr192j0mCo4-nfJxnf2k"/ loading="lazy">
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-sm">
+                                10 Days
+                            </div>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-2 mb-3">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">Coastal</span>
+<span class="bg-primary-fixed text-on-primary-fixed text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">Relax</span>
+</div>
+<h3 class="font-h3 text-h3 mb-4 text-on-surface">Nile &amp; Red Sea Escape</h3>
+<p class="text-on-surface-variant mb-6 text-sm">The perfect blend of historical exploration and the turquoise tranquility of Sharm.</p>
+<div class="flex justify-between items-center pt-6 border-t border-stone-100">
+<div>
+<span class="text-xs text-stone-400 block uppercase font-bold tracking-tighter">Starting from</span>
+<span class="text-xl font-h3 text-primary">$2,450</span>
+</div>
+<button class="bg-[#C5A059] text-white p-3 rounded-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Package 3 -->
+<div class="bg-white rounded-xl shadow-sm overflow-hidden border border-stone-100 hover:shadow-lg transition-all duration-300">
+<div class="h-64 relative">
+<img class="w-full h-full object-cover" data-alt="traditional egyptian felucca sailboat gliding on the nile river at sunset with palm trees on the bank" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwRk2xSNXCYAJ7vzZ2M4azZ78I-gQyrbLG3dY5l-1DqsnwI_bEiNKKcu2XrHkgV1A-QOtEpfgraYX1gTvubxsv5880ctTiIYShM3RHpv7DkbVYwSggZ2lh97X5zy6F8PYnNA-_5VJjRZWTF4F9xDPdgvP-ckF2nyFbbiUjL6FiaQ6iQBhSPpfUvf0TkICTy8PAYJENDGFnT6pi7kboHzSDFpEi7ioprCwZXMkhqpsHD6plIbFIRQYzL5q6nQXMwb4fYnjjKvVhBXI"/ loading="lazy">
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-sm">
+                                5 Days
+                            </div>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-2 mb-3">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">Short Break</span>
+<span class="bg-primary-fixed text-on-primary-fixed text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">Urban</span>
+</div>
+<h3 class="font-h3 text-h3 mb-4 text-on-surface">Cairo City Essence</h3>
+<p class="text-on-surface-variant mb-6 text-sm">A deep dive into Cairo's layers, from Coptic churches to Islamic citadels and Pyramids.</p>
+<div class="flex justify-between items-center pt-6 border-t border-stone-100">
+<div>
+<span class="text-xs text-stone-400 block uppercase font-bold tracking-tighter">Starting from</span>
+<span class="text-xl font-h3 text-primary">$980</span>
+</div>
+<button class="bg-[#C5A059] text-white p-3 rounded-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Text moved to the White Section ABOVE the Video -->
+<section class="bg-white py-12 text-center px-6">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex items-center justify-center gap-3 mb-4">
+      <div class="h-px w-10 bg-[#C5A059]"></div>
+      <span class="text-[#C5A059] text-xs font-bold tracking-[0.3em] uppercase">Experience Egypt</span>
+      <div class="h-px w-10 bg-[#C5A059]"></div>
+    </div>
+    <h2 class="font-serif text-4xl md:text-6xl font-bold mb-4 text-stone-900">Discover Egypt</h2>
+    <p class="text-stone-600 text-lg max-w-xl mx-auto">Experience the timeless wonders of the Nile</p>
+  </div>
+</section>
+
+<!-- Video Section — YouTube iframe embed (Now without overlay text) -->
+<section class="relative w-full overflow-hidden" style="height:480px;">
+  <!-- YouTube iframe as background -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <iframe
+      src="https://www.youtube.com/embed/mfxQy5A_tHs?autoplay=1&mute=1&loop=1&playlist=mfxQy5A_tHs&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1"
+      class="absolute"
+      style="top:50%;left:50%;width:177.78vh;min-width:100%;height:56.25vw;min-height:100%;transform:translate(-50%,-50%);"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  </div>
+  <!-- Simple dark overlay for contrast if needed, but text is gone -->
+  <div class="absolute inset-0 bg-black/10"></div>
+</section>
+
+<!-- Popular Government in Egypt -->
+<section class="py-16 bg-[#faf9f6]">
+  <div class="max-w-7xl mx-auto px-6 md:px-12">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <div class="h-px w-8 bg-[#C5A059]"></div>
+          <span class="text-[#C5A059] text-xs font-bold tracking-[0.25em] uppercase">Curated Collections</span>
+        </div>
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-stone-900">Popular Governments in Egypt</h2>
+      </div>
+      <a href="trips.html" class="text-sm font-bold text-stone-500 hover:text-[#C5A059] transition-colors tracking-widest uppercase flex items-center gap-1">
+        View All <span class="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
+      </a>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <a href="trips.html?city=Cairo" class="group relative overflow-hidden rounded-2xl block shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1" style="aspect-ratio:3/4">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLxW4QH9Kgv7RUUGFqOXH_yGfULmupukrpUM-1MtujoWBoEtGX_yGLHOR-6VyI7XDZut2DuJUElwpNbgkQoxTIpjzGMd8vlT5xSz1LB8u7oKUF79lmjKsLK1xECjWDYAg_wN7kX_q9N_xyBZFFMSWysSOkQvamIoc_lftv16Ar9-sT5HdqiO6fcCo08EN0GS6nTPNUErJBwJ5Ep_hjNDgy_0Em7EiqbJH2NoYWdutET4_RcfN4uWD_4Y8hUmRPSNGLBuB-YuMEf4U" alt="Cairo" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-3"><h3 class="text-white font-serif font-bold text-base">Cairo</h3></div>
+      </a>
+      <a href="trips.html?city=Luxor" class="group relative overflow-hidden rounded-2xl block shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1" style="aspect-ratio:3/4">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC2ItatpzjOuC810H4DiK-UF2bfVg9KdfJwymrjAQK-TZM2iqKOhLyjbVcyEPJi6k7eeJdug0CLNRjBblOCYobWw5PIVqatW3EmQULE2T-1fGoOP7godsTFB5NDUbqUXO0yvujp0c2qSeE8Vkx8qFYTMFmNqiLNE-9PbBNSPbE66cFXYiYZLApbmXjFwj1UCv2QXldFwiMvxWiONcIEuU0smkzPBz_nyZMhSlcRri7ZSQfFUdFigxyGepyWR4gJWJdIGPBRGGpGu0" alt="Luxor" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-3"><h3 class="text-white font-serif font-bold text-base">Luxor</h3></div>
+      </a>
+      <a href="trips.html?city=Alexandria" class="group relative overflow-hidden rounded-2xl block shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1" style="aspect-ratio:3/4">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDjIBCV2bAh1l-XuXxg7DdFN61K2tMkl1D-knXeJ-LufLEMdyUqZwOah-I4jW6bQ_ntiV7RZlEI8iSErVUdPoZN7YtRUmhfq7hCirVVpNBGACJIHJ9FbW6Hy5F1WdKKEyT6S6Hfkp1DImsPDgIOvh1HwJyXZTcSiTi7LcjfXlRGxxk-S7nIKO6OSksO94SAEkgz7-wcSdMynTdDUiVFZ_Avd3zjNTAsXhf7RT2ayNtq5s-l12XxIUdz57OMNomOir8OxjhsHFI7Bk" alt="Alexandria" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-3"><h3 class="text-white font-serif font-bold text-base">Alexandria</h3></div>
+      </a>
+      <a href="trips.html?city=Aswan" class="group relative overflow-hidden rounded-2xl block shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1" style="aspect-ratio:3/4">
+        <img src="https://media.dotmsr.com/large/20190130010834834.jpg" alt="Aswan" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-3"><h3 class="text-white font-serif font-bold text-base">Aswan</h3></div>
+      </a>
+      <a href="trips.html?city=Sharm+El+Sheikh" class="group relative overflow-hidden rounded-2xl block shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1" style="aspect-ratio:3/4">
+        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80" alt="Sharm El Sheikh" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-3"><h3 class="text-white font-serif font-bold text-base">Sharm El Sheikh</h3></div>
+      </a>
+      <a href="trips.html?city=Hurghada" class="group relative overflow-hidden rounded-2xl block shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1" style="aspect-ratio:3/4">
+        <img src="https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?auto=format&fit=crop&w=600&q=80" alt="Hurghada" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-3"><h3 class="text-white font-serif font-bold text-base">Hurghada</h3></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+<!-- Footer -->
+<!-- Footer Section - Edited to match image_c6a977.jpg -->
+<div style="width: 100%; margin-top: 50px; overflow: hidden; display: block; clear: both;">
+    
+    <!-- Silhouette Skyline (Black Pattern) -->
+    <div style="width: 100%; height: 90px; 
+                background-image: url('https://www.kemet.travel/wp-content/uploads/2023/03/Shutterstock-1399818965-3.png'); 
+                background-repeat: repeat-x; 
+                background-size: contain; 
+                background-position: bottom;
+                filter: brightness(0); /* جعل الصورة سوداء بالكامل */
+                margin-bottom: -1px;
+                padding: 0;
+                line-height: 0;">
+    </div>
+
+    <!-- Black Ground Bar with Copyright and Payments -->
+   <div style="background-color: #1A1A1A; padding: 20px 0; width: 100%;">
+        <div style="max-width: 1260px; margin: 0 auto; padding: 0 30px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif;">
+            
+            <!-- Centered White Copyright Text -->
+            <p style="color: #FFFFFF !important; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin: 0; font-weight: 500; opacity: 1 !important;">
+                KEMET TRAVEL © 2026 ALL RIGHTS RESERVED
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body></html>

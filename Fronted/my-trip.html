@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://images.unsplash.com">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<title>My Trip - Kemet Travel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="tw-config.js"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .lotus-pattern {
+            background-color: transparent;
+            background-image: radial-gradient(#C5A059 0.5px, transparent 0.5px), radial-gradient(#C5A059 0.5px, #faf9f6 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0,10px 10px;
+            opacity: 0.05;
+        }
+        .editorial-shadow {
+            box-shadow: 0 10px 30px -10px rgba(50, 100, 125, 0.15);
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-fix.css">
+</head>
+<body class="bg-surface font-body-md text-on-surface">
+<!-- Top Navigation Bar -->
+<header class="bg-[#FDFCFB] dark:bg-stone-950 border-b border-stone-200 dark:border-stone-800 shadow-sm shadow-indigo-900/10 sticky top-0 z-50">
+<nav class="flex justify-between items-center px-8 py-5 max-w-7xl mx-auto">
+<div class="text-2xl font-serif italic text-stone-900 dark:text-stone-50 tracking-widest">Kemet Travel</div>
+<div class="hidden md:flex gap-8 items-center font-serif text-stone-800 dark:text-stone-100 tracking-tight">
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#C5A059] transition-all duration-300" href="home.html">Explore</a>
+<a class="text-[#C5A059] font-semibold border-b-2 border-[#C5A059] pb-1" href="my_trip_planner.html">My Trip</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#C5A059] transition-all duration-300" href="trips_catalog.html">Trips</a>
+</div>
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-stone-600 cursor-pointer" data-icon="travel_explore">travel_explore</span>
+<div class="flex items-center gap-2 text-stone-800 font-serif">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="hidden lg:inline text-sm">User Area</span>
+</div>
+</div>
+</nav>
+</header>
+<main class="max-w-7xl mx-auto px-8 py-stack-lg">
+<!-- Trip Header -->
+<section class="mb-stack-lg">
+<div class="flex flex-col md:flex-row justify-between items-end gap-gutter">
+<div class="space-y-2">
+<span class="font-label-caps text-primary tracking-[0.2em] uppercase">Private Journey</span>
+<h1 class="font-h1 text-h1 text-on-surface">My Dream Egypt Tour</h1>
+<div class="flex items-center gap-4 text-outline font-body-lg">
+<div class="flex items-center gap-1">
+
+</div>
+
+<div class="flex items-center gap-1">
+
+</div>
+</div>
+</div>
+<div class="flex gap-4">
+
+<button class="px-8 py-3 bg-primary text-on-primary font-bold rounded-lg editorial-shadow active:scale-95 transition-transform">
+                        Proceed to Booking
+                    </button>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 relative">
+<!-- Itinerary Section (Left Column) -->
+<div class="lg:col-span-7 space-y-stack-md">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-h2 text-h2 text-on-surface">Itinerary</h2>
+<button class="flex items-center gap-2 text-primary font-bold hover:underline">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                        Add Activity
+                    </button>
+</div>
+<!-- Empty State for Day 3 -->
+<div class="border-2 border-dashed border-outline-variant p-gutter rounded-xl text-center space-y-2 group cursor-pointer hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-primary scale-150" data-icon="add_location_alt">add_location_alt</span>
+<p class="font-bold">Plan your Day </p>
+<p class="text-sm text-outline">Explore Luxor, Aswan, or stay in Cairo</p>
+</div>
+</div>
+<!-- Right Column: Sidebar -->
+<div class="lg:col-span-5 space-y-stack-md">
+<!-- Accommodation Section -->
+<section>
+<div class="flex justify-between items-center mb-6"><div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="hotel">hotel</span>
+<h2 class="font-h3 text-h3 text-on-surface">Stay in Cairo</h2>
+</div>
+<a class="flex items-center gap-1 text-sm font-bold text-primary hover:underline group" href="#">
+    View all options
+    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a></div>
+<div class="bg-surface-container-lowest p-gutter rounded-xl editorial-shadow space-y-gutter border border-surface-container">
+<div class="group overflow-hidden rounded-lg">
+<div class="relative h-48">
+<img alt="Marriott Mena House" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Luxury heritage hotel exterior with lush gardens and a view of the Great Pyramid in the distance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgVZQHWldASmZiafDwZWeVFr746pim5b2DqEVqesVJq3nadmy0y-fqmylzzofCctY-IXbJRc8QtcjRtLfpOL1cHW_EIzHLWpJ2qGDGNmJPI88eyaA1YDSaU0_eCz2EcF24Yym5jjaFTE8_rubMviG_VwieeHK9dmBg1aC8F2giv4e1-F7HRCsXoo1tIYrSLRi0K1HvCkuustBLHiPDxrRcj2JVC56174ZQOKdlj7IkoVuTtCwIpZV9SSaEZe7SQWUQkGkUAnpES4U"/ loading="lazy">
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary">RECOMMENDED</div>
+</div>
+<div class="pt-4">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-lg">Marriott Mena House</h4>
+<span class="text-primary font-bold">$340<span class="text-xs text-outline font-normal">/night</span></span>
+</div>
+<p class="text-sm text-outline mb-4">Unparalleled views of the Pyramids from your private balcony.</p>
+<button class="w-full py-3 border border-primary text-primary font-bold rounded hover:bg-primary hover:text-white transition-all uppercase tracking-widest text-xs">
+                                    Add to Itinerary
+                                </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Transport Section -->
+<section>
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-h3 text-h3 text-on-surface">Transport</h2>
+<span class="material-symbols-outlined text-primary" data-icon="directions_boat">directions_boat</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl editorial-shadow border border-surface-container">
+<div class="p-3 bg-primary-container text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="sailing">sailing</span>
+</div>
+<div class="flex-1">
+<p class="font-bold">Nile Cruise</p>
+<p class="text-xs text-outline">Luxor to Aswan (4 Nights)</p>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">$1,200</p>
+<button class="text-xs text-primary font-bold underline">Add</button>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl editorial-shadow border border-surface-container">
+<div class="p-3 bg-primary-container text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="airport_shuttle">airport_shuttle</span>
+</div>
+<div class="flex-1">
+<p class="font-bold">Private Luxury Van</p>
+<p class="text-xs text-outline">All airport &amp; site transfers</p>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">$250</p>
+<button class="text-xs text-primary font-bold underline">Booked</button>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl editorial-shadow border border-surface-container">
+<div class="p-3 bg-primary-container text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="flight">flight</span>
+</div>
+<div class="flex-1">
+<p class="font-bold">Domestic Flight</p>
+<p class="text-xs text-outline">Cairo ↔ Luxor / Aswan</p>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">$180</p>
+<button class="text-xs text-primary font-bold underline">Add</button>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl editorial-shadow border border-surface-container">
+<div class="p-3 bg-primary-container text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="train">train</span>
+</div>
+<div class="flex-1">
+<p class="font-bold">First Class Train</p>
+<p class="text-xs text-outline">Cairo to Luxor (Day/Night)</p>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">$95</p>
+<button class="text-xs text-primary font-bold underline">Add</button>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl editorial-shadow border border-surface-container">
+<div class="p-3 bg-primary-container text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="directions_car">directions_car</span>
+</div>
+<div class="flex-1">
+<p class="font-bold">Private SUV</p>
+<p class="text-xs text-outline">Comfortable 4x4 for desert trips</p>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">$350</p>
+<button class="text-xs text-primary font-bold underline">Add</button>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl editorial-shadow border border-surface-container">
+<div class="p-3 bg-primary-container text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="directions_bus">directions_bus</span>
+</div>
+<div class="flex-1">
+<p class="font-bold">Group Minibus</p>
+<p class="text-xs text-outline">Up to 12 passengers, ideal for groups</p>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">$450</p>
+<button class="text-xs text-primary font-bold underline">Add</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Summary Sticky Card -->
+<div class="bg-on-surface text-surface p-gutter rounded-xl shadow-2xl sticky top-32">
+<h3 class="font-h3 text-h3 mb-6">Trip Summary</h3>
+<div class="space-y-4 border-b border-surface/20 pb-6 mb-6">
+<div class="flex justify-between text-sm">
+<span>Activities (4)</span>
+<span>$250</span>
+</div>
+<div class="flex justify-between text-sm">
+<span>Accommodation</span>
+<span>$1,020</span>
+</div>
+<div class="flex justify-between text-sm">
+<span>Transport</span>
+<span>$250</span>
+</div>
+<div class="flex justify-between text-sm">
+<span>Expert Guide Fees</span>
+<span>$150</span>
+</div>
+</div>
+<div class="flex justify-between items-center mb-8">
+<span class="text-surface/70">Estimated Total</span>
+<span class="text-2xl font-bold text-primary-fixed-dim">$1,670</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="py-3 border border-surface/30 rounded font-bold hover:bg-surface/10 transition-colors">
+                            Save Trip
+                        </button>
+<button class="py-3 bg-primary text-white rounded font-bold hover:bg-primary/90 active:scale-95 transition-transform">
+                            Book All
+                        </button>
+</div>
+<p class="text-[10px] text-center mt-4 text-surface/50 uppercase tracking-widest">Pricing based on 2 adults</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Pattern Accent -->
+<div class="w-full h-32 lotus-pattern"></div>
+<!-- Footer -->
+<!-- Footer Section - Edited to match image_c6a977.jpg -->
+<div style="width: 100%; margin-top: 50px; overflow: hidden; display: block; clear: both;">
+    
+    <!-- Silhouette Skyline (Black Pattern) -->
+    <div style="width: 100%; height: 90px; 
+                background-image: url('https://www.kemet.travel/wp-content/uploads/2023/03/Shutterstock-1399818965-3.png'); 
+                background-repeat: repeat-x; 
+                background-size: contain; 
+                background-position: bottom;
+                filter: brightness(0); /* جعل الصورة سوداء بالكامل */
+                margin-bottom: -1px;
+                padding: 0;
+                line-height: 0;">
+    </div>
+
+    <!-- Black Ground Bar with Copyright and Payments -->
+   <div style="background-color: #1A1A1A; padding: 20px 0; width: 100%;">
+        <div style="max-width: 1260px; margin: 0 auto; padding: 0 30px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif;">
+            
+            <!-- Centered White Copyright Text -->
+            <p style="color: #FFFFFF !important; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin: 0; font-weight: 500; opacity: 1 !important;">
+                KEMET TRAVEL © 2026 ALL RIGHTS RESERVED
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body></html>

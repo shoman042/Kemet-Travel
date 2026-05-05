@@ -1,0 +1,16 @@
+{
+  "name": "kemet-travel",
+  "version": "1.0.0",
+  "description": "Kemet Travel - Backend API and Frontend",
+  "scripts": {
+    "start": "node Backend/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.5.0",
+    "nodemailer": "^8.0.7",
+    "openai": "^4.68.4"
+  }
+}

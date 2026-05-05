@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://images.unsplash.com">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<title>Egypt Travel Platform - User Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- تم إزالة التكرار: Material Symbols كانت محملة مرتين -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="tw-config.js"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .bg-glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .text-teal-700,.text-teal-800,.text-teal-600,.text-teal-300,.text-teal-200 { color:#775a19 !important; }
+        .border-teal-100,.border-teal-900,.border-teal-50,.border-teal-950 { border-color:#e9d8b5 !important; }
+        .bg-teal-50 { background-color:#f8f2e6 !important; }
+        .hover\:bg-teal-50:hover,.dark\:hover\:bg-teal-950:hover { background-color:#f8f2e6 !important; }
+        .shadow-teal-900\/5 { --tw-shadow-color:#c5a05920 !important; }
+    </style>
+    <link rel="stylesheet" href="mobile-fix.css">
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex justify-between items-center px-4 md:px-8 h-16 w-full fixed top-0 z-50 border-b border-teal-100 dark:border-teal-900 shadow-sm shadow-teal-900/5">
+<div class="flex items-center gap-4">
+<span class="font-serif text-teal-800 dark:text-teal-200 text-xl font-bold tracking-tight">Kemet Travel</span>
+</div>
+<div class="hidden md:flex items-center gap-gutter">
+<nav class="flex items-center gap-6">
+<a class="text-teal-700 dark:text-teal-300 font-semibold font-label-lg hover:bg-teal-50 dark:hover:bg-teal-950 transition-colors px-3 py-2 rounded-lg" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 font-label-lg hover:bg-teal-50 dark:hover:bg-teal-950 transition-colors px-3 py-2 rounded-lg" href="#">Destinations</a>
+<a class="text-slate-500 dark:text-slate-400 font-label-lg hover:bg-teal-50 dark:hover:bg-teal-950 transition-colors px-3 py-2 rounded-lg" href="#">Offers</a>
+</nav>
+<div class="flex items-center gap-3">
+<button class="p-2 text-slate-500 hover:bg-teal-50 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-primary-container shadow-sm">
+<img alt="User profile avatar" class="h-full w-full object-cover" data-alt="professional portrait of a middle eastern man with a friendly smile, clean-cut beard, and stylish attire in a bright office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkl6HGCsQLo0WG6vBaBUQ36H_O4dffCdND2slK-Do2URldFxsZRyz4oWcH6ZzVAhwIK0lUhnMRG17GOTL9FF5HHrm5DO4ABlG3Wwh0fN6VUuONRiJk5Ix2jIPdrCwogD7O8R2SkHfHf2AB1XTdHtQhe3IY5KmL9i2jM6BKAIkiWWs33lleUWbe-JIeR-hGjH12GhuzBdL5X34ON1mWYoIZmdMFf3RPlYHZxb_kBlxxwj5rM60i5Q_ofzZ4tuuIoAlqeEMU-NML_fzT"/ loading="lazy">
+</div>
+</div>
+</div>
+</header>
+<div class="max-w-[1280px] mx-auto px-4 md:px-8 pt-24 pb-24 md:pb-8 flex flex-col md:flex-row gap-8">
+<!-- Sidebar Navigation (Desktop) -->
+<aside class="hidden md:flex flex-col w-64 gap-6 shrink-0">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/30">
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-50/50 text-teal-700 rounded-lg font-label-lg border-l-4 border-primary-600" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>My Trips</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg font-label-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Profile Settings</span>
+</a>
+<hr class="my-2 border-outline-variant/30"/>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg font-label-lg" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+<span>Support</span>
+</a>
+</nav>
+</div>
+<!-- Rewards Banner -->
+<div class="bg-primary-container p-6 rounded-xl text-on-primary-container relative overflow-hidden">
+<div class="relative z-10">
+<p class="font-label-sm text-white/80 uppercase tracking-widest mb-1">Loyalty Tier</p>
+<h4 class="font-headline-md text-white mb-2">Golden Oasis</h4>
+<p class="text-body-md text-white/90 leading-tight mb-4">You're 2,500 points away from your next free Nile cruise.</p>
+<button class="bg-white text-primary-container font-label-lg px-4 py-2 rounded-full active:scale-95 transition-transform">Explore Perks</button>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined !text-[120px]" data-icon="diamond">diamond</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 space-y-lg">
+<!-- Welcome Header -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="font-display-lg text-primary font-headline-lg">Welcome back, Omar!</h1>
+<p class="text-on-surface-variant font-body-lg">The pyramids are calling. Where to next?</p>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center gap-2 text-white px-6 py-3 rounded-xl font-label-lg shadow-md transition-colors active:scale-95" style="background-color: #987324;">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                        Plan New Trip
+                    </button>
+</div>
+</section>
+<!-- Travel Stats Summary -->
+<section class="grid grid-cols-1 sm:grid-cols-3 gap-gutter">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/20 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant font-label-lg">Total Trips</span>
+<span class="material-symbols-outlined text-teal-600" data-icon="flight_takeoff">flight_takeoff</span>
+</div>
+<p class="text-4xl font-bold font-display-lg text-primary">12</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/20 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant font-label-lg">Destinations</span>
+<span class="material-symbols-outlined text-teal-600" data-icon="explore">explore</span>
+</div>
+<p class="text-4xl font-bold font-display-lg text-primary" >8</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/20 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant font-label-lg">Rewards Points</span>
+<span class="material-symbols-outlined text-teal-600" data-icon="stars">stars</span>
+</div>
+<p class="text-4xl font-bold font-display-lg text-primary" >14.5k</p>
+</div>
+</section>
+<!-- Upcoming Trips -->
+<section>
+<div class="flex items-center justify-between mb-gutter">
+<h2 class="font-headline-md text-on-surface">Upcoming Trips</h2>
+<a class="text-primary font-label-lg hover:underline underline-offset-4" href="#">View All Trips</a>
+</div>
+<div id="upcoming-card" class="bg-surface-container-lowest rounded-xl shadow-[0_8px_30px_rgb(0,128,128,0.06)] border border-outline-variant/10 overflow-hidden flex flex-col lg:flex-row" >
+<div class="w-full lg:w-1/3 h-64 lg:h-auto">
+<img alt="Cairo skyline with Pyramids" class="h-full w-full object-cover" data-alt="stunning wide angle of Giza pyramids at sunset with soft orange glow and clear deep blue sky background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDF-qNjQN2_6XDIkdfYlrNfeIXJiuunWd_FbvM1Q8gG3Ba0cvEtARbn6JDHFqPSzCgGgzQw5U1MR1VA7033Zdf2f4uVsDq77fsLAb7wiXfURXWe-P_S0kFM770NUuYJ6_eH4BzDTLOuiutAPA6YE5QF6-i-G1Z9u72I39D3MTUT98ZqeC4F9sMAuoMBuPPhQ0CPmMO2zPPheHX9SoGyxD9xfHHOXJ_P1ooALop59gC3RTslHEsBqwdbgaF4qhUqigIdfKe6thQXPZLa"/ loading="lazy">
+</div>
+<div class="p-8 flex-1 flex flex-col justify-between">
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div>
+<div class="inline-flex items-center px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-label-sm font-semibold mb-2">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="check_circle">check_circle</span>
+                                        Confirmed
+                                    </div>
+<h3 class="font-headline-md text-on-surface mb-1">Cairo &amp; Luxor: Heritage Tour</h3>
+<div class="flex items-center gap-4 text-on-surface-variant text-body-md">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_today">calendar_today</span>
+                                            Oct 12 - Oct 19, 2024
+                                        </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="person">person</span>
+                                            2 Travelers
+                                        </span>
+</div>
+</div>
+<div class="hidden sm:block">
+<div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-teal-700" data-icon="sailing">sailing</span>
+</div>
+</div>
+</div>
+<p class="text-on-surface-variant/80 text-body-md line-clamp-2">Experience the majesty of the pyramids and a private felucca cruise down the Nile at sunset. Luxury stays at Marriott Mena House and Hilton Luxor.</p>
+</div>
+<div class="mt-8 flex flex-wrap gap-4">
+<button class="bg-primary text-white px-6 py-2.5 rounded-lg font-label-lg active:scale-95 transition-transform">View Itinerary</button>
+<button class="border border-outline text-on-surface px-6 py-2.5 rounded-lg font-label-lg hover:bg-surface-variant transition-colors active:scale-95">Manage Booking</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Saved Destinations Grid -->
+<section>
+<div class="flex items-center justify-between mb-gutter">
+<h2 class="font-headline-md text-on-surface">Saved Destinations</h2>
+<a class="text-primary font-label-lg hover:underline underline-offset-4" href="#">Explore More</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Siwa Oasis Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden group">
+<div class="h-48 relative overflow-hidden">
+<img alt="Siwa Oasis" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="vibrant blue salt pools in the middle of a desert oasis with golden sand dunes in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8ugFlQ3jqmPSYRTw34WgXs5_kaJ1smsU-BNZZuFgp4cRLXus94TE-5KZFSYVqCgn8nRdQxEZnmM_69PQq_3eQZvgzpv7jaXoAgPlvHR2i7UIRdW4_9ueTeSPTdqYFRwZUUyv64jCNqfm66aWGDfQOssfjaMT0ohw5UlnW6KoSfeFwkDsgB-vxMXaTBcRIaBXjg_LJxp7nAIPT0aqo92j5KxVmKfumWxM006_zvMgEQmQMWjEx_UMmrlAx3h7hcDg2eeziGFWtnqXI"/ loading="lazy">
+<button class="absolute top-4 right-4 h-10 w-10 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-primary active:scale-90 transition-all">
+<span class="material-symbols-outlined" data-icon="bookmark" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</button>
+</div>
+<div class="p-4">
+<h4 class="font-label-lg text-on-surface">Siwa Oasis</h4>
+<p class="text-label-sm text-on-surface-variant">Desert Retreat â€¢ 4-5 Days</p>
+<div class="flex items-center gap-2 mt-3">
+<span class="bg-tertiary-fixed text-tertiary-fixed-variant px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Trending</span>
+<span class="text-label-sm text-tertiary font-semibold">From $850</span>
+</div>
+</div>
+</div>
+<!-- Aswan Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden group">
+<div class="h-48 relative overflow-hidden">
+<img alt="Aswan Nile view" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="serene view of the Nile river at Aswan with traditional feluccas sailing past dark granite boulders and lush greenery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKAGXvAsBYqatsArpBPcfpteh9ak9KnvNbJRJsgcmPilkBr0hyR87EG_CUW4S_VUI6oF5cRmgpVwusaC775ouXFsBbAdHbGegmv9OwNDHFnap0L96Ok02GS1-xoEO96mNH0RBjiAMLxSX0iCEUasm4yWeZ-pCLylq1rNTOAElQHKKfu_qmF4s0GBsXS2LorDA5eBHJ3Vk1qNuIriRluy8ebGDqoPyopu6i6IkQJeRsLXVlNNnAWbfOt-yMpu9xcxcUZ21P1SjhIWbg"/ loading="lazy">
+<button class="absolute top-4 right-4 h-10 w-10 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-primary active:scale-90 transition-all">
+<span class="material-symbols-outlined" data-icon="bookmark" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</button>
+</div>
+<div class="p-4">
+<h4 class="font-label-lg text-on-surface">Aswan</h4>
+<p class="text-label-sm text-on-surface-variant">Cultural Heart â€¢ 3-4 Days</p>
+<div class="flex items-center gap-2 mt-3">
+<span class="bg-secondary-container/30 text-secondary px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Top Rated</span>
+<span class="text-label-sm text-tertiary font-semibold">From $620</span>
+</div>
+</div>
+</div>
+<!-- Sharm El Sheikh Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden group">
+<div class="h-48 relative overflow-hidden">
+<img alt="Red Sea Sharm" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="crystal clear turquoise waters of the Red Sea with coral reefs visible and a high-end luxury resort in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlxlfn7WmEu71TYCPj8L4Avd3Eusr01WbJ0s8msBEEZkO0cluBvW1yz0qFlDaqcI6VykpHJqRWmovJ8c4DoL5bEMPoHvw5Mfr86ixLC44HUDiX_XpmBRW7Dmdh4vo-x-rEjYPupLvOy7zhmXqB1xuzpu8Q5sRQzis8mgQ64ex9aNHC9IOpr0l3L2SZfh1N988XsVuAxILdr1ald5tYTDKYMNUNnlunigceUVHh-Ez-OjNbc1V05uM52UCgssSJFk1pXj454w4uvTrQ"/ loading="lazy">
+<button class="absolute top-4 right-4 h-10 w-10 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-primary active:scale-90 transition-all">
+<span class="material-symbols-outlined" data-icon="bookmark" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</button>
+</div>
+<div class="p-4">
+<h4 class="font-label-lg text-on-surface">Sharm El Sheikh</h4>
+<p class="text-label-sm text-on-surface-variant">Beach &amp; Diving â€¢ 7 Days</p>
+<div class="flex items-center gap-2 mt-3">
+<span class="bg-primary-fixed/30 text-primary-fixed-variant px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Premium</span>
+<span class="text-label-sm text-tertiary font-semibold">From $1,200</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-2 pb-safe bg-white dark:bg-slate-900 border-t border-teal-50 dark:border-teal-950 shadow-[0_-4px_12px_rgba(0,128,128,0.08)]">
+<a class="flex flex-col items-center justify-center text-teal-700 dark:text-teal-300 bg-teal-50/50 dark:bg-teal-900/20 rounded-xl px-3 py-1 font-sans text-[11px] font-medium active:scale-90 transition-all duration-200" href="my-trip.html">
+<span class="material-symbols-outlined" data-icon="sailing">sailing</span>
+<span>My Trips</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 font-sans text-[11px] font-medium hover:text-teal-600 dark:hover:text-teal-400 active:scale-90 transition-all duration-200" href="trips.html">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span>Saved</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 font-sans text-[11px] font-medium hover:text-teal-600 dark:hover:text-teal-400 active:scale-90 transition-all duration-200" href="profile-settings.html">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 font-sans text-[11px] font-medium hover:text-teal-600 dark:hover:text-teal-400 active:scale-90 transition-all duration-200" href="support.html">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+<span>Support</span>
+</a>
+</nav>
+
+
+<!-- Footer Section - Edited to match image_c6a977.jpg -->
+<div style="width: 100%; margin-top: 50px; overflow: hidden; display: block; clear: both;">
+    
+    <!-- Silhouette Skyline (Black Pattern) -->
+    <div style="width: 100%; height: 90px; 
+                background-image: url('https://www.kemet.travel/wp-content/uploads/2023/03/Shutterstock-1399818965-3.png'); 
+                background-repeat: repeat-x; 
+                background-size: contain; 
+                background-position: bottom;
+                filter: brightness(0); /* جعل الصورة سوداء بالكامل */
+                margin-bottom: -1px;
+                padding: 0;
+                line-height: 0;">
+    </div>
+
+    <!-- Black Ground Bar with Copyright and Payments -->
+   <div style="background-color: #1A1A1A; padding: 20px 0; width: 100%;">
+        <div style="max-width: 1260px; margin: 0 auto; padding: 0 30px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif;">
+            
+            <!-- Centered White Copyright Text -->
+            <p style="color: #FFFFFF !important; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin: 0; font-weight: 500; opacity: 1 !important;">
+                KEMET TRAVEL © 2026 ALL RIGHTS RESERVED
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body></html>

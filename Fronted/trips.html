@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://images.unsplash.com">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="tw-config.js"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #faf9f6;
+            color: #1a1c1a;
+        }
+        .editorial-shadow {
+            box-shadow: 0 10px 30px -10px rgba(50, 100, 125, 0.15);
+        }
+        .pattern-bg {
+            background-image: radial-gradient(#c5a059 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.05;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-fix.css">
+</head>
+<body class="font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 max-w-full bg-stone-50/90 dark:bg-stone-950/90 backdrop-blur-md border-b border-stone-200 dark:border-stone-800">
+<div class="text-2xl font-bold tracking-widest text-stone-900 dark:text-stone-50 uppercase font-serif">KEMET</div>
+<nav class="hidden md:flex space-x-8">
+<a class="font-serif text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors duration-300" href="home.html">Explore</a>
+<a class="font-serif text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors duration-300" href="my_trip_planner.html">My Trip</a>
+<a class="font-serif text-orange-700 dark:text-orange-400 border-b-2 border-orange-700 dark:border-orange-400 pb-1" href="trips_catalog.html">Trips</a>
+</nav>
+<div class="flex items-center space-x-6">
+<button class="material-symbols-outlined text-stone-600 dark:text-stone-400 hover:text-orange-700 transition-colors" data-icon="search">search</button>
+<button class="bg-primary text-on-primary px-5 py-2 text-label-caps uppercase tracking-widest hover:bg-primary/90 transition-all">Sign In</button>
+</div>
+</header>
+<main class="pt-24 pb-32">
+<!-- Hero Header -->
+<section class="max-w-container-max mx-auto px-6 md:px-margin-desktop mb-stack-lg relative">
+<div class="absolute inset-0 pattern-bg -z-10 h-full w-full"></div>
+<div class="text-center md:text-left pt-12">
+<span class="text-label-caps text-primary uppercase tracking-[0.2em] mb-4 block">Exclusive Collections</span>
+<h1 class="font-h1 text-h1 text-on-surface mb-6">Curated Journeys</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                    Explore our meticulously crafted travel packages designed to immerse you in the timeless grandeur of the Nile and beyond.
+                </p>
+</div>
+</section>
+<!-- Filters Section -->
+<section class="max-w-container-max mx-auto px-6 md:px-margin-desktop mb-stack-md">
+<div class="bg-surface-container-low p-base md:p-stack-sm rounded-lg flex flex-col md:flex-row gap-gutter items-end editorial-shadow">
+<div class="w-full md:w-1/4">
+<label class="text-label-caps text-on-surface-variant mb-2 block uppercase">Duration</label>
+<select class="w-full bg-transparent border-0 border-b border-outline-variant py-2 focus:ring-0 focus:border-primary-container font-body-md text-on-surface">
+<option>All Durations</option>
+<option>3-5 days</option>
+<option>7-10 days</option>
+<option>14+ days</option>
+</select>
+</div>
+<div class="w-full md:w-1/4">
+<label class="text-label-caps text-on-surface-variant mb-2 block uppercase">Budget</label>
+<select class="w-full bg-transparent border-0 border-b border-outline-variant py-2 focus:ring-0 focus:border-primary-container font-body-md text-on-surface">
+<option>All Tiers</option>
+<option>Luxury</option>
+<option>Boutique</option>
+<option>Essential</option>
+</select>
+</div>
+<div class="w-full md:w-1/4">
+<label class="text-label-caps text-on-surface-variant mb-2 block uppercase">Cities</label>
+<select class="w-full bg-transparent border-0 border-b border-outline-variant py-2 focus:ring-0 focus:border-primary-container font-body-md text-on-surface">
+<option>All Regions</option>
+<option>Cairo</option>
+<option>Luxor</option>
+<option>Aswan</option>
+<option>Red Sea</option>
+</select>
+</div>
+<div class="w-full md:w-1/4">
+<button class="w-full bg-primary text-on-primary py-3 text-label-caps uppercase tracking-widest hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span> Apply Filters
+                    </button>
+</div>
+</div>
+</section>
+<!-- Trip List Grid -->
+<section class="max-w-container-max mx-auto px-6 md:px-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Trip Card 1 -->
+<div class="group bg-surface-container-lowest overflow-hidden editorial-shadow hover:-translate-y-1 transition-transform duration-300">
+<div class="relative h-64 overflow-hidden">
+<img alt="The Great Sphinx and Pyramids of Giza at sunset" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="dramatic sunset view of the Great Sphinx and Pyramids of Giza with deep orange sky and long shadows on sand" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDktBUr5CbyXByxC8AUGUN-QjO4xvr4YjgsIddC4jOuZj0zMitLXwu12TjNCvOzIQyrM3-zAmJiMR6EimOUIelYtJ_1PLwY8bXkxAVQFNNgXg5P6w6Af4vtDIjB3ldJGj2kvgDWWQTTxTg3NroEq1XKEw0VjoWScD5KrrM2jTnLzCL9qkEdZ0JARYrPQHk6vEy-WnNC8HingWwqHEzAuf_wRM1kX6T1IXvqu4Pem2kYmrB99TeADrIWoY71aca6soEj1jBpmr8p2bM"/ loading="lazy">
+<div class="absolute top-4 left-4 bg-primary-container/90 text-on-primary-container px-3 py-1 text-label-caps rounded-sm">7 Days / 6 Nights</div>
+</div>
+<div class="p-6">
+<h3 class="font-h3 text-h3 mb-2 text-on-surface">Wonders of the Nile</h3>
+<p class="text-secondary text-sm font-medium mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+                            Cairo - Luxor - Aswan
+                        </p>
+<div class="flex gap-4 mb-6 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="flight" title="Flights">flight</span>
+<span class="material-symbols-outlined" data-icon="hotel" title="Hotels">hotel</span>
+<span class="material-symbols-outlined" data-icon="person_pin_circle" title="Guide">person_pin_circle</span>
+<span class="material-symbols-outlined" data-icon="restaurant" title="Meals">restaurant</span>
+</div>
+<div class="flex items-end justify-between pt-4 border-t border-surface-variant">
+<div>
+<span class="text-label-caps text-on-surface-variant block uppercase">Starting from</span>
+<span class="text-2xl font-bold text-primary">$2,450</span>
+</div>
+<button class="border border-primary-container text-primary-container px-6 py-2 text-label-caps uppercase tracking-widest hover:bg-primary-container hover:text-white transition-colors">Details</button>
+</div>
+</div>
+</div>
+<!-- Trip Card 2 -->
+<div class="group bg-surface-container-lowest overflow-hidden editorial-shadow hover:-translate-y-1 transition-transform duration-300">
+<div class="relative h-64 overflow-hidden">
+<img alt="Luxury Felucca sailing on the Nile at Aswan" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="traditional wooden sailboat with white sails gliding on the calm blue Nile river in Aswan at midday with granite rocks background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2uyjMTrsOCc8xsH2Xx47dPcGEg6fzuy_9vyXg7uYWxXmDYhjXgxj4mllDMOWiQooXfMP6j0R33X-olS0A3aSNiHrwagg8ChzGKYXl4z-_qJMban8xr-7c3oBa07cqAYvdQGgT2gAFpslUmbeVN8a4TVh4sstZdrk9NYi_sDamQwmZm2ioLJGaAfRdO5XEvOw2mCN51mQWEKxmxJ9K__jtqE8WhlrGI1bkk3rgh_vWX_WpCXLBhZVBeBBCFLO3Kc5TS1op8JjXSNs"/ loading="lazy">
+<div class="absolute top-4 left-4 bg-primary-container/90 text-on-primary-container px-3 py-1 text-label-caps rounded-sm">10 Days / 9 Nights</div>
+</div>
+<div class="p-6">
+<h3 class="font-h3 text-h3 mb-2 text-on-surface">Eternal Waters</h3>
+<p class="text-secondary text-sm font-medium mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+                            Aswan - Abu Simbel - Luxor
+                        </p>
+<div class="flex gap-4 mb-6 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="directions_boat" title="Cruise">directions_boat</span>
+<span class="material-symbols-outlined" data-icon="hotel" title="Hotels">hotel</span>
+<span class="material-symbols-outlined" data-icon="person_pin_circle" title="Guide">person_pin_circle</span>
+<span class="material-symbols-outlined" data-icon="restaurant" title="Meals">restaurant</span>
+</div>
+<div class="flex items-end justify-between pt-4 border-t border-surface-variant">
+<div>
+<span class="text-label-caps text-on-surface-variant block uppercase">Starting from</span>
+<span class="text-2xl font-bold text-primary">$3,100</span>
+</div>
+<button class="border border-primary-container text-primary-container px-6 py-2 text-label-caps uppercase tracking-widest hover:bg-primary-container hover:text-white transition-colors">Details</button>
+</div>
+</div>
+</div>
+<!-- Trip Card 3 -->
+<div class="group bg-surface-container-lowest overflow-hidden editorial-shadow hover:-translate-y-1 transition-transform duration-300">
+<div class="relative h-64 overflow-hidden">
+<img alt="The Red Sea coastline with turquoise water and desert mountains" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="panoramic view of vibrant turquoise Red Sea water meeting jagged golden desert mountains under a clear sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqlUXxzvDFK-_XVxklnbrgNXj3wKVFRpfU5q1SwI80teOgLaPF5OgvX4tiYRNo63IzAvcyPVqpMRj7OBwhUxu25r-CSfngMzt88KIZEPIOMdMiscgF18t9pGRZed28BCQB0v3HGNclz0_efcYunFVzmSckGR_BG9ZUjnqexYUCFS475ucylaAPBjl-z9grjtX2ljRj6AILoPXLz8s0pURW6g_v-qGo8UYsE1Uwp8OzQ2Smyg_HqaaN8ALcYTvBpyfdIG5R90iDMzo"/ loading="lazy">
+<div class="absolute top-4 left-4 bg-primary-container/90 text-on-primary-container px-3 py-1 text-label-caps rounded-sm">5 Days / 4 Nights</div>
+</div>
+<div class="p-6">
+<h3 class="font-h3 text-h3 mb-2 text-on-surface">Sinai Explorer</h3>
+<p class="text-secondary text-sm font-medium mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+                            Sharm El Sheikh - Dahab
+                        </p>
+<div class="flex gap-4 mb-6 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="flight" title="Flights">flight</span>
+<span class="material-symbols-outlined" data-icon="pool" title="Resort">pool</span>
+<span class="material-symbols-outlined" data-icon="scuba_diving" title="Activities">scuba_diving</span>
+<span class="material-symbols-outlined" data-icon="restaurant" title="Meals">restaurant</span>
+</div>
+<div class="flex items-end justify-between pt-4 border-t border-surface-variant">
+<div>
+<span class="text-label-caps text-on-surface-variant block uppercase">Starting from</span>
+<span class="text-2xl font-bold text-primary">$1,890</span>
+</div>
+<button class="border border-primary-container text-primary-container px-6 py-2 text-label-caps uppercase tracking-widest hover:bg-primary-container hover:text-white transition-colors">Details</button>
+</div>
+</div>
+</div>
+<!-- Trip Card 4 -->
+<div class="group bg-surface-container-lowest overflow-hidden editorial-shadow hover:-translate-y-1 transition-transform duration-300">
+<div class="relative h-64 overflow-hidden">
+<img alt="Colossi of Memnon statues in Luxor at dawn" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="ancient towering stone statues of Amenhotep III standing in a field in Luxor with soft purple and gold dawn light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoOuWOMh0YL806-uVtrSWTz1vX-jJNDhfrq6L1_cnjs0KmFjokukU4mRxAUDUsYAyymzXYe8QKadCC_3BKWKkzAQZHMGJK01UpHjbhcfrf7torinlIetq_fjaoYBQhVCJeFPHSo3mxoTP33e1hwi3_s7PA0Y28MIMWJjTuf57KK-SpwG4MBQsSufjizaKIoahp6XVgoBdSRONTvGZAqunRTwDNWnyJFZlgQgyKBKsh9VV7HNs_lV0DQMMh-ggD2L8No6BEtDYwEcY"/ loading="lazy">
+<div class="absolute top-4 left-4 bg-primary-container/90 text-on-primary-container px-3 py-1 text-label-caps rounded-sm">14 Days / 13 Nights</div>
+</div>
+<div class="p-6">
+<h3 class="font-h3 text-h3 mb-2 text-on-surface">Pharaoh's Grand Tour</h3>
+<p class="text-secondary text-sm font-medium mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+                            Cairo - Alexandria - Luxor - Aswan
+                        </p>
+<div class="flex gap-4 mb-6 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="flight" title="Flights">flight</span>
+<span class="material-symbols-outlined" data-icon="hotel" title="Hotels">hotel</span>
+<span class="material-symbols-outlined" data-icon="person_pin_circle" title="Guide">person_pin_circle</span>
+<span class="material-symbols-outlined" data-icon="directions_car" title="Transport">directions_car</span>
+</div>
+<div class="flex items-end justify-between pt-4 border-t border-surface-variant">
+<div>
+<span class="text-label-caps text-on-surface-variant block uppercase">Starting from</span>
+<span class="text-2xl font-bold text-primary">$4,200</span>
+</div>
+<button class="border border-primary-container text-primary-container px-6 py-2 text-label-caps uppercase tracking-widest hover:bg-primary-container hover:text-white transition-colors">Details</button>
+</div>
+</div>
+</div>
+<!-- Trip Card 5 -->
+<div class="group bg-surface-container-lowest overflow-hidden editorial-shadow hover:-translate-y-1 transition-transform duration-300">
+<div class="relative h-64 overflow-hidden">
+<img alt="Luxor Temple columns at night with warm lighting" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="towering sandstone columns of Luxor Temple illuminated by golden spotlights against a deep blue night sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV4FlnxCpnK6xQAFlGMQzx97st8c_3jROjRCI-OZpCtDXs_94ztee7ZPJ3oD8g98xbUF2eVCpQJvIEclTCxihrj-cM3PtK2IRGQir2nqTAYVuVTY_ULKhTkm7MBSgEFrDXMv7fILL-43DR29NoelbBastUfKli3qqwRpvHEzeHsNkLj_47eVZMuu-FliBMWMQJ7LmGRKD9Ke0r4j5TwCbir4a276_7KG4UDQLYDPq9I_dNkB7Do5CXS9LQ5XulsfOzefTsmxnUYvY"/ loading="lazy">
+<div class="absolute top-4 left-4 bg-primary-container/90 text-on-primary-container px-3 py-1 text-label-caps rounded-sm">4 Days / 3 Nights</div>
+</div>
+<div class="p-6">
+<h3 class="font-h3 text-h3 mb-2 text-on-surface">Luxor Long Weekend</h3>
+<p class="text-secondary text-sm font-medium mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+                            Luxor Exclusively
+                        </p>
+<div class="flex gap-4 mb-6 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="hotel" title="Hotels">hotel</span>
+<span class="material-symbols-outlined" data-icon="person_pin_circle" title="Guide">person_pin_circle</span>
+<span class="material-symbols-outlined" data-icon="museum" title="Museums">museum</span>
+<span class="material-symbols-outlined" data-icon="restaurant" title="Meals">restaurant</span>
+</div>
+<div class="flex items-end justify-between pt-4 border-t border-surface-variant">
+<div>
+<span class="text-label-caps text-on-surface-variant block uppercase">Starting from</span>
+<span class="text-2xl font-bold text-primary">$1,250</span>
+</div>
+<button class="border border-primary-container text-primary-container px-6 py-2 text-label-caps uppercase tracking-widest hover:bg-primary-container hover:text-white transition-colors">Details</button>
+</div>
+</div>
+</div>
+<!-- Trip Card 6 -->
+<div class="group bg-surface-container-lowest overflow-hidden editorial-shadow hover:-translate-y-1 transition-transform duration-300">
+<div class="relative h-64 overflow-hidden">
+<img alt="Ancient Library of Alexandria modern architecture" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="ultra-modern glass and stone architecture of the Bibliotheca Alexandrina with bright sunlight reflecting on the building facade" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCewMy0QqYSDSua3zKY6n1btGVReJmj6V_-TBgn65NrPsdQQUZhl3FhZMVb0d9zzppRs0oVbtVuzJq5WE0YcwnrtAZwRDGTGQBEWlBq1wewW5EjZmQknaSuPUoeCohsIUdohzF_YgENhXquPu8Bxrui15hYO4Cxs74KwBlNLIbNnhPyFkWTF7szov0UQHUZ4mxYq-6BkBOFieLQ48dw66GZmnLSoSDVNnzfK-jL7ZfrJ4xPnikMS6jxsCMZbQUGG0tI7peyO7L0AVY"/ loading="lazy">
+<div class="absolute top-4 left-4 bg-primary-container/90 text-on-primary-container px-3 py-1 text-label-caps rounded-sm">3 Days / 2 Nights</div>
+</div>
+<div class="p-6">
+<h3 class="font-h3 text-h3 mb-2 text-on-surface">Coastal Heritage</h3>
+<p class="text-secondary text-sm font-medium mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+                            Alexandria Discovery
+                        </p>
+<div class="flex gap-4 mb-6 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="hotel" title="Hotels">hotel</span>
+<span class="material-symbols-outlined" data-icon="person_pin_circle" title="Guide">person_pin_circle</span>
+<span class="material-symbols-outlined" data-icon="set_meal" title="Seafood">set_meal</span>
+<span class="material-symbols-outlined" data-icon="directions_car" title="Transport">directions_car</span>
+</div>
+<div class="flex items-end justify-between pt-4 border-t border-surface-variant">
+<div>
+<span class="text-label-caps text-on-surface-variant block uppercase">Starting from</span>
+<span class="text-2xl font-bold text-primary">$980</span>
+</div>
+<button class="border border-primary-container text-primary-container px-6 py-2 text-label-caps uppercase tracking-widest hover:bg-primary-container hover:text-white transition-colors">Details</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Newsletter / Contact Teaser -->
+<!--section class="max-w-container-max mx-auto px-6 md:px-margin-desktop mt-stack-lg">
+<div class="bg-secondary text-on-secondary p-stack-md md:p-stack-lg flex flex-col md:flex-row items-center justify-between editorial-shadow">
+<div class="mb-8 md:mb-0 max-w-xl text-center md:text-left">
+<h2 class="font-h2 text-h2 mb-4">Can't find your perfect journey?</h2>
+<p class="text-secondary-fixed opacity-90">Our concierge team can tailor any itinerary to your specific desires. From private jets to archaeological digs, we make it happen.</p>
+</div>
+<button class="bg-primary-container text-on-primary-container px-10 py-4 text-label-caps uppercase tracking-[0.2em] hover:bg-white hover:text-secondary transition-all">Custom Inquiry</button>
+</div>
+</section-->
+</main>
+
+<!-- Footer -->
+<div style="width: 100%; margin-top: 50px; overflow: hidden; display: block; clear: both;">
+    
+    <!-- Silhouette Skyline (Black Pattern) -->
+    <div style="width: 100%; height: 90px; 
+                background-image: url('https://www.kemet.travel/wp-content/uploads/2023/03/Shutterstock-1399818965-3.png'); 
+                background-repeat: repeat-x; 
+                background-size: contain; 
+                background-position: bottom;
+                filter: brightness(0); /* جعل الصورة سوداء بالكامل */
+                margin-bottom: -1px;
+                padding: 0;
+                line-height: 0;">
+    </div>
+
+    <!-- Black Ground Bar with Copyright and Payments -->
+   <div style="background-color: #1A1A1A; padding: 20px 0; width: 100%;">
+        <div style="max-width: 1260px; margin: 0 auto; padding: 0 30px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif;">
+            
+            <!-- Centered White Copyright Text -->
+            <p style="color: #FFFFFF !important; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin: 0; font-weight: 500; opacity: 1 !important;">
+                KEMET TRAVEL © 2026 ALL RIGHTS RESERVED
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body></html>

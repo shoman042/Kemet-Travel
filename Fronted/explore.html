@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://images.unsplash.com">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="tw-config.js"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pattern-bg {
+            background-image: radial-gradient(circle at 2px 2px, #d1c5b4 1px, transparent 0);
+            background-size: 24px 24px;
+            opacity: 0.1;
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-fix.css">
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
+<!-- TopNavBar Shell -->
+<nav class="bg-[#FDFCFB] dark:bg-stone-950 border-b border-stone-200 dark:border-stone-800 shadow-sm shadow-indigo-900/10 sticky top-0 z-50">
+<div class="flex justify-between items-center px-8 py-5 max-w-7xl mx-auto">
+<div class="text-2xl font-serif italic text-stone-900 dark:text-stone-50 tracking-widest">Kemet Travel</div>
+<div class="hidden md:flex items-center gap-stack-md">
+<a class="font-serif text-[#C5A059] font-semibold border-b-2 border-[#C5A059] pb-1 transition-all duration-300" href="#">Explore</a>
+<a class="font-serif text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-all duration-300" href="#">My Trip</a>
+<a class="font-serif text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-all duration-300" href="#">Trips</a>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="hidden lg:flex items-center bg-surface-container-low px-4 py-2 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-outline mr-2" data-icon="travel_explore">travel_explore</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 text-on-surface-variant placeholder-outline" placeholder="Search Cairo..." type="text"/>
+</div>
+<div class="flex items-center gap-stack-sm text-primary">
+<span class="material-symbols-outlined scale-100 active:scale-95 transition-transform cursor-pointer" data-icon="account_circle">account_circle</span>
+<span class="hidden sm:inline font-serif font-semibold text-stone-800 dark:text-stone-100 tracking-tight">User Area</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Hero Header -->
+<header class="relative bg-surface-container-lowest pt-stack-lg pb-stack-md px-8 overflow-hidden">
+<div class="absolute inset-0 pattern-bg"></div>
+<div class="max-w-7xl mx-auto relative z-10 text-center md:text-left">
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-[0.2em] mb-4 block">Destination Spotlight</span>
+<h1 class="font-h1 text-h1 text-on-surface mb-4 max-w-3xl">Discover Cairo: The City of a Thousand Minarets</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">From the echoes of ancient pharaohs to the vibrant buzz of contemporary markets, explore the heart of Egyptian heritage.</p>
+</div>
+</header>
+<!-- Main Content Grid -->
+<main class="max-w-7xl mx-auto px-8 py-stack-lg">
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-gutter items-start">
+<!-- Filters Sidebar -->
+<aside class="lg:col-span-1 space-y-stack-md bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-surface-container-high sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto">
+
+  <!-- Reset Button -->
+  <div class="flex items-center justify-between">
+    <h2 class="font-label-caps text-label-caps text-on-surface uppercase tracking-widest">Filters</h2>
+    <button id="reset-filters" class="text-xs text-primary underline underline-offset-2 hover:text-primary/70 transition-colors">Reset All</button>
+  </div>
+
+  <!-- Category -->
+  <div>
+    <h3 class="font-label-caps text-label-caps text-on-surface mb-3 border-b border-outline-variant pb-2">Category</h3>
+    <div class="space-y-2">
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+        <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">Historical Site</span>
+      </label>
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+        <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">Museum</span>
+      </label>
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+        <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">Food &amp; Dining</span>
+      </label>
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+        <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">Architecture</span>
+      </label>
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+        <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">Nature &amp; Parks</span>
+      </label>
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+        <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">Religious Site</span>
+      </label>
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+        <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">Beach &amp; Diving</span>
+      </label>
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+        <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">Shopping &amp; Bazaar</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Highlights -->
+  <div>
+    <h3 class="font-label-caps text-label-caps text-on-surface mb-3 border-b border-outline-variant pb-2">Highlights</h3>
+    <div class="space-y-2">
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <input id="filter-popular" class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+        <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors flex items-center gap-1">
+          <span class="material-symbols-outlined text-base text-tertiary" style="font-variation-settings:'FILL' 1;">trending_up</span>
+          Popular
+        </span>
+      </label>
+      <label class="flex items-center gap-3 cursor-pointer group">
+        <input id="filter-top-exp" class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+        <span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors flex items-center gap-1">
+          <span class="material-symbols-outlined text-base text-primary-container" style="font-variation-settings:'FILL' 1;">verified</span>
+          Top Experience
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Area -->
+  <div>
+    <h3 class="font-label-caps text-label-caps text-on-surface mb-3 border-b border-outline-variant pb-2">Area</h3>
+    <select class="w-full bg-surface-container-low border border-outline-variant text-sm font-medium p-2.5 rounded-lg focus:ring-1 focus:ring-primary transition-all">
+      <option value="all">All Egypt</option>
+    </select>
+  </div>
+
+  <!-- Entry Fee -->
+  <div>
+    <h3 class="font-label-caps text-label-caps text-on-surface mb-3 border-b border-outline-variant pb-2">Entry Fee</h3>
+    <div class="flex flex-wrap gap-2">
+      <button data-fee="free"    class="fee-btn px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container border border-outline-variant text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container transition-all">Free</button>
+      <button data-fee="budget"  class="fee-btn px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container border border-outline-variant text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container transition-all">Budget &lt;300</button>
+      <button data-fee="premium" class="fee-btn px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container border border-outline-variant text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container transition-all">Premium 300+</button>
+    </div>
+  </div>
+
+  <!-- Duration -->
+  <div>
+    <h3 class="font-label-caps text-label-caps text-on-surface mb-3 border-b border-outline-variant pb-2">Duration</h3>
+    <div class="flex flex-wrap gap-2">
+      <button class="px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container border border-outline-variant text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container transition-all">1-3 Hours</button>
+      <button class="px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container border border-outline-variant text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container transition-all">Half Day</button>
+      <button class="px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container border border-outline-variant text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container transition-all">Full Day</button>
+    </div>
+  </div>
+
+  <!-- Guest Rating -->
+  <div>
+    <h3 class="font-label-caps text-label-caps text-on-surface mb-3 border-b border-outline-variant pb-2">Guest Rating</h3>
+    <div class="space-y-2">
+      <label class="flex items-center gap-3 cursor-pointer">
+        <input class="text-primary focus:ring-primary h-4 w-4" name="rating" type="radio"/>
+        <span class="text-sm text-on-surface-variant flex items-center gap-1">4.5+ <span class="material-symbols-outlined text-primary-container text-base" style="font-variation-settings:'FILL' 1;">star</span></span>
+      </label>
+      <label class="flex items-center gap-3 cursor-pointer">
+        <input class="text-primary focus:ring-primary h-4 w-4" name="rating" type="radio"/>
+        <span class="text-sm text-on-surface-variant flex items-center gap-1">4.0+ <span class="material-symbols-outlined text-primary-container text-base" style="font-variation-settings:'FILL' 1;">star</span></span>
+      </label>
+      <label class="flex items-center gap-3 cursor-pointer">
+        <input class="text-primary focus:ring-primary h-4 w-4" name="rating" type="radio"/>
+        <span class="text-sm text-on-surface-variant flex items-center gap-1">3.5+ <span class="material-symbols-outlined text-primary-container text-base" style="font-variation-settings:'FILL' 1;">star</span></span>
+      </label>
+    </div>
+  </div>
+
+</aside>
+<!-- Listing Area -->
+<div class="lg:col-span-3 space-y-gutter">
+<!-- Search & Sort Bar -->
+<div class="flex flex-col md:flex-row justify-between items-center bg-surface-container-low p-4 rounded-xl gap-4">
+<p class="font-body-md text-on-surface-variant">Showing <span class="font-bold text-on-surface" id="explore-count">0 attractions</span> </p>
+<div class="flex items-center gap-gutter w-full md:w-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="sort">sort</span>
+<span class="text-sm font-bold uppercase tracking-wider text-on-surface-variant">Sort:</span>
+</div>
+<select class="bg-transparent border-none text-primary font-bold focus:ring-0 cursor-pointer">
+<option>Popularity</option>
+<option>Highest Rated</option>
+<option>Lowest Price</option>
+<option>Newest</option>
+</select>
+</div>
+</div>
+<!-- Bento / Grid Content -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter" id="explore-place-grid">
+<!-- Card 1: The Egyptian Museum -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-surface-container-high flex flex-col group hover:shadow-md transition-all duration-300">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Front view of the majestic salmon-colored Egyptian Museum in Cairo with architectural details and classical statues under clear blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJyKgmJCovGwbfuhyZhhPq1_Y_NPowUX-4USFSJ1eXin4YLqUxhRj2zXGGFe3JD0S0OzbOf0qpl0v8XMvI7thH8ryHufcUqpKKBm2KF8ikKYiEJH03SHLWTB0JOwlKSey74KIxwKw0GPrTkvZQTD08CbVPdT5sG_bDYOrZJdLWM9g9j3xACtJ2-YfiNR21I1PxlU0g9dZuzGP9cYI3wNeycjvlk5BuLF4L5G-BS57Cpun1xZ9pq2dUKxB-Npa4qun2cPFpP07-WTs"/ loading="lazy">
+<div class="absolute top-4 right-4 bg-surface-container-lowest/90 backdrop-blur px-3 py-1.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-primary-container text-lg" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold text-on-surface">4.9</span>
+</div>
+</div>
+<div class="p-6 flex-grow flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h2 class="font-h3 text-h3 text-on-surface">The Egyptian Museum</h2>
+<button class="text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+<p class="font-body-md text-on-surface-variant mb-6 flex-grow">A treasure trove of antiquities, housing the world's most extensive collection of Pharaonic relics including the golden mask of Tutankhamun.</p>
+<div class="flex items-center gap-gutter">
+<button class="flex-grow bg-primary text-on-primary font-bold py-3 rounded-lg hover:bg-primary/90 active:scale-95 transition-all">Add to Trip</button>
+<button class="p-3 border-2 border-primary text-primary rounded-lg hover:bg-[#f1f1f1] transition-colors">
+<span class="material-symbols-outlined block" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 2: Khan el-Khalili -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-surface-container-high flex flex-col group hover:shadow-md transition-all duration-300">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Bustling narrow alleyway of Khan el-Khalili bazaar with hanging brass lamps, colorful textiles, and golden warm light filtering through stone arches" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0-UYJ2WOPUl3sEvhLM-iFx2BYNC9V1anUSRkntsQH63bcPVeS5nOn4JCYEUXiMTtsyIBNyY3jwEYrlFqzzoB2FRvzgX_TFgabAV3q5IzGCgqV9wZK9wpjKuh9iARbVxb0wAGR0p_VQEEHsPUOZkc1Tjgbig0mpiVhFzLLqRCf4MoZz58hDIpvB0bp2XnCh4YAdh3lqaMtreOPoJBKEz7WHsBCES7xZS6rJk0gmh-XjAnFK6Z9ozfgcfPy_DngseZcS2coAXqblQI"/ loading="lazy">
+<div class="absolute top-4 right-4 bg-surface-container-lowest/90 backdrop-blur px-3 py-1.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-primary-container text-lg" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold text-on-surface">4.7</span>
+</div>
+</div>
+<div class="p-6 flex-grow flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h2 class="font-h3 text-h3 text-on-surface">Khan el-Khalili</h2>
+<button class="text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+<p class="font-body-md text-on-surface-variant mb-6 flex-grow">Experience the vibrant atmosphere of Cairo's oldest market. A sensory journey of spices, handmade crafts, and historic coffeehouses.</p>
+<div class="flex items-center gap-gutter">
+<button class="flex-grow bg-primary text-on-primary font-bold py-3 rounded-lg hover:bg-primary/90 active:scale-95 transition-all">Add to Trip</button>
+<button class="p-3 border-2 border-primary text-primary rounded-lg hover:bg-[#f1f1f1] transition-colors">
+<span class="material-symbols-outlined block" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 3: Al-Azhar Park -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-surface-container-high flex flex-col group hover:shadow-md transition-all duration-300">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Wide landscape of Al-Azhar Park with manicured green lawns and palm trees overlooking the historic Cairo skyline with distant minarets at sunset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdTFeEg-WDKdt5l_XWN3ZsvdO55crRCFtKnTMiAXfLWX58tmKzyUn2ZD70y6mE93hOiv_-leSfvb528Dp20w-bX9TNOzdoLvyNYr6bu-USqMYMw-Bxg78nAFZrZ_e1q20gyS2UONSUZP5EKdDtbfwqKfs0hgGmdBWUM181lzD5yAByf57Zj8_z9HjDEwOdIMNgDRMk38SgHLW2xyyKRZ5CcVSg2H6qeUPyzMt6V_9P-tZRSp959aBDP7-hJZlortrdKFtEoNA2JmY"/ loading="lazy">
+<div class="absolute top-4 right-4 bg-surface-container-lowest/90 backdrop-blur px-3 py-1.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-primary-container text-lg" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold text-on-surface">4.8</span>
+</div>
+</div>
+<div class="p-6 flex-grow flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h2 class="font-h3 text-h3 text-on-surface">Al-Azhar Park</h2>
+<button class="text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+<p class="font-body-md text-on-surface-variant mb-6 flex-grow">A green oasis offering panoramic views of Cairo. Built on historic grounds, it perfectly blends nature with heritage architecture.</p>
+<div class="flex items-center gap-gutter">
+<button class="flex-grow bg-primary text-on-primary font-bold py-3 rounded-lg hover:bg-primary/90 active:scale-95 transition-all">Add to Trip</button>
+<button class="p-3 border-2 border-primary text-primary rounded-lg hover:bg-[#f1f1f1] transition-colors">
+<span class="material-symbols-outlined block" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 4: Mosque of Muhammad Ali -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-surface-container-high flex flex-col group hover:shadow-md transition-all duration-300">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close up view of the towering minarets and ornate domes of the Citadel of Saladin with intricate stone carvings against a clear sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARAqEKvwiSPiNzjgzIxTKg3cCqOmXOpwL0yqaTX6ozIny2Hteo9M1TKT3E1eAzUB9-dYOW-jhoIc78xCsbwhzLT7WTitffeOE0HSoI_T0kqGwEaIXrS3fCtKj4kJFIcwVk3QRMKTdDQwPjvFQf2EIIU39vOzJdeyr51FWtPH-AVxFBFBtEH0sykw9MM1DnKsNCzLd4mWHgCy6TceYzQnD7CQbcX-JXcNZlo-zRVnKBYmKldl6TB0aiwbIjh5muW2kG58t9aUforbI"/ loading="lazy">
+<div class="absolute top-4 right-4 bg-surface-container-lowest/90 backdrop-blur px-3 py-1.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-primary-container text-lg" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold text-on-surface">4.6</span>
+</div>
+</div>
+<div class="p-6 flex-grow flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h2 class="font-h3 text-h3 text-on-surface">The Citadel</h2>
+<button class="text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+<p class="font-body-md text-on-surface-variant mb-6 flex-grow">Perched atop the Mokattam hills, this historic fortress complex houses several museums and the iconic Alabaster Mosque.</p>
+<div class="flex items-center gap-gutter">
+<button class="flex-grow bg-primary text-on-primary font-bold py-3 rounded-lg hover:bg-primary/90 active:scale-95 transition-all">Add to Trip</button>
+<button class="p-3 border-2 border-primary text-primary rounded-lg hover:bg-[#f1f1f1] transition-colors">
+<span class="material-symbols-outlined block" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+<!-- Load More -->
+<div class="flex justify-center pt-8">
+
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<!-- Footer Section - Edited to match image_c6a977.jpg -->
+<div style="width: 100%; margin-top: 50px; overflow: hidden; display: block; clear: both;">
+    
+    <!-- Silhouette Skyline (Black Pattern) -->
+    <div style="width: 100%; height: 90px; 
+                background-image: url('https://www.kemet.travel/wp-content/uploads/2023/03/Shutterstock-1399818965-3.png'); 
+                background-repeat: repeat-x; 
+                background-size: contain; 
+                background-position: bottom;
+                filter: brightness(0); /* جعل الصورة سوداء بالكامل */
+                margin-bottom: -1px;
+                padding: 0;
+                line-height: 0;">
+    </div>
+
+    <!-- Black Ground Bar with Copyright and Payments -->
+   <div style="background-color: #1A1A1A; padding: 20px 0; width: 100%;">
+        <div style="max-width: 1260px; margin: 0 auto; padding: 0 30px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif;">
+            
+            <!-- Centered White Copyright Text -->
+            <p style="color: #FFFFFF !important; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin: 0; font-weight: 500; opacity: 1 !important;">
+                KEMET TRAVEL © 2026 ALL RIGHTS RESERVED
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body></html>
+</footer>
+<!-- FAB -->
+<button id="explore-plan-fab" class="fixed bottom-8 right-8 bg-primary-container text-on-primary-container p-5 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all flex items-center gap-2 group z-40">
+<span class="material-symbols-outlined" data-icon="explore" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-bold hidden group-hover:inline transition-all pr-2">Start Planning</span>
+</button>
+<script src="app.js"></script>
+</body></html>
