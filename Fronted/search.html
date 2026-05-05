@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Search Results - Kemet Travel</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="tw-config.js"></script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .editorial-shadow {
+      box-shadow: 0 10px 30px -10px rgba(50, 100, 125, 0.15);
+    }
+  </style>
+  <link rel="stylesheet" href="mobile-fix.css">
+</head>
+<body class="bg-surface font-body-md text-on-surface">
+<!-- Top Navigation -->
+<header class="bg-[#FAF9F6] border-b border-stone-200 shadow-sm shadow-indigo-900/10 sticky top-0 z-50">
+  <nav class="flex justify-between items-center px-6 md:px-10 py-4 max-w-7xl mx-auto">
+    <div class="text-2xl font-serif italic text-stone-900 tracking-widest">Kemet Travel</div>
+    <nav class="hidden md:flex gap-8 items-center">
+      <a class="text-stone-500 hover:text-[#C5A059] transition-all duration-300" href="home.html">Explore</a>
+      <a class="text-stone-500 hover:text-[#C5A059] transition-all duration-300" href="my-trip.html">My Trip</a>
+      <a class="text-stone-500 hover:text-[#C5A059] transition-all duration-300" href="trips.html">Trips</a>
+    </nav>
+    <div class="flex items-center gap-4">
+      <span class="material-symbols-outlined text-stone-600 cursor-pointer" data-icon="travel_explore">travel_explore</span>
+      <div class="flex items-center gap-2 text-stone-800 font-medium">
+        <span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+        <span class="hidden lg:inline text-sm">User Area</span>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 md:px-10 py-10">
+  <!-- Search Header -->
+  <section class="mb-10">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="material-symbols-outlined text-[#C5A059] text-3xl">search</span>
+      <div>
+        <h1 class="font-h1 text-h1 text-on-surface">Search Results</h1>
+        <p class="text-stone-500 mt-1">Showing results for: <span id="search-query-display" class="font-bold text-[#C5A059]"></span></p>
+      </div>
+    </div>
+    <!-- Search Bar -->
+    <div class="flex gap-2 max-w-2xl">
+      <div class="flex-1 flex items-center px-4 py-3 bg-white border border-stone-200 rounded-xl">
+        <span class="material-symbols-outlined text-[#C5A059] mr-3">location_on</span>
+        <input id="search-input" class="w-full bg-transparent border-none focus:ring-0 text-stone-800 placeholder:text-stone-400" placeholder="Search destinations, hotels, places..." type="text"/>
+      </div>
+      <button id="search-btn" class="bg-[#C5A059] text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-[#b8913a] transition-all active:scale-95">
+        Search
+      </button>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <div id="stats-bar" class="hidden mb-8 p-4 bg-white rounded-xl border border-stone-100 flex flex-wrap gap-6 items-center">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[#C5A059]">luggage</span>
+      <span><span id="trips-count" class="font-bold">0</span> Trips</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[#C5A059]">location_on</span>
+      <span><span id="places-count" class="font-bold">0</span> Places</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[#C5A059]">hotel</span>
+      <span><span id="hotels-count" class="font-bold">0</span> Hotels</span>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div id="loading" class="text-center py-20">
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#C5A059]"></div>
+    <p class="mt-4 text-stone-500">Searching across Egypt...</p>
+  </div>
+
+  <!-- Trips Section -->
+  <section id="trips-section" class="mb-16 hidden">
+    <div class="flex items-center gap-3 mb-6">
+      <span class="material-symbols-outlined text-[#C5A059] text-2xl">luggage</span>
+      <h2 class="font-h2 text-h2">Trips</h2>
+    </div>
+    <div id="trips-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Trip cards will be inserted here -->
+    </div>
+    <p id="trips-empty" class="hidden text-stone-500 text-center py-8">No trips found for this destination.</p>
+  </section>
+
+  <!-- Places Section -->
+  <section id="places-section" class="mb-16 hidden">
+    <div class="flex items-center gap-3 mb-6">
+      <span class="material-symbols-outlined text-[#C5A059] text-2xl">location_on</span>
+      <h2 class="font-h2 text-h2">Places & Attractions</h2>
+    </div>
+    <div id="places-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Place cards will be inserted here -->
+    </div>
+    <p id="places-empty" class="hidden text-stone-500 text-center py-8">No places found for this destination.</p>
+  </section>
+
+  <!-- Hotels Section -->
+  <section id="hotels-section" class="mb-16 hidden">
+    <div class="flex items-center gap-3 mb-6">
+      <span class="material-symbols-outlined text-[#C5A059] text-2xl">hotel</span>
+      <h2 class="font-h2 text-h2">Hotels</h2>
+    </div>
+    <div id="hotels-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Hotel cards will be inserted here -->
+    </div>
+    <p id="hotels-empty" class="hidden text-stone-500 text-center py-8">No hotels found for this destination.</p>
+  </section>
+
+  <!-- No Results -->
+  <div id="no-results" class="hidden text-center py-20">
+    <span class="material-symbols-outlined text-6xl text-stone-300">search_off</span>
+    <h3 class="font-h3 text-h3 mt-4">No results found</h3>
+    <p class="text-stone-500 mt-2">Try a different search term or browse our <a href="trips.html" class="text-[#C5A059] underline">trips</a> and <a href="explore.html" class="text-[#C5A059] underline">destinations</a>.</p>
+  </div>
+</main>
+
+<!-- Footer -->
+<div style="width: 100%; margin-top: 50px; overflow: hidden; display: block; clear: both;">
+  <div style="width: 100%; height: 90px;
+              background-image: url('https://www.kemet.travel/wp-content/uploads/2023/03/Shutterstock-1399818965-3.png');
+              background-repeat: repeat-x;
+              background-size: contain;
+              background-position: bottom;
+              filter: brightness(0);
+              margin-bottom: -1px;
+              padding: 0;
+              line-height: 0;">
+  </div>
+  <div style="background-color: #1A1A1A; padding: 20px 0; width: 100%;">
+    <div style="max-width: 1260px; margin: 0 auto; padding: 0 30px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif;">
+      <p style="color: #FFFFFF !important; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin: 0; font-weight: 500; opacity: 1 !important;">
+        KEMET TRAVEL © 2026 ALL RIGHTS RESERVED
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body></html>
