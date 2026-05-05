@@ -5570,7 +5570,6 @@
                   <img src="${escapeHtml(img)}" alt="${escapeHtml(trip.title || '')}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='${IMAGE_PLACEHOLDER}'"/>
                   <div class="absolute top-4 left-4 bg-[#C5A059] text-white px-3 py-1 text-xs font-bold rounded-full">${trip.duration || ''}</div>
                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg">open_in_new</span>
                   </div>
                 </div>
                 <div class="p-6">
@@ -5619,7 +5618,6 @@
                 <div class="relative h-48 overflow-hidden cursor-pointer place-img-btn" data-id="${escapeHtml(String(place._id || ''))}">
                   <img src="${escapeHtml(img)}" alt="${escapeHtml(place.name || '')}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='${IMAGE_PLACEHOLDER}'"/>
                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg">open_in_new</span>
                   </div>
                 </div>
                 <div class="p-6">
@@ -5660,7 +5658,6 @@
                 <div class="relative h-48 overflow-hidden cursor-pointer hotel-img-btn" data-id="${escapeHtml(String(hotel._id || ''))}">
                   <img src="${escapeHtml(img)}" alt="${escapeHtml(hotel.name || '')}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='${IMAGE_PLACEHOLDER}'"/>
                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg">open_in_new</span>
                   </div>
                 </div>
                 <div class="p-6">
