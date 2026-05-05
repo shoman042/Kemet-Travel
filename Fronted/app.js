@@ -797,37 +797,75 @@
     loadHistory();
   }
 
+  // ── In-memory cache for GET requests ─────────────────────────────────────────────
+  const _apiCache = new Map();
+  const _API_CACHE_TTL = 60_000; // 60 seconds
+
   async function api(path, options = {}) {
     const method = String(options.method || 'GET').toUpperCase();
-    const cacheBuster = method === 'GET' ? `${path.includes('?') ? '&' : '?'}_t=${Date.now()}` : '';
     const mergedHeaders = {
       'Content-Type': 'application/json',
       ...(options.headers || {}),
     };
 
+    // ── Cache check (GET requests only) ─────────────────────────────────────────────────
+    if (method === 'GET') {
+      const cached = _apiCache.get(path);
+      if (cached && Date.now() - cached.ts < _API_CACHE_TTL) {
+        return cached.data;
+      }
+    }
+
+    // ── Retry with exponential backoff ──────────────────────────────────────────────
+    const MAX_RETRIES = 3;
+    const RETRYABLE = new Set([408, 429, 500, 502, 503, 504]);
+    let lastErr;
+
     showGlobalLoader();
     try {
-      const response = await fetch(`${API_BASE_URL}${path}`, {
-        ...options,
-        headers: mergedHeaders,
-        method,
-      });
+      for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+        // backoff: 0ms → 600ms → 1800ms
+        if (attempt > 0) {
+          await new Promise(r => setTimeout(r, 300 * Math.pow(3, attempt - 1)));
+        }
 
-      let data = null;
-      try {
-        data = await response.json();
-      } catch {
-        data = null;
+        let response;
+        try {
+          response = await fetch(`${API_BASE_URL}${path}`, {
+            ...options,
+            headers: mergedHeaders,
+            method,
+            signal: AbortSignal.timeout(12_000),
+          });
+        } catch (fetchErr) {
+          lastErr = fetchErr;
+          continue; // network error or timeout → retry
+        }
+
+        let data = null;
+        try { data = await response.json(); } catch { data = null; }
+
+        if (!response.ok) {
+          lastErr = new Error(data?.message || `Request failed: ${response.status}`);
+          if (RETRYABLE.has(response.status)) continue;
+          throw lastErr;
+        }
+
+        if (method === 'GET') {
+          _apiCache.set(path, { data, ts: Date.now() });
+        }
+        return data;
       }
 
-      if (!response.ok) {
-        throw new Error(data?.message || `Request failed: ${response.status}`);
-      }
-
-      return data;
+      throw lastErr || new Error('Request failed after retries');
     } finally {
       hideGlobalLoader();
     }
+  }
+
+  function invalidateCache(path) {
+    if (path) _apiCache.delete(path);
+    else _apiCache.clear();
   }
 
   function escapeHtml(value) {
