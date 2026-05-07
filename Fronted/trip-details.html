@@ -34,6 +34,9 @@
         }
     </style>
     <link rel="stylesheet" href="mobile-fix.css">
+    <!-- Leaflet Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WPcM=" crossorigin=""></script>
 </head>
 <body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container">
 <!-- TopAppBar -->
@@ -163,29 +166,94 @@
 <!-- Right Column: Map & What's Included -->
 <div class="lg:col-span-4 space-y-stack-md lg:sticky lg:top-[160px] lg:h-fit">
 <!-- Map Section -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <div class="bg-surface-container rounded-xl overflow-hidden shadow-sm border border-stone-200 p-2">
-<div class="relative w-full aspect-square bg-stone-200 rounded-lg overflow-hidden">
-<img alt="Egypt Map" class="w-full h-full object-cover opacity-60 mix-blend-multiply" data-location="Egypt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBENkaMslM0YMhDlEYP4Ytc3TuqXrfBccKdOKZFlYlsSb9aPLaGTk7pGEOTQWgXfX60cVHmWJoj4TOTFmOmI-nDIDalih2dvlIpfNH13uZZBliPf6o2QYRO7Fz_C9Y5bLq_m6nzewSq8VN0mZBSbDJGC7YaneckWzl43AQr9iL90h4qGPnygLRIX2Sr0Am-FPL9gAbMm4aeVwdxwGFfrC_VZ9UeOg9KMy1YNPLXnhkbQHOhluld360sK5WcsBF7lE_CSzulA2lqPI"/ loading="lazy">
-<div class="absolute inset-0 p-6 flex flex-col justify-between pointer-events-none">
-<div class="flex justify-start">
-<div class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold shadow-sm">CAIRO</div>
-</div>
-<div class="flex justify-end pr-12">
-<div class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold shadow-sm">LUXOR</div>
-</div>
-<div class="flex justify-center pb-8">
-<div class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold shadow-sm">ASWAN</div>
-</div>
-</div>
-<!-- Decorative Route Line -->
-<svg class="absolute inset-0 w-full h-full pointer-events-none" viewbox="0 0 100 100">
-<path d="M40 20 Q 55 45, 75 65 Q 65 85, 55 90" fill="none" stroke="#c5a059" stroke-dasharray="4 2" stroke-width="1.5"></path>
-</svg>
-</div>
+<div id="trip-map" style="width:100%;height:360px;border-radius:10px;z-index:0;"></div>
 <div class="p-4 text-center">
-<p class="font-label-caps text-[11px] text-stone-500 uppercase tracking-widest">Route: Cairo â€” Luxor â€” Aswan</p>
+<p id="trip-map-route-label" class="font-label-caps text-[11px] text-stone-500 uppercase tracking-widest">Route: Cairo — Luxor — Aswan</p>
 </div>
 </div>
+<script>
+// ====================================================
+// Dynamic Trip Map — driven by app.js via buildTripMap()
+// ====================================================
+window.buildTripMap = function(stops, routeLabel) {
+  var mapEl = document.getElementById('trip-map');
+  var routeEl = document.getElementById('trip-map-route-label');
+
+  if (!mapEl) return;
+
+  // Update the route text label
+  if (routeEl && routeLabel) routeEl.textContent = 'Route: ' + routeLabel;
+
+  // Destroy old map instance if it exists (Leaflet stores it on the element)
+  if (mapEl._leaflet_id) {
+    try { mapEl._leaflet_map && mapEl._leaflet_map.remove(); } catch(e){}
+    // Reset the div
+    mapEl._leaflet_id = undefined;
+    mapEl.innerHTML = '';
+  }
+
+  function doInit() {
+    if (typeof L === 'undefined') { setTimeout(doInit, 100); return; }
+
+    var map = L.map(mapEl, {
+      zoomControl: true,
+      scrollWheelZoom: false,
+      minZoom: 4,
+      maxZoom: 17
+    });
+
+    if (stops.length === 1) {
+      map.setView([stops[0].lat, stops[0].lng], 9);
+    } else {
+      map.fitBounds(
+        stops.map(function(s){ return [s.lat, s.lng]; }),
+        { padding: [50, 50], maxZoom: 13 }
+      );
+    }
+
+    mapEl._leaflet_map = map; // store ref for future destroy
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+      maxZoom: 19
+    }).addTo(map);
+
+    var goldIcon = L.divIcon({
+      className: '',
+      html: '<div style="width:22px;height:22px;border-radius:50%;background:#c5a059;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>',
+      iconSize: [22, 22],
+      iconAnchor: [11, 11],
+      popupAnchor: [0, -15]
+    });
+
+    stops.forEach(function(s) {
+      L.marker([s.lat, s.lng], { icon: goldIcon })
+        .addTo(map)
+        .bindPopup('<b style="font-family:serif;color:#c5a059;">' + s.name + '</b>' + (s.desc ? '<br><span style="font-size:11px;">' + s.desc + '</span>' : ''));
+    });
+
+    if (stops.length > 1) {
+      L.polyline(stops.map(function(s){ return [s.lat, s.lng]; }), {
+        color: '#c5a059', weight: 3, dashArray: '8 6', opacity: 0.9
+      }).addTo(map);
+    }
+
+    if (!document.getElementById('kemet-leaflet-style')) {
+      var st = document.createElement('style');
+      st.id = 'kemet-leaflet-style';
+      st.textContent = '.leaflet-popup-content-wrapper{border-radius:10px!important;font-family:"Plus Jakarta Sans",sans-serif!important;}';
+      document.head.appendChild(st);
+    }
+
+    setTimeout(function(){ map.invalidateSize(); }, 200);
+  }
+
+  doInit();
+};
+</script>
 <!-- What's Included -->
 <div class="bg-white rounded-xl shadow-sm border border-stone-100 p-8">
 <h3 class="font-h3 text-[22px] mb-6">What's Included</h3>

@@ -2125,34 +2125,81 @@
       }
     }
 
-    // Dynamic map card on right side based on current trip location.
-    const mapCard = Array.from(document.querySelectorAll('div.bg-surface-container.rounded-xl')).find((el) =>
-      !!el.querySelector('img[data-location], img[alt*="Map"]')
-    );
-    if (mapCard) {
-      const labelNodes = mapCard.querySelectorAll('.bg-white\\/90');
-      const routeTextEl = mapCard.querySelector('p.font-label-caps');
-      const mapImageEl = mapCard.querySelector('img[data-location], img[alt*="Map"]');
-      const routeWords = String(location || '')
-        .split(/[,&/|-]+/)
-        .map((w) => w.trim())
-        .filter(Boolean);
-      const topLabels = routeWords.length ? routeWords : ['Egypt'];
-      labelNodes.forEach((node, idx) => {
-        if (topLabels[idx]) {
-          node.textContent = topLabels[idx].toUpperCase();
-          node.style.display = '';
-        } else {
-          node.style.display = 'none';
-        }
-      });
-      if (routeTextEl) {
-        routeTextEl.textContent = `Route: ${topLabels.join(' - ')}`;
+    // ── Dynamic Leaflet Map ──────────────────────────────────────────────────
+    // Geocoding table for common Egyptian cities/sites
+    const EGYPT_COORDS = {
+      'cairo':          { lat: 30.0444, lng: 31.2357 },
+      'giza':           { lat: 29.9765, lng: 31.1313 },
+      'luxor':          { lat: 25.6872, lng: 32.6396 },
+      'aswan':          { lat: 24.0889, lng: 32.8998 },
+      'alexandria':     { lat: 31.2001, lng: 29.9187 },
+      'sharm el sheikh':{ lat: 27.9158, lng: 34.3300 },
+      'sharm':          { lat: 27.9158, lng: 34.3300 },
+      'hurghada':       { lat: 27.2579, lng: 33.8116 },
+      'dahab':          { lat: 28.4942, lng: 34.5128 },
+      'sinai':          { lat: 28.5397, lng: 33.9729 },
+      'abu simbel':     { lat: 22.3372, lng: 31.6258 },
+      'siwa':           { lat: 29.2035, lng: 25.5195 },
+      'marsa alam':     { lat: 25.0692, lng: 34.8962 },
+      'el minya':       { lat: 28.0871, lng: 30.7618 },
+      'minya':          { lat: 28.0871, lng: 30.7618 },
+      'ismailia':       { lat: 30.5965, lng: 32.2715 },
+      'port said':      { lat: 31.2653, lng: 32.3019 },
+      'suez':           { lat: 29.9737, lng: 32.5311 },
+      'tanta':          { lat: 30.7865, lng: 31.0004 },
+      'mansoura':       { lat: 31.0364, lng: 31.3807 },
+      'egypt':          { lat: 26.8206, lng: 30.8025 },
+    };
+
+    function resolveCoords(cityName) {
+      const key = (cityName || '').trim().toLowerCase();
+      // Exact match first
+      if (EGYPT_COORDS[key]) return EGYPT_COORDS[key];
+      // Partial match
+      for (const k of Object.keys(EGYPT_COORDS)) {
+        if (key.includes(k) || k.includes(key)) return EGYPT_COORDS[k];
       }
-      if (mapImageEl) {
-        mapImageEl.setAttribute('data-location', String(location || 'Egypt'));
+      return null;
+    }
+
+    // Parse cities from trip location, itinerary, or title
+    const rawLocation = String(selectedTrip.location || selectedTrip.city || selectedTrip.governorate || location || '');
+    const cityTokens = rawLocation
+      .split(/[,&/|–\-]+/)
+      .map((w) => w.trim())
+      .filter(Boolean);
+
+    // Also scan itinerary items for city names
+    const itineraryText = itineraryItems.join(' ') + ' ' + String(selectedTrip.title || '');
+    const allCityKeys = Object.keys(EGYPT_COORDS).filter((k) => k !== 'egypt');
+    const foundInItinerary = allCityKeys.filter((k) =>
+      itineraryText.toLowerCase().includes(k)
+    ).map((k) => k.charAt(0).toUpperCase() + k.slice(1));
+
+    // Merge and deduplicate
+    const allCandidates = [...cityTokens, ...foundInItinerary];
+    const seenNames = new Set();
+    const mapStops = [];
+    for (const city of allCandidates) {
+      const coords = resolveCoords(city);
+      const key = city.toLowerCase();
+      if (coords && !seenNames.has(key)) {
+        seenNames.add(key);
+        mapStops.push({ name: city, lat: coords.lat, lng: coords.lng });
       }
     }
+
+    // Fallback: single Egypt center
+    if (!mapStops.length) {
+      mapStops.push({ name: rawLocation || 'Egypt', lat: 26.8206, lng: 30.8025 });
+    }
+
+    const routeLabel = mapStops.map((s) => s.name).join(' — ');
+
+    if (typeof window.buildTripMap === 'function') {
+      window.buildTripMap(mapStops, routeLabel);
+    }
+    // ─────────────────────────────────────────────────────────────────────────
 
     const saveTripBtn = findButtonByText('add to my trip');
     if (saveTripBtn) {
