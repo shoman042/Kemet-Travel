@@ -78,38 +78,157 @@
 <span class="material-symbols-outlined text-primary text-3xl" data-icon="payments">payments</span>
 <h2 class="font-h3 text-h3 text-on-surface">Payment Method</h2>
 </div>
-<div class="space-y-4">
-<!-- Card Option -->
-<div class="border border-outline-variant p-4 rounded-lg flex items-center gap-4 cursor-pointer hover:bg-surface-container-low transition-colors">
-<div class="w-5 h-5 rounded-full border-4 border-primary bg-white"></div>
-<span class="material-symbols-outlined text-on-surface" data-icon="credit_card">credit_card</span>
-<span class="font-body-md font-bold">Credit / Debit Card</span>
-<div class="ml-auto flex gap-2">
-<span class="bg-white px-2 py-1 rounded text-[10px] font-bold border border-outline-variant">VISA</span>
-<span class="bg-white px-2 py-1 rounded text-[10px] font-bold border border-outline-variant">MC</span>
-</div>
-</div>
-<!-- Card Inputs -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-<div class="flex flex-col md:col-span-2">
-<label class="font-label-caps text-[10px] text-outline mb-1">CARD NUMBER</label>
-<input class="bg-surface-container border-0 border-b border-outline-variant py-2 px-3 text-on-surface font-body-md" placeholder="0000 0000 0000 0000" type="text"/>
-</div>
-<div class="flex flex-col">
-<label class="font-label-caps text-[10px] text-outline mb-1">EXPIRY DATE</label>
-<input class="bg-surface-container border-0 border-b border-outline-variant py-2 px-3 text-on-surface font-body-md" placeholder="MM / YY" type="text"/>
-</div>
-<div class="flex flex-col">
-<label class="font-label-caps text-[10px] text-outline mb-1">CVV</label>
-<input class="bg-surface-container border-0 border-b border-outline-variant py-2 px-3 text-on-surface font-body-md" placeholder="***" type="text"/>
-</div>
-</div>
-<!-- Alternative Option -->
-<div class="border border-outline-variant p-4 rounded-lg flex items-center gap-4 cursor-pointer hover:bg-surface-container-low transition-colors">
-<div class="w-5 h-5 rounded-full border-2 border-outline-variant bg-white"></div>
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="account_balance_wallet">account_balance_wallet</span>
-<span class="font-body-md text-on-surface-variant">PayPal or Bank Transfer</span>
-</div>
+<div class="space-y-3" id="payment-methods-container">
+
+  <!-- 1. Credit / Debit Card -->
+  <div id="pay-opt-card" class="payment-option border-2 border-primary-container bg-surface-container-low p-4 rounded-xl flex items-center gap-4 cursor-pointer transition-all" data-method="card">
+    <div class="pay-radio w-5 h-5 rounded-full border-4 border-primary bg-white flex-shrink-0"></div>
+    <span class="material-symbols-outlined text-on-surface flex-shrink-0" data-icon="credit_card">credit_card</span>
+    <span class="font-body-md font-bold flex-1">Credit / Debit Card</span>
+    <div class="flex gap-1.5 ml-auto">
+      <span class="bg-white px-2 py-1 rounded text-[10px] font-bold border border-outline-variant shadow-sm">VISA</span>
+      <span class="bg-white px-2 py-1 rounded text-[10px] font-bold border border-outline-variant shadow-sm">MC</span>
+      <span class="bg-white px-2 py-1 rounded text-[10px] font-bold border border-outline-variant shadow-sm">AMEX</span>
+    </div>
+  </div>
+  <!-- Card Inputs -->
+  <div id="card-inputs-section" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1 pb-2 px-2">
+    <div class="flex flex-col md:col-span-2">
+      <label class="font-label-caps text-[10px] text-outline mb-1">CARD NUMBER</label>
+      <input class="bg-surface-container border-0 border-b border-outline-variant py-2 px-3 text-on-surface font-body-md" placeholder="0000 0000 0000 0000" type="text" id="card-number-input"/>
+    </div>
+    <div class="flex flex-col">
+      <label class="font-label-caps text-[10px] text-outline mb-1">EXPIRY DATE</label>
+      <input class="bg-surface-container border-0 border-b border-outline-variant py-2 px-3 text-on-surface font-body-md" placeholder="MM / YY" type="text" id="card-expiry-input"/>
+    </div>
+    <div class="flex flex-col">
+      <label class="font-label-caps text-[10px] text-outline mb-1">CVV</label>
+      <input class="bg-surface-container border-0 border-b border-outline-variant py-2 px-3 text-on-surface font-body-md" placeholder="***" type="text" id="card-cvv-input"/>
+    </div>
+    <div class="flex flex-col">
+      <label class="font-label-caps text-[10px] text-outline mb-1">CARDHOLDER NAME</label>
+      <input class="bg-surface-container border-0 border-b border-outline-variant py-2 px-3 text-on-surface font-body-md" placeholder="Name on card" type="text" id="card-holder-input"/>
+    </div>
+    <!-- Secure badge inside card -->
+    <div class="md:col-span-2 flex items-center gap-2 mt-1">
+      <span class="material-symbols-outlined text-green-600 text-base" data-icon="lock">lock</span>
+      <span class="text-[10px] text-outline">256-bit SSL encryption — your card details are safe</span>
+    </div>
+  </div>
+
+  <!-- 2. Fawry -->
+  <div id="pay-opt-fawry" class="payment-option border border-outline-variant p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-surface-container-low transition-all" data-method="fawry">
+    <div class="pay-radio w-5 h-5 rounded-full border-2 border-outline-variant bg-white flex-shrink-0"></div>
+    <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg" style="background:#f26522;">
+      <span class="text-white font-black text-xs">F</span>
+    </div>
+    <div class="flex-1">
+      <span class="font-body-md font-bold block">Fawry</span>
+      <span class="text-xs text-outline">Pay at any Fawry point or app</span>
+    </div>
+    <span class="text-xs font-bold text-[#f26522] bg-orange-50 px-2 py-1 rounded-full border border-orange-200">+4000 outlet</span>
+  </div>
+  <!-- Fawry instructions -->
+  <div id="fawry-instructions-section" class="hidden bg-orange-50 border border-orange-200 rounded-xl p-4 space-y-2">
+    <p class="font-bold text-sm text-orange-800 flex items-center gap-2"><span class="material-symbols-outlined text-base" data-icon="info">info</span>How to pay via Fawry</p>
+    <ol class="text-sm text-orange-700 space-y-1 list-decimal list-inside">
+      <li>Click "Confirm & Get Reference" below</li>
+      <li>You'll receive a Fawry reference code</li>
+      <li>Visit any Fawry outlet or open the Fawry app</li>
+      <li>Pay using the reference code within 48 hours</li>
+    </ol>
+    <p class="text-xs text-orange-600 font-medium">⏱ Reference expires after 48 hours</p>
+  </div>
+
+  <!-- 3. Vodafone Cash -->
+  <div id="pay-opt-vodafone" class="payment-option border border-outline-variant p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-surface-container-low transition-all" data-method="vodafone">
+    <div class="pay-radio w-5 h-5 rounded-full border-2 border-outline-variant bg-white flex-shrink-0"></div>
+    <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg" style="background:#e60000;">
+      <span class="text-white font-black text-xs">VC</span>
+    </div>
+    <div class="flex-1">
+      <span class="font-body-md font-bold block">Vodafone Cash</span>
+      <span class="text-xs text-outline">Transfer via your Vodafone wallet</span>
+    </div>
+    <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded-full border border-red-200">Instant</span>
+  </div>
+  <!-- Vodafone Cash inputs -->
+  <div id="vodafone-inputs-section" class="hidden px-2 pt-1 pb-2 space-y-3">
+    <div class="flex flex-col">
+      <label class="font-label-caps text-[10px] text-outline mb-1">VODAFONE CASH NUMBER</label>
+      <input class="bg-surface-container border-0 border-b border-outline-variant py-2 px-3 text-on-surface font-body-md" placeholder="01X XXXX XXXX" type="tel" id="vodafone-number-input"/>
+    </div>
+    <div class="bg-red-50 border border-red-200 rounded-lg p-3 text-xs text-red-700">
+      <strong>Transfer to:</strong> 01012345678 (Kemet Travel) — then enter your number above for confirmation.
+    </div>
+  </div>
+
+  <!-- 4. InstaPay -->
+  <div id="pay-opt-instapay" class="payment-option border border-outline-variant p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-surface-container-low transition-all" data-method="instapay">
+    <div class="pay-radio w-5 h-5 rounded-full border-2 border-outline-variant bg-white flex-shrink-0"></div>
+    <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-blue-500">
+      <span class="text-white font-black text-xs">IP</span>
+    </div>
+    <div class="flex-1">
+      <span class="font-body-md font-bold block">InstaPay</span>
+      <span class="text-xs text-outline">Instant bank-to-bank transfer</span>
+    </div>
+    <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-full border border-purple-200">Zero fees</span>
+  </div>
+  <!-- InstaPay info -->
+  <div id="instapay-instructions-section" class="hidden bg-purple-50 border border-purple-200 rounded-xl p-4 space-y-2">
+    <p class="font-bold text-sm text-purple-800">InstaPay Transfer Details</p>
+    <div class="grid grid-cols-2 gap-2 text-sm">
+      <span class="text-outline">Account Name:</span><span class="font-bold text-purple-900">Kemet Travel</span>
+      <span class="text-outline">InstaPay ID:</span><span class="font-bold text-purple-900">kemet.travel</span>
+    </div>
+    <p class="text-xs text-purple-600">Transfer the exact amount shown in the summary, then click Confirm.</p>
+  </div>
+
+  <!-- 5. Bank Transfer -->
+  <div id="pay-opt-bank" class="payment-option border border-outline-variant p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-surface-container-low transition-all" data-method="bank">
+    <div class="pay-radio w-5 h-5 rounded-full border-2 border-outline-variant bg-white flex-shrink-0"></div>
+    <span class="material-symbols-outlined text-on-surface-variant flex-shrink-0" data-icon="account_balance">account_balance</span>
+    <div class="flex-1">
+      <span class="font-body-md font-bold block">Bank Transfer</span>
+      <span class="text-xs text-outline">CIB / NBE / Banque Misr</span>
+    </div>
+  </div>
+  <!-- Bank Transfer info -->
+  <div id="bank-instructions-section" class="hidden bg-stone-50 border border-stone-200 rounded-xl p-4 space-y-3">
+    <p class="font-bold text-sm">Bank Account Details</p>
+    <div class="grid grid-cols-1 gap-1.5 text-sm">
+      <div class="flex justify-between"><span class="text-outline">Bank:</span><span class="font-bold">Commercial International Bank (CIB)</span></div>
+      <div class="flex justify-between"><span class="text-outline">Account Name:</span><span class="font-bold">Kemet Luxury Travel Co.</span></div>
+      <div class="flex justify-between"><span class="text-outline">Account No:</span><span class="font-bold font-mono">1234567890123456</span></div>
+      <div class="flex justify-between"><span class="text-outline">IBAN:</span><span class="font-bold font-mono text-xs">EG12CIBK0000000012345678</span></div>
+    </div>
+    <p class="text-xs text-outline">⚠️ Processing takes 1–2 business days. Include your name in the transfer notes.</p>
+    <div class="flex flex-col">
+      <label class="font-label-caps text-[10px] text-outline mb-1">TRANSFER REFERENCE / RECEIPT NUMBER</label>
+      <input class="bg-surface-container border-0 border-b border-outline-variant py-2 px-3 text-on-surface font-body-md" placeholder="e.g. TRN-20260507-001" type="text" id="bank-ref-input"/>
+    </div>
+  </div>
+
+  <!-- 6. PayPal -->
+  <div id="pay-opt-paypal" class="payment-option border border-outline-variant p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-surface-container-low transition-all" data-method="paypal">
+    <div class="pay-radio w-5 h-5 rounded-full border-2 border-outline-variant bg-white flex-shrink-0"></div>
+    <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg" style="background:#003087;">
+      <span class="text-white font-black text-xs">PP</span>
+    </div>
+    <div class="flex-1">
+      <span class="font-body-md font-bold block">PayPal</span>
+      <span class="text-xs text-outline">Pay securely with your PayPal account</span>
+    </div>
+    <span class="text-xs font-bold text-blue-800 bg-blue-50 px-2 py-1 rounded-full border border-blue-200">International</span>
+  </div>
+  <!-- PayPal info -->
+  <div id="paypal-instructions-section" class="hidden bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm space-y-1">
+    <p class="font-bold text-blue-900">PayPal Details</p>
+    <p class="text-blue-800">Send payment to: <strong>payments@kemet.travel</strong></p>
+    <p class="text-xs text-blue-600">Select "Goods & Services" when sending. Add your booking reference in the notes.</p>
+  </div>
+
 </div>
 </section>
 </div>
