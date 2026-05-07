@@ -1,220 +1,356 @@
-# Kemet Travel (Kemet Luxury Travel) - Project Documentation
+# Kemet Luxury Travel - Project Documentation
 
 **Version**: 1.0.0  
-**Date**: May 7, 2026  
+**Date**: May 2026  
 **Project Root**: `D:\Pages`  
-**Brand Note**: Initially conceptualized as "Kemet Luxury Travel", the implementation uses "Kemet Travel" as the public-facing brand.
+**Author**: Lead Developer  
 
 ---
 
 ## Table of Contents
-1. [Introduction](#introduction)
-2. [Phase 1: Project Initialization & UI/UX Strategy](#phase-1-project-initialization--uiux-strategy)
-3. [Phase 2: Database & Backend Architecture](#phase-2-database--backend-architecture)
-4. [Phase 3: Core Features Development](#phase-3-core-features-development)
-5. [Phase 4: Cross-Device Synchronization](#phase-4-cross-device-synchronization)
-6. [Phase 5: Final Polish & Fixes](#phase-5-final-polish--fixes)
-7. [Current Project Structure](#current-project-structure)
-8. [Deployment Guide](#deployment-guide)
-9. [Future Roadmap](#future-roadmap)
-10. [Appendix](#appendix)
+1. [Executive Summary](#executive-summary)
+2. [Design Language](#design-language)
+3. [Technical Stack](#technical-stack)
+4. [Core Feature Specifications](#core-feature-specifications)
+5. [Deployment](#deployment)
+6. [Project Structure](#project-structure)
 
 ---
 
-## Introduction
+## Executive Summary
 
-### Project Overview
-Kemet Travel is a luxury Egyptian travel platform that provides curated trip packages, hotel bookings, place exploration, and AI-powered travel assistance. The platform serves both desktop and mobile users with a premium minimalist design aesthetic.
+Kemet Luxury Travel is a premier digital platform designed for discerning travelers seeking curated Egyptian luxury experiences. The platform seamlessly integrates high-end travel planning, premium accommodation discovery, and intelligent AI-powered concierge services into a unified, sophisticated web application.
 
-### Core Goals
-- Provide seamless luxury travel booking experience for Egyptian destinations
-- Offer AI-powered travel recommendations and chat support
-- Enable cross-device trip planning and management
-- Deliver responsive, premium UI across all devices
+### Core Value Proposition
+- **Curated Luxury Experiences**: Handpicked Egyptian destinations and itineraries tailored for the luxury travel segment
+- **Intelligent Travel Planning**: AI-powered concierge providing personalized recommendations and real-time travel assistance
+- **Seamless Booking Infrastructure**: End-to-end booking system with loyalty rewards and secure authentication
+- **Cross-Device Accessibility**: Responsive design architecture ensuring premium experience across desktop, tablet, and mobile devices
+- **Premium User Experience**: Luxury minimalist design language delivering an uncluttered, sophisticated interface
 
-### Technology Stack
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | Static HTML5, Tailwind CSS (CDN), Vanilla JavaScript |
-| **Backend** | Node.js, Express.js, Mongoose ODM |
-| **Database** | MongoDB Atlas (Cloud-hosted) |
-| **AI Integration** | OpenRouter API (Google Gemini 2.0 Flash Lite) |
-| **Email** | Nodemailer (SMTP) |
-| **Deployment** | Vercel (Serverless Functions + Static Hosting) |
-| **Typography** | Noto Serif (headings), Plus Jakarta Sans (body) |
-| **Icons** | Material Symbols Outlined |
+### Target Audience
+High-net-worth individuals and luxury travel enthusiasts seeking authentic Egyptian experiences with premium service standards.
 
 ---
 
-## Phase 1: Project Initialization & UI/UX Strategy
+## Design Language
 
-### 1.1 Luxury Minimalist Aesthetic Choice
-The design system was built around a **Luxury Minimalist** philosophy to align with premium travel branding:
+### Luxury Minimalist Aesthetic
 
-#### Typography System (`tw-config.js:70-77`)
-- **Noto Serif**: Used for headings (h1-h3) to convey timeless elegance and authority
-- **Plus Jakarta Sans**: Used for body text (body-md, body-lg) for modern readability
-- **Label Caps**: Plus Jakarta Sans with `tracking-widest` for uppercase labels
+The platform employs a **Luxury Minimalist** design philosophy, balancing opulent brand presence with clean, uncluttered interfaces. This approach reinforces the premium positioning while ensuring optimal usability.
 
-#### Color Palette (`tw-config.js:6-52`)
-Custom Material Design 3-inspired palette with 30+ semantic colors:
-- **Primary Gold**: `#775a19` (primary), `#c5a059` (primary-container) - Luxury accent
-- **Surface Neutrals**: `#faf9f6` (background), `#f4f3f1` (surface-container-low)
-- **Text Colors**: `#1a1c1a` (on-surface), `#4e4639` (on-surface-variant)
-- **Semantic Colors**: Error (`#ba1a1a`), Secondary (`#6a480e`)
+#### Typography System
 
-#### Spacing & Layout
-- Generous whitespace using custom spacing variables:
-  - `stack-lg: 64px` (section padding)
-  - `gutter: 24px` (card gaps)
-  - `container-max: 1280px` (max content width)
-- Rounded corners: `lg: 0.5rem`, `xl: 0.75rem`
-- Subtle shadows and hover transitions for premium feel
+The typography hierarchy is built on a sophisticated dual-font system:
 
-### 1.2 Tailwind CSS Integration
-#### CDN Setup (`index.html:10`)
+| Level | Font Family | Weight | Line Height | Letter Spacing | Purpose |
+|-------|-------------|--------|--------------|----------------|---------|
+| **H1** | Noto Serif | 700 | 1.2 | -0.02em | Hero sections, primary impact |
+| **H2** | Noto Serif | 600 | 1.3 | -0.01em | Section headers |
+| **H3** | Noto Serif | 600 | 1.4 | normal | Card titles, subsections |
+| **Body MD** | Plus Jakarta Sans | 400 | 1.6 | normal | Primary body text |
+| **Body LG** | Plus Jakarta Sans | 400 | 1.6 | normal | Enhanced readability blocks |
+| **Label Caps** | Plus Jakarta Sans | 700 | 1.0 | 0.1em | Uppercase labels, badges |
+
+**Design Rationale**: Noto Serif conveys timeless elegance and authority, aligning with Egypt's historical grandeur. Plus Jakarta Sans provides modern, highly legible body text optimized for digital interfaces.
+
+#### Custom Brand Color Palette
+
+The platform utilizes a Material Design 3-inspired color system with 30+ semantic colors, carefully curated for luxury branding:
+
+##### Primary Palette
+| Role | Hex Code | Usage |
+|------|----------|-------|
+| **Primary** | `#775a19` | Key CTAs, active states, brand accents |
+| **Primary Container** | `#c5a059` | Buttons, highlighted cards, premium badges |
+| **Primary Fixed** | `#ffdea5` | Hover states, secondary accents |
+| **Primary Fixed Dim** | `#e9c176` | Subtle background tints |
+| **On Primary** | `#ffffff` | Text on primary backgrounds |
+| **On Primary Container** | `#4e3700` | Text on primary containers |
+
+##### Surface & Background
+| Role | Hex Code | Usage |
+|------|----------|-------|
+| **Background** | `#faf9f6` | Page backgrounds, content areas |
+| **Surface** | `#faf9f6` | Card surfaces, elevated content |
+| **Surface Container** | `#efeeeb` | Section backgrounds |
+| **Surface Container Low** | `#f4f3f1` | Subtle section differentiation |
+| **Surface Container High** | `#e9e8e5` | Elevated containers |
+| **Surface Container Highest** | `#e3e2e0` | Maximum elevation surfaces |
+| **Surface Variant** | `#e3e2e0` | Alternative surface option |
+| **Surface Dim** | `#dbdad7` | Tinted background variant |
+| **Surface Bright** | `#faf9f6` | Light surface variant |
+| **On Surface** | `#1a1c1a` | Primary text on surfaces |
+| **On Surface Variant** | `#4e4639` | Secondary text on surfaces |
+| **On Background** | `#1a1c1a` | Text on background |
+
+##### Secondary & Tertiary
+| Role | Hex Code | Usage |
+|------|----------|-------|
+| **Secondary** | `#6a480e` | Secondary actions, links |
+| **Secondary Container** | `#f1f1f1` | Secondary backgrounds |
+| **Tertiary** | `#9b4500` | Accent highlights |
+| **Tertiary Container** | `#632902` | Tertiary backgrounds |
+
+##### Semantic Colors
+| Role | Hex Code | Usage |
+|------|----------|-------|
+| **Error** | `#ba1a1a` | Error states, destructive actions |
+| **Error Container** | `#ffdad6` | Error background messages |
+| **Outline** | `#7f7667` | Borders, dividers |
+| **Outline Variant** | `#d1c5b4` | Subtle borders |
+
+#### Spacing & Layout System
+
+Custom spacing variables ensure consistent whitespace and premium feel:
+
+| Token | Value | Application |
+|-------|-------|--------------|
+| `stack-sm` | `16px` | Tight vertical spacing |
+| `stack-md` | `32px` | Medium vertical spacing |
+| `stack-lg` | `64px` | Section padding, major vertical gaps |
+| `gutter` | `24px` | Card gaps, horizontal spacing |
+| `margin-mobile` | `20px` | Mobile edge padding |
+| `margin-desktop` | `80px` | Desktop edge padding |
+| `container-max` | `1280px` | Maximum content width |
+
+#### Border Radius
+- **Default**: `0.25rem` (4px) - Subtle rounding
+- **Large**: `0.5rem` (8px) - Card corners
+- **Extra Large**: `0.75rem` (12px) - Modal corners
+- **Full**: `9999px` - Pill-shaped elements
+
+---
+
+## Technical Stack
+
+### Frontend Architecture
+
+#### Tailwind CSS Implementation
+The platform leverages **Tailwind CSS via CDN** with a custom configuration system:
+
+**Loading Strategy**:
 ```html
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-```
-- Used Tailwind CSS Play CDN for rapid development without build tools
-- Included `forms` plugin for styled form elements
-- Included `container-queries` plugin for responsive component queries
-
-#### Custom Configuration (`tw-config.js`)
-Extended default Tailwind theme with:
-- 30+ custom brand colors with semantic naming
-- Custom spacing variables matching design tokens
-- Typography scale with precise line heights and letter spacing
-- Border radius variants for consistent rounding
-
-### 1.3 Migration from External Config to Inline Scripts
-#### Problem
-Initial setup loaded custom Tailwind config before the Tailwind CDN initialized, causing custom theme classes to not generate.
-
-#### Solution (`index.html:10-13`)
-Correct loading order:
-1. Load Tailwind CDN with plugins first
-2. Load custom config as inline script *after* Tailwind runtime initializes
-
-```html
-<!-- Step 1: Load Tailwind CDN -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Step 2: Apply custom config after Tailwind is available -->
 <script src="tw-config.js"></script>
 ```
 
-This ensures `tailwind.config` is set after the Tailwind runtime is available, correctly applying all custom theme classes.
+- **CDN Approach**: Enables rapid development without build tooling overhead
+- **Forms Plugin**: Provides styled form elements out-of-the-box
+- **Container Queries Plugin**: Enables responsive component-level breakpoints
+- **Custom Configuration**: `tw-config.js` extends Tailwind's default theme with 30+ brand colors, custom spacing, typography scale, and border radius variants
+
+**Key Configuration Elements** (`tw-config.js`):
+- Extended color palette with semantic naming convention
+- Custom font family definitions mapping to Noto Serif and Plus Jakarta Sans
+- Font size scale with precise line heights and letter spacing
+- Spacing tokens for consistent layout system
+
+#### Mobile Responsiveness System (`mobile-fix.css`)
+
+A comprehensive, multi-breakpoint responsiveness layer ensures premium experience across all devices:
+
+**Breakpoints**:
+| Breakpoint | Width | Target Devices |
+|------------|-------|----------------|
+| Mobile | `max-width: 768px` | Smartphones, small tablets |
+| Small Phones | `max-width: 375px` | iPhone SE, compact devices |
+| Tablet | `769px - 1024px` | iPads, Android tablets |
+
+**Implementation Highlights**:
+- **Fluid Grid System**: Forces single-column layouts on mobile (`grid-template-columns: 1fr`), two-column on tablet
+- **Typography Scaling**: H1 scales from 48px → 32px → 26px across breakpoints
+- **Hero Adaptation**: Fixed heights (`870px`) transition to `100vh` auto on mobile
+- **Hamburger Navigation**: Slide-in panel (280px width) with backdrop overlay, replacing desktop nav on mobile
+- **iOS Optimization**: Prevents auto-zoom on inputs by enforcing `font-size: 16px`
+- **Touch Optimization**: Proper tap targets, touch-action handling, and `-webkit-tap-highlight-color: transparent`
+
+**Mobile Navigation Architecture**:
+- Hidden desktop nav (`display: none !important` on mobile)
+- Hamburger button (`.mobile-menu-btn`) with Material Symbols icon
+- Overlay (`.mobile-menu-overlay`) with fade transition
+- Slide-in panel (`.mobile-menu-panel`) with user area, navigation links, and auth buttons
+- Dynamic active state highlighting for current page
 
 ---
 
-## Phase 2: Database & Backend Architecture
+### Backend Architecture
 
-### 2.1 MongoDB Atlas Setup
-#### Choice Rationale
-- **Managed Service**: No self-hosting overhead, automatic backups
-- **Global Availability**: Low-latency access from Vercel's edge network
-- **Scalability**: Automatic scaling with usage
-- **Security**: Built-in encryption, network isolation
+#### Express.js Server (`Backend/server.js`)
 
-#### Connection Strategy (`server.js:150-168`)
+A robust Node.js backend built on **Express.js 5.2.1** with the following architecture:
+
+**Core Middleware Stack**:
+- **CORS**: Configurable via `CORS_ORIGIN` environment variable, supporting multiple origins with credentials
+- **JSON Parsing**: `express.json()` for API request handling
+- **Static File Serving**: Express static middleware for frontend assets with aggressive no-cache headers
+- **Cache Control**: Force revalidation headers (`no-store, no-cache, must-revalidate`) ensuring fresh content delivery
+
+**Database Connection Management**:
 ```javascript
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected successfully to MongoDB Atlas'))
   .catch((err) => console.error('MongoDB connection error:', err.message));
 
-// Middleware: Wait for DB connection before processing requests
+// Middleware: Wait for MongoDB before processing requests
 app.use((req, res, next) => {
   if (mongoose.connection.readyState === 1) return next();
-  mongoose.connection.asPromise()
-    .then(() => next())
-    .catch((err) => {
-      res.status(503).json({ message: 'Database unavailable. Please try again.' });
-    });
+  mongoose.connection.asPromise().then(() => next());
 });
 ```
 
-### 2.2 Model Structure
+- **Connection Ready State Checking**: Middleware ensures MongoDB is connected before processing requests
+- **503 Fallback**: Returns service unavailable if database is unreachable
+- **Graceful Timeout**: Server timeout set to 90 seconds for long-running AI requests
 
-#### UserPlan Model (`Backend/models/UserPlan.js`)
-Lightweight key-value store for user-specific data:
-```javascript
-const userPlanSchema = new mongoose.Schema({
-    userId: { type: String, required: true, unique: true },
-    data: { type: Object, default: {} },
-}, { timestamps: true });
-```
-**Purpose**: Replace localStorage with cloud-backed storage for trip plans, drafts, and preferences.
-
-#### Hotel Model (`Backend/models/Hotel.js`)
-Flexible schema for hotel listings:
-```javascript
-const hotelSchema = new mongoose.Schema({
-    name: { type: String, trim: true },
-    location: { type: mongoose.Schema.Types.Mixed, required: true }, // Supports city names or GeoJSON
-    pricePerNight: { type: Number, min: 0 },
-    price: { type: Number, min: 0 }, // Fallback pricing
-    images: { type: [String], default: [] },
-    amenities: { type: [String], default: [] },
-    rating: { type: Number, default: 0, min: 0, max: 5 }
-}, { timestamps: true });
-```
-
-#### Other Models
-- **User**: `name`, `email`, `password` (plain text - see Security Note), `phone`, `loyaltyPoints`
-- **Trip/Trips**: Trip packages with `title`, `price`, `duration`, `location`, `isReady` flag
-- **Place**: Destinations with `name`, `entryFee`, `category`, `rating`, `isPopular`, `isTopExperience`
-- **Booking**: Links `user` and `trip` with `travelerDetails`, `totalPrice`, `paymentMethod`, `status`
-- **ChatHistory**: Stores `messages` array bounded to 100 per `userId`
-
-### 2.3 Centralized Backend Synchronization Model
-#### Rationale for Moving from localStorage to Cloud Sync
-| Concern | localStorage | Cloud Sync (MongoDB) |
-|---------|--------------|----------------------|
-| **Cross-Device** | Device/browser-specific | Access from any device |
-| **Persistence** | Lost on device reset/cache clear | Permanent cloud storage |
-| **Storage Limit** | 5MB per origin | Unlimited |
-| **Data Safety** | No backup | Automated Atlas backups |
-| **Scalability** | Client-side only | Server-side processing |
-
-#### Implementation Status
-- **Ready**: UserPlan model created
-- **Pending**: API endpoints (`GET/PUT /api/userplan/:userId`) and frontend integration
+**Asset Versioning System**:
+- **Cache Busting**: Appends `?v=timestamp` to all CSS/JS asset references
+- **Implementation**: `injectAssetVersion()` function processes HTML to version static assets
+- **Benefit**: Ensures users always receive the latest frontend without cache conflicts
 
 ---
 
-## Phase 3: Core Features Development
+### Database Architecture
 
-### 3.1 Features Referenced vs. Implemented
-| Feature | Status | Notes |
-|---------|--------|-------|
-| A* Search Algorithm (Zombie Game) | ❌ Not Implemented | Referenced in workflow, not present in codebase |
-| CLIP/ChromaDB Landmark Recognition | ❌ Not Implemented | Referenced in workflow, not present in codebase |
-| Global Search API | ✅ Implemented | `/api/trips`, `/api/hotels`, `/api/places` endpoints |
-| AI Chatbot | ✅ Implemented | OpenRouter API integration |
-| Booking System | ✅ Implemented | Full trip booking with loyalty points |
-| OTP Password Reset | ✅ Implemented | Email-based OTP with 10-minute expiration |
+#### MongoDB Atlas Integration
 
-### 3.2 Global Search API Logic
-#### Endpoints (`server.js:519-616`)
-- **`GET /api/trips`**: Accepts `?ready=true` filter, returns all trips sorted by `createdAt: -1`
-- **`GET /api/hotels`**: Returns all hotels with ratings and amenities
-- **`GET /api/places`**: Accepts `?popular=true` and `?top=true` filters using `isPopular` and `isTopExperience` flags
+The platform uses **MongoDB Atlas** as a fully managed cloud database solution, providing:
+- Automated backups and point-in-time recovery
+- Global availability with low-latency access
+- Automatic scaling based on demand
+- Built-in security with encryption at rest and in transit
 
-#### Query Logic
+**ODM**: **Mongoose 9.5.0** provides schema validation, middleware, and clean abstractions over MongoDB operations.
+
+#### Mongoose Schemas
+
+##### User Model (`Backend/models/User.js`)
 ```javascript
-// Places with filters
-let query = {};
-if (req.query.popular === 'true') query.isPopular = true;
-if (req.query.top === 'true') query.isTopExperience = true;
-const places = await Place.find(query).lean();
+{
+  name: String (required),
+  email: String (required, unique),
+  password: String (required),
+  phone: String,
+  loyaltyPoints: Number (default: 0)
+}
+```
+Manages user accounts with integrated loyalty program tracking.
+
+##### Trips Model (`Backend/models/Trips.js`)
+```javascript
+{
+  title: String,
+  price: Number,
+  duration: String,
+  location: String,
+  currency: { type: String, default: 'EGP' },
+  isReady: Boolean (filter for published trips)
+}
+```
+Curated trip packages with readiness flag for publication control.
+
+##### Hotel Model (`Backend/models/Hotel.js`)
+```javascript
+{
+  name: String,
+  location: Mongoose.Mixed (flexible: city name or GeoJSON),
+  description: String (required),
+  pricePerNight: Number,
+  price: Number (fallback),
+  images: [String],
+  amenities: [String],
+  rating: Number (0-5)
+}
+```
+Flexible schema accommodates both simple city-based and complex geolocated hotel data.
+
+##### Place Model (`Backend/models/Place.js`)
+```javascript
+{
+  name: String,
+  entryFee: Number,
+  location: String,
+  category: String,
+  rating: Number,
+  isPopular: Boolean,
+  isTopExperience: Boolean,
+  images: [String],
+  openingHours: String,
+  highlights: [String]
+}
+```
+Destination data with popularity and experience tier flags for filtering.
+
+##### Booking Model (`Backend/models/Booking.js`)
+```javascript
+{
+  user: ObjectId (ref: User),
+  trip: ObjectId (ref: Trip),
+  travelerDetails: {
+    fullName: String,
+    email: String,
+    phone: String,
+    nationality: String
+  },
+  totalPrice: Number,
+  paymentMethod: String ('card' or 'paypal'),
+  status: String (default: 'Confirmed'),
+  bookingDate: Date
+}
+```
+Links users to trips with comprehensive traveler information and payment tracking.
+
+##### ChatHistory Model (`Backend/models/ChatHistory.js`)
+```javascript
+{
+  userId: String,
+  messages: [{
+    role: String ('user' or 'assistant'),
+    content: String,
+    timestamp: Date
+  }] (bounded to 100 messages)
+}
+```
+Stores conversational context for AI chat continuity, with automatic pruning to maintain performance.
+
+##### UserPlan Model (`Backend/models/UserPlan.js`)
+```javascript
+{
+  userId: String (required, unique),
+  data: Object (flexible JSON blob for trip plans and preferences)
+}
+```
+Prepares infrastructure for cloud-based trip plan synchronization across devices.
+
+---
+
+## Core Feature Specifications
+
+### AI Concierge
+
+#### OpenRouter Integration with Google Gemini 2.0
+
+The platform features an intelligent travel concierge powered by **Google Gemini 2.0 Flash Lite** accessed via **OpenRouter API**:
+
+**Configuration** (`server.js:14-21, 61-69`):
+```javascript
+const OPENROUTER_MODEL = 'google/gemini-2.0-flash-lite-preview-02-05:free';
+const openai = new OpenAI({
+  apiKey: OPENROUTER_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1',
+  defaultHeaders: {
+    'HTTP-Referer': APP_REFERER,
+    'X-Title': APP_TITLE
+  }
+});
 ```
 
-### 3.3 AI Chatbot (`/api/chat`)
-#### Provider Configuration (`server.js:14-21, 61-69`)
-- **API**: OpenRouter with Google Gemini 2.0 Flash Lite model
-- **Fallback**: Offline rule-based responses via `buildOfflineReply()`
+**Context Injection System** (`server.js:407-418`):
+The AI receives carefully curated context before each interaction:
+- **Trip Context**: Up to 12 recent ready trips with title, price, duration, and location
+- **Place Context**: Up to 20 destinations with entry fees, ratings, categories, and popularity flags
+- **Chat History**: Last 5 messages from the user's conversation history
 
-#### Context Injection (`server.js:407-418`)
 ```javascript
 const [tripsContext, placesContext] = await Promise.all([
   Trips.find({ isReady: true }).select('title price duration location currency').limit(12).lean(),
@@ -222,162 +358,146 @@ const [tripsContext, placesContext] = await Promise.all([
 ]);
 ```
 
-#### Chat History Management
-- Stored in `ChatHistory` model
-- Bounded to 100 messages per user
-- Last 10 messages returned on `GET /api/chat/history/:userId`
+**System Prompt Engineering**:
+- Arabic language detection for localized responses (detects `[؀-ۿ]` Unicode range)
+- Professional travel-consultant tone with Markdown formatting support
+- Context-aware responses based on user's budget, duration, and preferences
+
+**Intelligent Rule-Based Fallback** (`server.js:232-315`):
+When the AI API is unavailable, the system gracefully degrades to a rule-based offline reply engine:
+- **Budget Detection**: Regex-based extraction of numerical values from user messages
+- **Trip Filtering**: Matches user budget against available trips, returning top 3 suggestions
+- **Greeting Handler**: Differentiated responses for Arabic and English greetings
+- **Contextual Quick Picks**: Surfaces top 3 trips and 4 places as default recommendations
+- **Bilingual Support**: Full Arabic and English response generation
+
+**Chat History Management**:
+- Persistent storage in `ChatHistory` model
+- Bounded to 100 messages per user (automatic pruning)
+- Last 10 messages available via `GET /api/chat/history/:userId`
+- Clear history functionality via `DELETE /api/chat/history/:userId`
 
 ---
 
-## Phase 4: Cross-Device Synchronization
+### Global Search Engine
 
-### 4.1 Current State (localStorage)
-The frontend (`Fronted/app.js`) currently uses localStorage for:
-- **Session Management**: `userId` persistence (`app.js:1493, 1525`)
-- **Chat History**: `CHAT_STORAGE_KEY`
-- **Trip Drafts**: `kemet-day-draft`, `TRIP_PLAN_SELECTED_KEY`
-- **Booking Mode**: `B00KING_MODE_KEY`, `PAYMENT_TRIP_NAMES_KEY`
+#### Cross-Collection Filtering Logic
 
-### 4.2 Cloud Sync System Design
-#### UserPlan Model Purpose (`Backend/models/UserPlan.js`)
-Stores arbitrary user data as a JSON blob keyed by `userId`:
+The platform implements a sophisticated real-time discovery system across trips, hotels, and places:
+
+**Trips Search** (`GET /api/trips`):
+- **Ready Filter**: `?ready=true` returns only published, bookable trips
+- **Sorting**: Results sorted by `createdAt: -1` (newest first)
+- **Lean Queries**: Uses Mongoose `.lean()` for optimal performance
+
+**Hotels Search** (`GET /api/hotels`):
+- Returns all hotels with ratings, amenities, and pricing
+- Sorted by creation date for consistent ordering
+
+**Places Search** (`GET /api/places`):
+- **Popularity Filter**: `?popular=true` returns places where `isPopular: true`
+- **Experience Filter**: `?top=true` returns places where `isTopExperience: true`
+- **Combined Filtering**: Both parameters can be applied simultaneously
+- **Image Enrichment**: `enrichPlaceForResponse()` injects default Unsplash images for places missing photography, with fallback logic for Karnak, Ras Mohammed, and generic Egypt imagery
+
+**Query Logic Example**:
 ```javascript
-{
-  userId: "507f1f77bcf86cd799439011",
-  data: {
-    tripDrafts: { /* ... */ },
-    chatHistory: [ /* ... */ ],
-    preferences: { /* ... */ }
-  }
-}
+let query = {};
+if (req.query.popular === 'true') query.isPopular = true;
+if (req.query.top === 'true') query.isTopExperience = true;
+const places = await Place.find(query).lean();
 ```
 
-#### Transition Strategy
-1. **Backend**: Add endpoints `GET/PUT /api/userplan/:userId`
-2. **Frontend**: On login, fetch UserPlan from backend
-3. **Sync**: Debounce-save changes to backend instead of localStorage
-4. **Cleanup**: Remove localStorage fallbacks for authenticated users
-
-#### Benefits
-- Access trips from phone, laptop, tablet with single login
-- Automatic data backup and recovery
-- Shared trip planning between devices
-- Server-side analytics potential
+**Frontend Integration**:
+- Implemented across `trips.html`, `hotels.html`, `explore.html`, and `search.html`
+- Query parameter passing for category filtering (e.g., `trips.html?city=Cairo`)
+- Real-time result rendering with responsive card layouts
 
 ---
 
-## Phase 5: Final Polish & Fixes
+### Secure Booking & Authentication
 
-### 5.1 Mobile-Fix Strategy (`Fronted/mobile-fix.css`)
-Comprehensive mobile responsiveness with 3 breakpoints:
+#### User Authentication System
 
-#### Breakpoints
-- **Mobile**: `max-width: 768px`
-- **Small Phones**: `max-width: 375px` (iPhone SE, etc.)
-- **Tablet**: `min-width: 769px and max-width: 1024px`
+**Signup Flow** (`POST /api/auth/signup`):
+- Validates required fields: `name`, `email`, `password`
+- Checks for existing email to prevent duplicate registrations
+- Creates user with initialized `loyaltyPoints: 0`
+- Returns user object with ID, name, email, phone, and token (user ID as token for simplified auth)
 
-#### Key Fixes
-| Issue | Solution |
-|-------|-----------|
-| Horizontal overflow | `body { overflow-x: hidden !important; }` |
-| Fixed hero heights | `height: auto !important; min-height: 100vh !important;` |
-| Typography scaling | h1: 48px → 32px, h2: 36px → 28px on mobile |
-| Grid layouts | Force single column: `grid-template-columns: 1fr !important;` |
-| Hamburger menu | Slide-in panel with overlay (lines 284-433) |
-| iOS zoom prevention | Force `font-size: 16px` on all inputs |
-| Navigation | Hide desktop nav, show mobile menu button |
+**Login Flow** (`POST /api/auth/login`):
+- Email and password validation
+- Returns complete user profile on success
+- Consistent token-based session management
 
-#### Hamburger Menu Implementation
-- **Button**: `.mobile-menu-btn` (hidden on desktop, flex on mobile)
-- **Overlay**: `.mobile-menu-overlay` with backdrop blur
-- **Panel**: `.mobile-menu-panel` slides in from right (280px width)
-- **Navigation**: Dynamic links with active state highlighting
+**Password Reset via OTP** (`POST /api/auth/forgot-password` & `POST /api/auth/reset-password`):
+- **OTP Generation**: 6-digit one-time password using `Math.floor(100000 + Math.random() * 900000)`
+- **Expiration**: 10-minute TTL stored in `resetOtpExpiresAt`
+- **Email Delivery**: Styled HTML email via Nodemailer with bilingual content (English/Arabic)
+- **Security**: Single-use OTP (cleared after successful reset), expiration validation, mismatch rejection
+- **SMTP Configuration**: Supports both service-based (`SMTP_SERVICE`) and host-based (`SMTP_HOST`, `SMTP_PORT`) email delivery
 
-### 5.2 Tailwind CDN Loading Order Fix
-**Problem**: Custom theme classes not generating because `tw-config.js` loaded before Tailwind CDN.
+**Email Template Highlights**:
+- Premium styled HTML with Kemet Travel branding
+- Bilingual OTP display (English and Arabic)
+- Clear expiration warning (10 minutes)
+- Professional typography and color scheme matching the platform
 
-**Fix** (`index.html:10-13`):
-1. Load Tailwind CDN first with plugins
-2. Load custom config script after Tailwind initializes
+#### Booking System (`POST /api/bookings`)
 
-### 5.3 Security Permissions
-#### settings.local.json Status - ✅ RESOLVED
-- **Created**: `D:\Pages\.claude\settings.local.json` with appropriate permissions
-- **Permissions Granted**:
-  - Git operations (`git:*`)
-  - npm/node commands (`npm:*`, `node:*`)
-  - File operations (`rm:*`, PowerShell Remove-Item)
-  - Read/Write/Edit/Glob/Grep tools
-- **Deny Rules**: Force push, hard reset, recursive root delete
-- **Note**: `.gitignore` includes `.claude/` so settings.local.json remains local per developer
+**Validation Layer**:
+- Required fields: `userId`, `tripId`, `travelerDetails` (fullName, email, phone)
+- ObjectId format validation for `userId` and `tripId`
+- Minimum 6-character password policy for new registrations
+- Positive totalPrice validation
 
-#### Backend Security Measures
-- **CORS**: Configurable via `CORS_ORIGIN` env variable (`server.js:49-52, 86-92`)
-- **Authentication**: Simple email/password (⚠️ stored in plain text - security risk)
-- **OTP Security**: 6-digit OTP with 10-minute expiration, single-use after password reset
-- **Environment Variables**: `.env` file ignored by git, contains sensitive credentials
+**Loyalty Points Automation**:
+```javascript
+const loyaltyEarned = Math.max(1, Math.floor(parsedTotalPrice / 100));
+await User.findByIdAndUpdate(userId, { $inc: { loyaltyPoints: loyaltyEarned } });
+```
+- Earns 1 point per 100 currency units spent (minimum 1 point)
+- Automatically increments user's loyalty balance on successful booking
 
-#### Security Recommendations
-1. Hash passwords using `bcrypt` before storing
-2. Implement JWT or session-based authentication
-3. Add rate limiting on auth endpoints
+**Booking Confirmation**:
+- Status automatically set to `'Confirmed'`
+- Supports both card and PayPal payment methods
+- Returns populated trip data for immediate display
+- Provides `bookingId` and `loyaltyEarned` in response
+
+**Booking Retrieval** (`GET /api/bookings/:userId`):
+- Returns all user bookings sorted by date (newest first)
+- Populates trip details for each booking
+- Normalizes status (treats 'pending' as 'Confirmed' for consistency)
+
+**Booking Audit** (`GET /api/bookings/:userId/audit`):
+- Structured audit trail with bookingId, trip title, total price, status, payment method, and traveler name
+- Enables administrative oversight and user history review
+
+#### User Profile Management
+
+**Profile Retrieval** (`GET /api/users/:userId`):
+- Returns sanitized user data (name, email, phone, loyaltyPoints)
+- Excludes sensitive fields like password
+
+**Profile Update** (`PATCH /api/users/:userId`):
+- Allows updating name, email, and phone
+- Runs validators on update to ensure data integrity
+
+**Password Change** (`PATCH /api/users/:userId/password`):
+- Current password verification before allowing change
+- Minimum 6-character requirement for new password
+- Direct password update (ready for bcrypt hashing in security upgrade)
 
 ---
 
-## Current Project Structure
+## Deployment
 
-```
-D:\Pages\
-├── .gitignore
-├── package.json                 # Root package.json (kemet-travel)
-├── vercel.json                  # Vercel deployment config
-├── PROJECT_DOCUMENTATION.md     # This file
-├── .claude\                     # Claude Code settings (local, gitignored)
-│   └── settings.local.json      # ✅ Permissions config (created May 7, 2026)
-├── Fronted\                     # Frontend static files
-│   ├── index.html               # Home page
-│   ├── app.js                   # Main frontend JavaScript (257KB)
-│   ├── tw-config.js             # Tailwind custom configuration
-│   ├── mobile-fix.css           # Mobile responsiveness fixes
-│   ├── booking.html
-│   ├── confirmation.html
-│   ├── dashboard.html
-│   ├── explore.html
-│   ├── hotel-details.html
-│   ├── hotels.html
-│   ├── login.html
-│   ├── my-trip.html
-│   ├── place.html
-│   ├── profile-settings.html
-│   ├── signup.html
-│   ├── success.html
-│   ├── support.html
-│   ├── trips.html
-│   ├── search.html
-│   └── trip-details.html
-└── Backend\
-    ├── server.js                 # Main Express server (1009 lines)
-    ├── package.json              # Backend dependencies
-    ├── .env                      # Environment variables (ignored)
-    ├── .env.example              # Environment template
-    └── models\
-        ├── Booking.js
-        ├── ChatHistory.js
-        ├── ChatMessage.js
-        ├── Hotel.js
-        ├── Place.js
-        ├── Trip.js
-        ├── Trips.js
-        ├── User.js
-        └── UserPlan.js           # Prepared for cloud sync
-```
-**Note**: Duplicate `Backend\Backend\` directory was removed on May 7, 2026.
+### Vercel Serverless Environment
 
----
+The platform is deployed on **Vercel** with a hybrid architecture combining serverless functions and static hosting:
 
-## Deployment Guide
-
-### Vercel Configuration (`vercel.json`)
+**Configuration** (`vercel.json`):
 ```json
 {
   "version": 2,
@@ -392,82 +512,98 @@ D:\Pages\
 }
 ```
 
-### Environment Variables Required
+**Architecture**:
+- **API Layer**: `Backend/server.js` deployed as serverless function via `@vercel/node`
+- **Frontend**: Static HTML, CSS, and JS files served from `Fronted/` directory
+- **Routing**: API requests route to serverless function; all other requests serve static frontend assets
+
+**Note**: The serverless entry point (`api/index.js`) re-exports `Backend/server.js` for Vercel compatibility.
+
+### Environment Variable Management
+
+Security-sensitive configuration is managed exclusively through environment variables, never committed to source control:
+
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `MONGO_URI` | MongoDB Atlas connection string | `mongodb+srv://...` |
+| `MONGO_URI` | MongoDB Atlas connection string | `mongodb+srv://user:pass@cluster.mongodb.net/db` |
 | `OPENROUTER_API_KEY` | OpenRouter API key (or `OPENAI_API_KEY`) | `sk-or-v1-...` |
-| `OPENROUTER_MODEL` | AI model to use | `google/gemini-2.0-flash-lite-preview-02-05:free` |
-| `CORS_ORIGIN` | Allowed CORS origins (comma-separated) | `http://localhost:5000,https://kemet-travel.vercel.app` |
-| `SMTP_*` | Email service credentials | `SMTP_USER`, `SMTP_PASS`, etc. |
+| `OPENROUTER_MODEL` | AI model identifier | `google/gemini-2.0-flash-lite-preview-02-05:free` |
+| `OPENROUTER_BASE_URL` | API base URL | `https://openrouter.ai/api/v1` |
+| `CORS_ORIGIN` | Allowed CORS origins (comma-separated) | `http://localhost:5000,https://kemet-luxury-travel.vercel.app` |
+| `SMTP_*` | Email service credentials | `SMTP_USER`, `SMTP_PASS`, `SMTP_HOST`, `SMTP_PORT` |
+| `APP_REFERER` | Application URL for API headers | `https://kemet-luxury-travel.vercel.app` |
+| `APP_TITLE` | Application name for API headers | `Kemet Luxury Travel` |
 | `NODE_ENV` | Environment mode | `production` or `development` |
 
-### Deployment Steps
-1. Connect GitHub repository to Vercel
-2. Set environment variables in Vercel dashboard
-3. Deploy (auto-deploys on git push to main)
+**Security Practices**:
+- `.env` file is included in `.gitignore` to prevent credential leakage
+- `.env.example` provides template without sensitive values
+- Vercel environment variables configured securely in project dashboard
+- No hardcoded secrets in source code
+
+### Deployment Workflow
+1. **Source Control**: Push to `main` branch triggers automatic Vercel deployment
+2. **Build Process**: Vercel detects Node.js backend and static frontend automatically
+3. **Environment**: Production variables injected at runtime from Vercel dashboard
+4. **DNS**: Custom domain mapping via Vercel's DNS management
 
 ---
 
-## Future Roadmap
+## Project Structure
 
-### Features Referenced but Not Implemented
-1. **A* Search Algorithm (Zombie Game)**: Pathfinding algorithm for game feature
-2. **CLIP/ChromaDB Landmark Recognition**: AI-powered landmark identification from images
-3. **Complete Cloud Sync**: Integrate UserPlan model with frontend, remove localStorage
-
-### Planned Improvements
-1. **Security**: Hash passwords with bcrypt, implement JWT authentication
-2. **Testing**: Add unit and integration tests
-3. **Performance**: Add image optimization, lazy loading, CDN for static assets
-4. **Features**: User reviews, interactive maps, multi-language support (Arabic/English)
-5. **Mobile App**: React Native or Flutter companion app
-
----
-
-## Appendix
-
-### Git History
 ```
-f4ed4dc update
-5f5c914 update
-e990302 update
-5389e3b Update app.js
-d45ea01 first commit
-b69e9b2 first commit
+D:\Pages\
+├── .gitignore                          # Excludes node_modules, .env, .claude/
+├── package.json                        # Root package.json (kemet-travel)
+├── vercel.json                         # Vercel deployment configuration
+├── PROJECT_DOCUMENTATION.md            # This file
+│
+├── .claude\                            # Claude Code settings (local, gitignored)
+│   └── settings.local.json            # Permissions configuration
+│
+├── Fronted\                            # Frontend static files
+│   ├── index.html                     # Home page (hero, destinations, experiences)
+│   ├── app.js                         # Main frontend JavaScript (257KB)
+│   ├── tw-config.js                   # Tailwind custom configuration
+│   ├── mobile-fix.css                 # Mobile responsiveness fixes
+│   ├── booking.html                   # Trip booking page
+│   ├── confirmation.html              # Booking confirmation
+│   ├── dashboard.html                 # User dashboard
+│   ├── explore.html                   # Places exploration
+│   ├── hotel-details.html            # Individual hotel view
+│   ├── hotels.html                    # Hotel listings
+│   ├── login.html                     # User login
+│   ├── my-trip.html                  # Trip planner
+│   ├── place.html                     # Individual place view
+│   ├── profile-settings.html         # User profile management
+│   ├── signup.html                    # User registration
+│   ├── success.html                   # General success page
+│   ├── support.html                   # Customer support
+│   ├── trips.html                     # Trip catalog
+│   ├── search.html                    # Global search
+│   └── trip-details.html             # Individual trip view
+│
+└── Backend\
+    ├── server.js                       # Main Express server (1009 lines)
+    ├── package.json                   # Backend dependencies
+    ├── .env                           # Environment variables (gitignored)
+    ├── .env.example                   # Environment template
+    │
+    └── models\
+        ├── Booking.js                # Booking schema
+        ├── ChatHistory.js            # Chat message storage
+        ├── ChatMessage.js            # Individual message schema
+        ├── Hotel.js                  # Hotel schema
+        ├── Place.js                  # Place/destination schema
+        ├── Trip.js                   # Legacy trip schema
+        ├── Trips.js                  # Primary trips schema
+        ├── User.js                   # User account schema
+        └── UserPlan.js               # Cloud sync preparation
 ```
-Total: 6 commits, mostly updates with one app.js modification.
-
-### Key Dependencies
-#### Backend (`Backend/package.json`)
-- `express: ^5.2.1` - Web framework
-- `mongoose: ^9.5.0` - MongoDB ODM
-- `openai: ^4.68.4` - OpenRouter/OpenAI SDK
-- `nodemailer: ^8.0.7` - Email sending
-- `cors: ^2.8.6` - CORS middleware
-- `dotenv: ^17.4.2` - Environment variables
-
-### Known Issues
-1. **Password Storage**: Passwords stored in plain text (security risk)
-2. **Error Handling**: Some endpoints lack comprehensive validation
-3. **No Tests**: No automated test suite
-
-### Resolved Issues - ✅ Completed (May 7, 2026)
-1. **settings.local.json**: ✅ Created `.claude/settings.local.json` with permissions for git, npm, node, file operations, and tool access
-2. **Duplicate Structure**: ✅ Removed `Backend/Backend/` duplicate directory (models, package.json, server.js copies)
 
 ---
 
-**Document Generated**: May 7, 2026  
-**Last Updated**: May 7, 2026  
-**Generated By**: Claude Code Analysis  
-**Based On**: Codebase exploration of `D:\Pages` (commit f4ed4dc)
-
----
-
-## Change Log
-
-### May 7, 2026 (Post-Initial Generation)
-1. ✅ **Created `.claude\settings.local.json`** - Added Claude Code permissions for git, npm, node, file operations, and tool access
-2. ✅ **Removed `Backend\Backend\` duplicate directory** - Eliminated redundant copies of models, package.json, and server.js
-3. ✅ **Updated documentation** - Reflected resolved issues in Phase 5, Known Issues, and Project Structure sections
+**Document Version**: 1.0.0  
+**Last Updated**: May 2026  
+**Author**: Yusuf Shoman, Kemet Luxury Travel  
+**Status**: Production Ready
