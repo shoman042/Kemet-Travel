@@ -62,6 +62,7 @@
   const routes = {
     home: 'index.html',
     explore: 'explore.html',
+    search: 'search.html',
     trips: 'trips.html',
     myTrip: 'my-trip.html',
     place: 'place.html',
@@ -162,6 +163,9 @@
         case routes.success:
         case routes.confirmation:
           wireConfirmationPage();
+          break;
+        case routes.search:
+          await wireSearchPage();
           break;
         case routes.dashboard:
           await wireDashboardPage();
@@ -966,6 +970,7 @@
     list.push({ ...trip, tripName, targetDay });
     setState(PLAN_KEY, list);
     if (tripName) addTripName(tripName);
+    syncPlanToBackend();
     return true;
   }
 
@@ -981,11 +986,91 @@
     if (current.some((n) => normalizeText(n) === normalizeText(clean))) return;
     setState(TRIP_CATALOG_KEY, [...current, clean]);
     setTripMeta(clean, { status: getTripMeta(clean).status || 'Draft', userCreated: true });
+    syncPlanToBackend();
   }
+
+  // ── Backend sync ─────────────────────────────────────────────────────────
+  async function syncPlanToBackend() {
+    const user = getSessionUser();
+    if (!user?.userId) return;
+    try {
+      const planData = {
+        plan:         getState(PLAN_KEY, []),
+        tripNames:    getState(TRIP_CATALOG_KEY, []),
+        tripDates:    getState(TRIP_DATES_KEY, {}),
+        tripMeta:     getState(TRIP_META_KEY, {}),
+        selectedTrip: getState(TRIP_PLAN_SELECTED_KEY, ''),
+      };
+      await api(`/api/user-plan/${encodeURIComponent(user.userId)}`, {
+        method: 'PUT',
+        body: JSON.stringify({ data: planData }),
+      });
+    } catch (err) {
+      console.warn('syncPlanToBackend failed:', err.message);
+    }
+  }
+
+  async function syncPlanFromBackend() {
+    const user = getSessionUser();
+    if (!user?.userId) return;
+    try {
+      const res = await api(`/api/user-plan/${encodeURIComponent(user.userId)}`);
+      const planData = res?.data;
+      if (!planData || typeof planData !== 'object') return;
+      if (Array.isArray(planData.plan))      setState(PLAN_KEY,               planData.plan);
+      if (Array.isArray(planData.tripNames)) setState(TRIP_CATALOG_KEY,       planData.tripNames);
+      if (planData.tripDates  && typeof planData.tripDates  === 'object') setState(TRIP_DATES_KEY,           planData.tripDates);
+      if (planData.tripMeta   && typeof planData.tripMeta   === 'object') setState(TRIP_META_KEY,            planData.tripMeta);
+      if (planData.selectedTrip) setState(TRIP_PLAN_SELECTED_KEY, planData.selectedTrip);
+    } catch (err) {
+      console.warn('syncPlanFromBackend failed:', err.message);
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   function normalizeDayNumber(value, fallback = 1) {
     const number = Math.max(1, Number(value || 0) || 0);
     return number || fallback;
+  }
+
+  // Modal: pick a day from a dropdown limited to the trip's actual days
+  function askDaySelectModal(tripName, defaultDay = 1) {
+    return new Promise((resolve) => {
+      const range = getTripDateRange(tripName);
+      const tripDays = calcTripDays(range.start, range.end);
+      const limit = tripDays > 0 ? tripDays : 10;
+
+      const overlay = document.createElement('div');
+      overlay.className = 'fixed inset-0 z-[10001] bg-black/45 backdrop-blur-[2px] flex items-center justify-center p-4';
+
+      const optionsHtml = Array.from({ length: limit }, (_, i) => i + 1)
+        .map((d) => `<option value="${d}" ${d === Math.min(defaultDay, limit) ? 'selected' : ''}>Day ${d}</option>`)
+        .join('');
+
+      const daysLabel = tripDays > 0
+        ? `<p class="text-sm text-white/60 mb-3">This trip is <span class="font-bold text-[#d9b56a]">${limit} day${limit > 1 ? 's' : ''}</span> long. Choose a day:</p>`
+        : '<p class="text-sm text-white/60 mb-3">Choose a day:</p>';
+
+      overlay.innerHTML = `
+        <div class="w-full max-w-xs rounded-2xl border border-[#c5a059]/50 bg-[#1f1b16] text-white shadow-2xl p-5">
+          <h3 class="text-lg font-bold mb-3">Select Day</h3>
+          ${daysLabel}
+          <select id="kemet-day-select" class="w-full px-3 py-2 rounded-lg border border-[#c5a059]/40 bg-[#2d2519] text-white focus:outline-none focus:ring-2 focus:ring-[#d9b56a] mb-4" style="background-color:#2d2519;color:#fff;">
+            ${optionsHtml}
+          </select>
+          <div class="flex justify-end gap-2">
+            <button id="kemet-day-cancel" class="px-4 py-2 rounded-lg border border-white/25 text-white/90">Cancel</button>
+            <button id="kemet-day-ok" class="px-4 py-2 rounded-lg bg-[#775a19] text-white font-bold">Add</button>
+          </div>
+        </div>`;
+
+      document.body.appendChild(overlay);
+      const select = overlay.querySelector('#kemet-day-select');
+      const cleanup = (val) => { overlay.remove(); resolve(val); };
+      overlay.querySelector('#kemet-day-cancel')?.addEventListener('click', () => cleanup(null));
+      overlay.querySelector('#kemet-day-ok')?.addEventListener('click', () => cleanup(Number(select?.value || 1)));
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) cleanup(null); });
+    });
   }
 
   async function askTripNameAndDay(defaultDay = 1) {
@@ -1025,14 +1110,16 @@
       return null;
     }
 
-    const dayInput = await askInputModal({
-      title: 'Target Day',
-      label: `Which day in this trip?`,
-      defaultValue: String(defaultDay),
-      type: 'number',
-    });
-    if (dayInput === null) return null;
-    const targetDay = normalizeDayNumber(dayInput, defaultDay);
+    // Require start & end dates before adding activities
+    const selRange = getTripDateRange(selectedTrip);
+    if (!selRange.start || !selRange.end) {
+      showError(`Please set a start date and end date for "${selectedTrip}" first.`);
+      return null;
+    }
+
+    // Show a dropdown limited to the trip's actual number of days
+    const targetDay = await askDaySelectModal(selectedTrip, defaultDay);
+    if (targetDay === null) return null;
     setState(TRIP_PLAN_SELECTED_KEY, selectedTrip);
     return { tripName: selectedTrip, targetDay };
   }
@@ -1055,6 +1142,7 @@
     const map = getTripDatesMap();
     map[key] = String(isoDate || '');
     setState(TRIP_DATES_KEY, map);
+    syncPlanToBackend();
   }
 
   function getTripDate(tripName) {
@@ -1073,6 +1161,7 @@
     const current = getTripMetaMap();
     current[key] = { ...(current[key] || {}), ...(meta || {}) };
     setState(TRIP_META_KEY, current);
+    syncPlanToBackend();
   }
 
   function getTripMeta(tripName) {
@@ -1091,6 +1180,7 @@
   function removePlanEntry(entryId) {
     const next = getPlanTrips().filter((item) => String(item.entryId || item._id) !== String(entryId));
     setState(PLAN_KEY, next);
+    syncPlanToBackend();
   }
 
   async function addTripToPlanWithSelection(baseTrip, defaultDay = 1) {
@@ -1289,6 +1379,7 @@
         <nav class="max-w-7xl mx-auto grid grid-cols-3 items-center px-8 py-5">
           <a class="text-2xl font-serif italic justify-self-start" href="${routes.home}">Kemet Travel</a>
           <div class="hidden md:flex items-center justify-center gap-6 text-sm font-serif">
+            <a class="transition-all hover:text-primary hover:-translate-y-0.5" href="${routes.home}">Home</a>
             <a class="transition-all hover:text-primary hover:-translate-y-0.5" href="${routes.explore}">Explore</a>
             <a class="transition-all hover:text-primary hover:-translate-y-0.5" href="${routes.myTrip}">My Trip</a>
             <a class="transition-all hover:text-primary hover:-translate-y-0.5" href="${routes.trips}">Trips</a>
@@ -1435,6 +1526,7 @@
           setState(SESSION_KEY, user);
           localStorage.setItem('userId', String(user.userId || user.id || ''));
           showSuccess('Welcome back.');
+          await syncPlanFromBackend();
           navigate(routes.dashboard);
         } catch (err) {
           showError(err.message);
@@ -2079,12 +2171,34 @@
     const allMapCandidates = [...cityTokens, ...foundInItinerary];
     const seenMapNames = new Set();
     const mapStops = [];
+
+    // Build a lookup: city name → itinerary day info
+    const cityDayMap = {};
+    itineraryItems.forEach((item, idx) => {
+      const itemLower = String(item).toLowerCase();
+      allCityKeys.forEach((cityKey) => {
+        if (itemLower.includes(cityKey) && !cityDayMap[cityKey]) {
+          cityDayMap[cityKey] = {
+            day: idx + 1,
+            desc: String(item).slice(0, 60) + (String(item).length > 60 ? '...' : '')
+          };
+        }
+      });
+    });
+
     for (const city of allMapCandidates) {
       const coords = resolveMapCoords(city);
       const key = city.toLowerCase();
       if (coords && !seenMapNames.has(key)) {
         seenMapNames.add(key);
-        mapStops.push({ name: city, lat: coords.lat, lng: coords.lng });
+        const dayInfo = cityDayMap[key] || {};
+        mapStops.push({
+          name: city.charAt(0).toUpperCase() + city.slice(1),
+          lat: coords.lat,
+          lng: coords.lng,
+          day: dayInfo.day || null,
+          desc: dayInfo.desc || ''
+        });
       }
     }
     if (!mapStops.length) {
@@ -2963,7 +3077,40 @@
     });
   }
 
-  function wireMyTripPage() {
+  // ── Shared trip-range & travelers helpers (used by askDaySelectModal + wireMyTripPage) ──
+  const TRIP_TRAVELERS_KEY = 'kemet-trip-travelers';
+  const TRIP_DATES_RANGE_KEY = 'kemet-trip-dates-range';
+
+  const getTripTravelers = (name) => {
+    const map = getState(TRIP_TRAVELERS_KEY, {});
+    return Number(map[normalizeText(name)] || 2);
+  };
+  const setTripTravelers = (name, n) => {
+    const map = getState(TRIP_TRAVELERS_KEY, {});
+    map[normalizeText(name)] = Number(n);
+    setState(TRIP_TRAVELERS_KEY, map);
+  };
+  const getTripDateRange = (name) => {
+    const map = getState(TRIP_DATES_RANGE_KEY, {});
+    return map[normalizeText(name)] || { start: '', end: '' };
+  };
+  const setTripDateRange = (name, start, end) => {
+    const map = getState(TRIP_DATES_RANGE_KEY, {});
+    map[normalizeText(name)] = { start, end };
+    setState(TRIP_DATES_RANGE_KEY, map);
+  };
+  const calcTripDays = (start, end) => {
+    if (!start || !end) return 0;
+    const ms = new Date(end) - new Date(start);
+    return ms > 0 ? Math.round(ms / 86400000) : 0;
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
+  async function wireMyTripPage() {
+    // ── Pull latest plan from backend first ──────────────────────────────
+    await syncPlanFromBackend();
+    // ─────────────────────────────────────────────────────────────────────
+
     const col = document.querySelector('.lg\\:col-span-7');
     if (!col) return;
 
@@ -2974,21 +3121,44 @@
     if (activeTripName) setState(TRIP_PLAN_SELECTED_KEY, activeTripName);
 
     const tripHeader = document.createElement('section');
-    tripHeader.className = 'mb-6 p-4 rounded-xl border border-outline-variant/30 bg-surface-container-lowest';
+    tripHeader.className = 'mb-6 p-5 rounded-xl border border-outline-variant/30 bg-surface-container-lowest';
     tripHeader.innerHTML = `
-      <div class="flex flex-col sm:flex-row gap-3 sm:items-end sm:justify-between">
-        <div class="flex-1">
-          <label class="text-sm text-outline block mb-2">Trip Name</label>
-          <select id="my-trip-name-select" class="w-full px-3 py-2 rounded-lg border border-outline-variant bg-white text-sm"></select>
+      <div class="space-y-4">
+        <!-- Row 1: Trip Name + Travelers -->
+        <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
+          <div class="flex-1">
+            <label class="text-xs font-semibold text-outline uppercase tracking-widest block mb-1.5">Trip Name</label>
+            <select id="my-trip-name-select" class="w-full px-3 py-2.5 rounded-lg border border-outline-variant bg-white text-sm"></select>
+          </div>
+          <div style="min-width:150px">
+            <label class="text-xs font-semibold text-outline uppercase tracking-widest block mb-1.5">
+              <span class="material-symbols-outlined text-sm align-middle" style="vertical-align:middle;font-size:14px">group</span> Travelers
+            </label>
+            <div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-outline-variant bg-white">
+              <button id="travelers-dec" class="w-7 h-7 rounded-full bg-primary/10 text-primary font-bold text-lg leading-none hover:bg-primary/20 transition-colors flex items-center justify-center">−</button>
+              <span id="travelers-count" class="flex-1 text-center text-sm font-bold text-on-surface">2</span>
+              <button id="travelers-inc" class="w-7 h-7 rounded-full bg-primary/10 text-primary font-bold text-lg leading-none hover:bg-primary/20 transition-colors flex items-center justify-center">+</button>
+            </div>
+          </div>
         </div>
-        <div>
-          <label class="text-sm text-outline block mb-2">Trip Date</label>
-          <input id="my-trip-date-input" type="date" class="px-3 py-2 rounded-lg border border-outline-variant bg-white text-sm"/>
-        </div>
-        <div class="flex gap-2">
-          <button id="my-trip-create-btn" class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold">Create Trip</button>
-          <button id="my-trip-soft-reset-btn" class="px-4 py-2 border border-outline text-on-surface rounded-lg text-sm font-bold">Soft Reset</button>
-          <button id="my-trip-reset-btn" class="px-4 py-2 border border-outline text-on-surface rounded-lg text-sm font-bold">Reset My Trips</button>
+        <!-- Row 2: Start/End Date + Days badge + Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 sm:items-end flex-wrap">
+          <div>
+            <label class="text-xs font-semibold text-outline uppercase tracking-widest block mb-1.5">Start Date</label>
+            <input id="my-trip-start-date" type="date" class="px-3 py-2.5 rounded-lg border border-outline-variant bg-white text-sm"/>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-outline uppercase tracking-widest block mb-1.5">End Date</label>
+            <input id="my-trip-end-date" type="date" class="px-3 py-2.5 rounded-lg border border-outline-variant bg-white text-sm"/>
+          </div>
+          <div id="trip-duration-badge" class="hidden px-4 py-2.5 rounded-full bg-primary/10 border border-primary/20 text-sm font-bold text-primary self-end">
+            <span id="trip-duration-text">0 days</span>
+          </div>
+          <div class="ml-auto flex gap-2 self-end">
+            <button id="my-trip-create-btn" class="px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">+ Create Trip</button>
+            <button id="my-trip-soft-reset-btn" class="px-3 py-2.5 border border-outline text-on-surface rounded-lg text-sm font-bold hover:bg-surface-container-low transition-colors">Soft Reset</button>
+            <button id="my-trip-reset-btn" class="px-3 py-2.5 border border-outline text-on-surface rounded-lg text-sm font-bold hover:bg-surface-container-low transition-colors">Reset</button>
+          </div>
         </div>
       </div>
     `;
@@ -3099,7 +3269,93 @@
     const createTripBtn = document.getElementById('my-trip-create-btn');
     const softResetTripsBtn = document.getElementById('my-trip-soft-reset-btn');
     const resetTripsBtn = document.getElementById('my-trip-reset-btn');
-    const tripDateInput = document.getElementById('my-trip-date-input');
+    // Legacy single date replaced by start/end
+    const tripDateInput = null; // kept for compat but unused
+    // (getTripTravelers, setTripTravelers, getTripDateRange, setTripDateRange, calcTripDays now shared globals above)
+
+    // Current active travelers count (reactive)
+    let activeTravelers = 2;
+
+    const refreshTravelersUI = (name) => {
+      const count = getTripTravelers(name || getActiveTripName() || '');
+      activeTravelers = count;
+      const el = document.getElementById('travelers-count');
+      if (el) el.textContent = String(count);
+    };
+
+    const refreshDateRangeUI = (name) => {
+      const range = getTripDateRange(name || getActiveTripName() || '');
+      const startEl = document.getElementById('my-trip-start-date');
+      const endEl = document.getElementById('my-trip-end-date');
+      if (startEl) startEl.value = range.start || '';
+      if (endEl) endEl.value = range.end || '';
+      updateDurationBadge(range.start, range.end);
+    };
+
+    const updateDurationBadge = (start, end) => {
+      const badge = document.getElementById('trip-duration-badge');
+      const text = document.getElementById('trip-duration-text');
+      const days = calcTripDays(start, end);
+      if (!badge || !text) return;
+      if (days > 0) {
+        text.textContent = days + (days === 1 ? ' day' : ' days');
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+      // Update maxTripDays dynamically
+      currentMaxTripDays = days > 0 ? days : 10;
+    };
+
+    let currentMaxTripDays = maxTripDays;
+
+    // Travelers +/- buttons
+    document.getElementById('travelers-dec')?.addEventListener('click', () => {
+      const name = String(tripNameSelect?.value || getActiveTripName() || '').trim();
+      const current = getTripTravelers(name);
+      if (current <= 1) return;
+      setTripTravelers(name, current - 1);
+      refreshTravelersUI(name);
+      renderTripCards();
+    });
+    document.getElementById('travelers-inc')?.addEventListener('click', () => {
+      const name = String(tripNameSelect?.value || getActiveTripName() || '').trim();
+      const current = getTripTravelers(name);
+      setTripTravelers(name, current + 1);
+      refreshTravelersUI(name);
+      renderTripCards();
+    });
+
+    // Start / End date change
+    document.getElementById('my-trip-start-date')?.addEventListener('change', (e) => {
+      const name = String(tripNameSelect?.value || getActiveTripName() || '').trim();
+      if (!name) return;
+      const endEl = document.getElementById('my-trip-end-date');
+      const end = endEl?.value || '';
+      setTripDateRange(name, e.target.value, end);
+      // Also keep legacy single-date for booking compatibility
+      setTripDate(name, e.target.value);
+      setTripMeta(name, { date: e.target.value });
+      updateDurationBadge(e.target.value, end);
+      renderTripCards();
+      showToast('Start date updated.');
+    });
+    document.getElementById('my-trip-end-date')?.addEventListener('change', (e) => {
+      const name = String(tripNameSelect?.value || getActiveTripName() || '').trim();
+      if (!name) return;
+      const startEl = document.getElementById('my-trip-start-date');
+      const start = startEl?.value || '';
+      if (start && e.target.value && e.target.value < start) {
+        showToast('End date must be after start date.');
+        e.target.value = '';
+        return;
+      }
+      setTripDateRange(name, start, e.target.value);
+      updateDurationBadge(start, e.target.value);
+      renderTripCards();
+      showToast('End date updated.');
+    });
+    // ─────────────────────────────────────────────────────────────────────────
 
     const removeLegacyPlannedTripsPanel = () => {
       const legacy = Array.from(col.querySelectorAll('section,div')).find((el) =>
@@ -3296,7 +3552,7 @@
       const existingDayNumbers = getDayCards()
         .map((card) => getDayNumber(card))
         .filter((n) => Number.isFinite(n));
-      const rangeDays = Array.from({ length: Math.max(maxTripDays, 3) }, (_, idx) => idx + 1);
+      const rangeDays = Array.from({ length: Math.max(currentMaxTripDays || maxTripDays, 3) }, (_, idx) => idx + 1);
       const uniqueSorted = Array.from(new Set([...rangeDays, ...existingDayNumbers])).sort((a, b) => a - b);
       const previous = Number(select.value || uniqueSorted[0] || 1);
       select.innerHTML = uniqueSorted.map((n) => `<option value="${n}">Day ${n}</option>`).join('');
@@ -3319,7 +3575,9 @@
         .join('');
       tripNameSelect.value = names.includes(active) ? active : names[0];
       setState(TRIP_PLAN_SELECTED_KEY, tripNameSelect.value);
-      if (tripDateInput) tripDateInput.value = getTripDate(tripNameSelect.value);
+      // Load date range and travelers for selected trip
+      refreshDateRangeUI(tripNameSelect.value);
+      refreshTravelersUI(tripNameSelect.value);
     };
 
     const renderDraft = () => {
@@ -3423,11 +3681,13 @@
       const plan = getPlanTrips();
       return names.map((name) => {
         const items = plan.filter((item) => normalizeText(item.tripName) === normalizeText(name));
-        const total = items.reduce((sum, item) => sum + Number(item.price || 0), 0);
+        const travelers = getTripTravelers(name);
+        const perPersonTotal = items.reduce((sum, item) => sum + Number(item.price || 0), 0);
+        const total = perPersonTotal * travelers;
         const breakdown = items.reduce(
           (acc, item) => {
             const source = normalizeText(item.source || '');
-            const amount = Number(item.price || 0);
+            const amount = Number(item.price || 0) * travelers;
             if (source.includes('hotel') || source.includes('stay')) acc.hotels += amount;
             else if (source.includes('transport')) acc.transport += amount;
             else acc.activities += amount;
@@ -3436,9 +3696,15 @@
           { hotels: 0, activities: 0, transport: 0 }
         );
         const meta = getTripMeta(name);
-        const date = getTripDate(name) || meta.date || '';
+        const dateRange = getTripDateRange(name);
+        const date = dateRange.start
+          ? (dateRange.end
+            ? dateRange.start + ' → ' + dateRange.end
+            : dateRange.start)
+          : getTripDate(name) || meta.date || '';
         const status = meta.status || 'Draft';
-        return { name, items, total, date, status, breakdown };
+        const days = calcTripDays(dateRange.start, dateRange.end);
+        return { name, items, total, perPersonTotal, travelers, date, status, breakdown, days };
       }).filter((trip) => trip.items.length > 0 || getTripMeta(trip.name).userCreated);
     };
 
@@ -3469,9 +3735,14 @@
                     isPaid
                       ? ''
                       : `<select data-move-activity="${escapeHtml(item.entryId || item._id)}" class="text-xs border border-outline-variant rounded px-2 py-1 bg-white">
-                    ${Array.from({ length: Math.max(maxTripDays, 3) }, (_, i) => i + 1)
-                      .map((dayNum) => `<option value="${dayNum}" ${Number(item.targetDay || 1) === dayNum ? 'selected' : ''}>Day ${dayNum}</option>`)
-                      .join('')}
+                    ${(() => {
+                        const range = getTripDateRange(trip.name);
+                        const tripDays = calcTripDays(range.start, range.end);
+                        const limit = tripDays > 0 ? tripDays : Math.max(currentMaxTripDays || maxTripDays, 1);
+                        return Array.from({ length: limit }, (_, i) => i + 1)
+                          .map((dayNum) => `<option value="${dayNum}" ${Number(item.targetDay || 1) === dayNum ? 'selected' : ''}>Day ${dayNum}</option>`)
+                          .join('');
+                      })()}
                   </select>`
                   }
                   ${isPaid ? '' : `<button data-remove-activity="${escapeHtml(item.entryId || item._id)}" data-trip-name="${escapeHtml(trip.name)}" class="text-xs underline text-red-600">Remove</button>`}
@@ -3485,7 +3756,11 @@
               <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div>
                   <h3 class="text-lg font-semibold">${escapeHtml(trip.name)}</h3>
-                  <p class="text-sm text-outline">${trip.date ? escapeHtml(trip.date) : 'No date selected'}</p>
+                  <div class="flex flex-wrap items-center gap-2 mt-1">
+                    ${trip.date ? `<span class="text-xs text-outline">${escapeHtml(trip.date)}</span>` : '<span class="text-xs text-outline">No dates selected</span>'}
+                    ${trip.days > 0 ? `<span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">${trip.days} day${trip.days>1?'s':''}</span>` : ''}
+                    <span class="text-xs text-outline bg-surface-container px-2 py-0.5 rounded-full">${trip.travelers} traveler${trip.travelers>1?'s':''}</span>
+                  </div>
                   <p class="text-sm mt-1">Status: <span class="font-bold ${
                     trip.status === 'Ready for Payment'
                       ? 'text-[#775A19]'
@@ -3516,7 +3791,10 @@
                     <p>Transport: <span class="font-bold text-primary">${formatMoney(Number(trip.breakdown?.transport || 0))}</span></p>
                   </div>
                 </div>
-                <p class="mt-2 text-sm font-bold text-primary">Total: ${formatMoney(trip.total)}</p>
+                <div class="mt-3 flex flex-wrap items-center gap-3">
+                  ${trip.travelers > 1 ? `<p class="text-xs text-outline">${formatMoney(trip.perPersonTotal)} &times; ${trip.travelers} travelers</p>` : ''}
+                  <p class="text-sm font-bold text-primary">Total: ${formatMoney(trip.total)}</p>
+                </div>
               </div>
             </article>
           `;
@@ -3551,7 +3829,7 @@
           if (!trip) return;
           setState(TRIP_PLAN_SELECTED_KEY, name);
           setState(PAYMENT_TRIP_NAMES_KEY, [name]);
-          setState('kemet-selected-day-payment', { day: 1, total: Number(trip.total || 0) });
+          setState('kemet-selected-day-payment', { day: 1, total: Number(trip.total || 0), travelers: trip.travelers });
           setState(BOOKING_MODE_KEY, 'day');
           navigate(routes.booking);
         });
@@ -3578,6 +3856,15 @@
           const plan = getPlanTrips();
           const idx = plan.findIndex((item) => String(item.entryId || item._id) === String(entryId));
           if (idx === -1) return;
+          // Validate against this trip's allowed days
+          const tripNameForItem = plan[idx]?.tripName || '';
+          const rangeForItem = getTripDateRange(tripNameForItem);
+          const allowedDays = calcTripDays(rangeForItem.start, rangeForItem.end);
+          if (allowedDays > 0 && nextDay > allowedDays) {
+            showToast(`This trip is only ${allowedDays} day${allowedDays > 1 ? 's' : ''} long.`);
+            renderTripCards(); // reset select UI
+            return;
+          }
           plan[idx] = { ...plan[idx], targetDay: nextDay };
           setState(PLAN_KEY, plan);
           renderTripCards();
@@ -3795,8 +4082,11 @@
       const cleanName = String(name).trim();
       addTripName(cleanName);
       setState(TRIP_PLAN_SELECTED_KEY, cleanName);
-      setTripMeta(cleanName, { status: 'Draft' });
+      setTripMeta(cleanName, { status: 'Draft', userCreated: true });
+      setTripTravelers(cleanName, 2);
       refreshTripSelector();
+      refreshDateRangeUI(cleanName);
+      refreshTravelersUI(cleanName);
       renderActiveTripFromPlan();
       renderTripCards();
       refreshDayTargetOptions();
@@ -3841,7 +4131,8 @@
 
     tripNameSelect?.addEventListener('change', () => {
       setState(TRIP_PLAN_SELECTED_KEY, String(tripNameSelect.value || ''));
-      if (tripDateInput) tripDateInput.value = getTripDate(tripNameSelect.value);
+      refreshDateRangeUI(tripNameSelect.value);
+      refreshTravelersUI(tripNameSelect.value);
       renderActiveTripFromPlan();
       renderTripCards();
       refreshDayTargetOptions();
@@ -3849,14 +4140,7 @@
       updateSuggestedHotelsForActiveTrip();
     });
 
-    tripDateInput?.addEventListener('change', () => {
-      const tripName = String(tripNameSelect?.value || getActiveTripName() || '').trim();
-      if (!tripName) return;
-      setTripDate(tripName, String(tripDateInput.value || ''));
-      setTripMeta(tripName, { date: String(tripDateInput.value || '') });
-      renderTripCards();
-      showToast('Trip date updated.');
-    });
+    // tripDateInput listener removed — now handled by start/end date inputs above
 
     document.getElementById('day-draft-clear')?.addEventListener('click', (e) => {
       e.preventDefault();
@@ -3966,26 +4250,36 @@
           setCityActive(selectedCity === name ? '' : name);
           const cityLabel = selectedCity || name;
           if (cityLabel) {
-            navigate(`${routes.trips}?city=${encodeURIComponent(cityLabel)}`);
+            btn.classList.add('opacity-70', 'cursor-wait');
+            btn.textContent = 'Loading...';
+            setTimeout(() => {
+              window.location.href = `${routes.search}?q=${encodeURIComponent(cityLabel)}`;
+            }, 300);
           }
         });
       });
 
-      const goToExploreWithFilters = (e) => {
+      const goToSearchWithFilters = (e) => {
         e?.preventDefault?.();
         const q = String(plannerInput?.value || '').trim();
         const city = selectedCity || q;
         if (city) {
-          navigate(`${routes.trips}?city=${encodeURIComponent(city)}`);
+          if (startPlanningBtn) {
+            startPlanningBtn.classList.add('opacity-70', 'cursor-wait');
+            startPlanningBtn.textContent = 'Searching...';
+          }
+          setTimeout(() => {
+            window.location.href = `${routes.search}?q=${encodeURIComponent(city)}`;
+          }, 300);
           return;
         }
-        navigate(routes.trips);
+        window.location.href = routes.search;
       };
 
-      startPlanningBtn?.addEventListener('click', goToExploreWithFilters);
+      startPlanningBtn?.addEventListener('click', goToSearchWithFilters);
       plannerInput?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-          goToExploreWithFilters(e);
+          goToSearchWithFilters(e);
         }
       });
     };
@@ -5337,6 +5631,321 @@
       if (descriptionEl) descriptionEl.textContent = 'We could not load this hotel right now.';
       showToast(err.message || 'Failed to load hotel details.');
     }
+  }
+
+  async function wireSearchPage() {
+    const params = new URLSearchParams(window.location.search);
+    const query = (params.get('q') || '').trim();
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+    const queryDisplay = document.getElementById('search-query-display');
+    const loadingEl = document.getElementById('loading');
+    const noResultsEl = document.getElementById('no-results');
+    const statsBar = document.getElementById('stats-bar');
+    const tripsSection = document.getElementById('trips-section');
+    const placesSection = document.getElementById('places-section');
+    const hotelsSection = document.getElementById('hotels-section');
+    const tripsResults = document.getElementById('trips-results');
+    const placesResults = document.getElementById('places-results');
+    const hotelsResults = document.getElementById('hotels-results');
+    const tripsCount = document.getElementById('trips-count');
+    const placesCount = document.getElementById('places-count');
+    const hotelsCount = document.getElementById('hotels-count');
+    const tripsEmpty = document.getElementById('trips-empty');
+    const placesEmpty = document.getElementById('places-empty');
+    const hotelsEmpty = document.getElementById('hotels-empty');
+
+    if (query) {
+      if (searchInput) searchInput.value = query;
+      if (queryDisplay) queryDisplay.textContent = query;
+    }
+
+    // Client-side filter: smart matching based on item type
+    const matchesQuery = (item, searchQuery) => {
+      const q = normalizeText(searchQuery);
+      const cityNames = ['cairo', 'luxor', 'aswan', 'sharm el sheikh', 'alexandria', 'hurghada', 'ain sokhna', 'giza', 'fayoum'];
+      const isCitySearch = cityNames.includes(q);
+
+      // Detect item type by checking unique fields
+      const isHotel = item._id && (item.pricePerNight !== undefined || item.images || item.amenities || item.stars);
+      const isTrip = item._id && (item.estimatedPrice !== undefined || item.duration || item.days || item.includes);
+      const isPlace = item._id && (item.latitude !== undefined || item.longitude !== undefined || item.category || item.type);
+
+      // For hotels: strictly check location-related fields
+      if (isHotel) {
+        // Build a list of all possible city/location values for this hotel
+        const locationStrings = [];
+        const cityName = normalizeText(getHotelCityName(item) || '');
+        const locationLabel = normalizeText(getHotelLocationLabel(item) || '');
+        if (cityName) locationStrings.push(cityName);
+        if (locationLabel) locationStrings.push(locationLabel);
+        if (item.address) locationStrings.push(normalizeText(item.address));
+        // Check location object
+        const loc = item.location;
+        if (loc && typeof loc === 'object') {
+          ['city', 'region', 'governorate', 'address', 'area', 'country'].forEach((key) => {
+            if (loc[key]) locationStrings.push(normalizeText(String(loc[key])));
+          });
+        } else if (typeof loc === 'string' && loc.trim()) {
+          locationStrings.push(normalizeText(loc));
+        }
+        // If it's a city search, ONLY match on location fields
+        if (isCitySearch) {
+          return locationStrings.some((locStr) => locStr.includes(q));
+        }
+        // For non-city searches, also check name and description
+        const name = normalizeText(item.name || item.title || '');
+        const desc = normalizeText(item.description || '');
+        return locationStrings.some((locStr) => locStr.includes(q)) ||
+               name.includes(q) || desc.includes(q);
+      }
+
+      // For trips: check destination and location fields
+      if (isTrip) {
+        const locationStrings = [];
+        const dest = normalizeText(item.destination || '');
+        const city = normalizeText(item.city || '');
+        if (dest) locationStrings.push(dest);
+        if (city) locationStrings.push(city);
+        if (item.location) {
+          if (typeof item.location === 'string') locationStrings.push(normalizeText(item.location));
+          else if (typeof item.location === 'object') {
+            ['city', 'region', 'governorate', 'address'].forEach((key) => {
+              if (item.location[key]) locationStrings.push(normalizeText(String(item.location[key])));
+            });
+          }
+        }
+        if (isCitySearch) {
+          return locationStrings.some((locStr) => locStr.includes(q));
+        }
+        const name = normalizeText(item.name || item.title || '');
+        const desc = normalizeText(item.description || '');
+        return locationStrings.some((locStr) => locStr.includes(q)) ||
+               name.includes(q) || desc.includes(q);
+      }
+
+      // For places: check city/location fields
+      if (isPlace) {
+        const locationStrings = [];
+        const city = normalizeText(item.city || '');
+        const location = normalizeText(item.location || '');
+        const area = normalizeText(item.area || '');
+        if (city) locationStrings.push(city);
+        if (location) locationStrings.push(location);
+        if (area) locationStrings.push(area);
+        if (item.governorate) locationStrings.push(normalizeText(item.governorate));
+        if (isCitySearch) {
+          return locationStrings.some((locStr) => locStr.includes(q));
+        }
+        const name = normalizeText(item.name || item.title || '');
+        const desc = normalizeText(item.description || '');
+        return locationStrings.some((locStr) => locStr.includes(q)) ||
+               name.includes(q) || desc.includes(q);
+      }
+
+      // Generic fallback: check all string fields
+      const values = [];
+      const collectStrings = (obj) => {
+        if (typeof obj === 'string') values.push(normalizeText(obj));
+        else if (typeof obj === 'number') values.push(normalizeText(String(obj)));
+        else if (Array.isArray(obj)) obj.forEach(collectStrings);
+        else if (obj && typeof obj === 'object') {
+          Object.values(obj).forEach(collectStrings);
+        }
+      };
+      collectStrings(item);
+      return values.some((v) => v.includes(q));
+    };
+
+    const performSearch = async (searchQuery) => {
+      if (!searchQuery) return;
+      if (loadingEl) loadingEl.classList.remove('hidden');
+      if (statsBar) statsBar.classList.add('hidden');
+      if (noResultsEl) noResultsEl.classList.add('hidden');
+      if (tripsSection) tripsSection.classList.add('hidden');
+      if (placesSection) placesSection.classList.add('hidden');
+      if (hotelsSection) hotelsSection.classList.add('hidden');
+
+      try {
+        const [tripsData, placesData, hotelsData] = await Promise.all([
+          api(`/api/trips?search=${encodeURIComponent(searchQuery)}`).catch(() => []),
+          api(`/api/places?search=${encodeURIComponent(searchQuery)}`).catch(() => []),
+          api(`/api/hotels?search=${encodeURIComponent(searchQuery)}`).catch(() => []),
+        ]);
+
+        // Apply client-side filtering to ensure results match
+        let trips = (Array.isArray(tripsData) ? tripsData : []).filter((t) => matchesQuery(t, searchQuery));
+        let places = (Array.isArray(placesData) ? placesData : []).filter((p) => matchesQuery(p, searchQuery));
+        let hotels = (Array.isArray(hotelsData) ? hotelsData : []).filter((h) => matchesQuery(h, searchQuery));
+
+        if (tripsCount) tripsCount.textContent = trips.length;
+        if (placesCount) placesCount.textContent = places.length;
+        if (hotelsCount) hotelsCount.textContent = hotels.length;
+
+        if (statsBar && (trips.length || places.length || hotels.length)) {
+          statsBar.classList.remove('hidden');
+        }
+
+        // Render Trips
+        if (tripsSection && tripsResults) {
+          if (trips.length) {
+            tripsResults.innerHTML = trips.map((trip) => {
+              const image = resolveImageUrl(getTripDisplayImage(trip));
+              const title = trip.name || trip.title || 'Trip';
+              const desc = trip.description || '';
+              const price = formatMoney(trip.price || trip.estimatedPrice || 0);
+              const tripId = trip._id || '';
+              return `
+                <article class="bg-white rounded-xl shadow-sm overflow-hidden border border-stone-100 hover:shadow-lg transition-all duration-300 cursor-pointer group" data-trip-id="${escapeHtml(tripId)}">
+                  <div class="h-48 overflow-hidden">
+                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="${escapeHtml(image)}" alt="${escapeHtml(title)}"/>
+                  </div>
+                  <div class="p-6">
+                    <h3 class="font-h3 text-h3 mb-2 text-on-surface">${escapeHtml(title)}</h3>
+                    <p class="text-on-surface-variant mb-4 text-sm line-clamp-2">${escapeHtml(desc)}</p>
+                    <div class="flex justify-between items-center pt-4 border-t border-stone-100">
+                      <span class="text-xl font-h3 text-primary">${price}</span>
+                      <span class="text-[#C5A059] text-sm font-bold group-hover:underline">View Details</span>
+                    </div>
+                  </div>
+                </article>
+              `;
+            }).join('');
+            tripsSection.classList.remove('hidden');
+            if (tripsEmpty) tripsEmpty.classList.add('hidden');
+
+            // Make entire trip cards clickable
+            tripsResults.querySelectorAll('[data-trip-id]').forEach((card) => {
+              card.addEventListener('click', () => {
+                const id = card.getAttribute('data-trip-id');
+                if (id) navigate(`${routes.tripDetails}?id=${encodeURIComponent(id)}`);
+              });
+            });
+          } else {
+            tripsResults.innerHTML = '';
+            if (tripsEmpty) tripsEmpty.classList.remove('hidden');
+            tripsSection.classList.remove('hidden');
+          }
+        }
+
+        // Render Places
+        if (placesSection && placesResults) {
+          if (places.length) {
+            placesResults.innerHTML = places.map((place) => {
+              const image = resolveImageUrl(place.image || (place.images && place.images[0]) || '');
+              const title = place.name || place.title || 'Place';
+              const desc = place.description || '';
+              const placeId = place._id || '';
+              return `
+                <article class="bg-white rounded-xl shadow-sm overflow-hidden border border-stone-100 hover:shadow-lg transition-all duration-300 cursor-pointer group" data-place-id="${escapeHtml(placeId)}">
+                  <div class="h-48 overflow-hidden">
+                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="${escapeHtml(image)}" alt="${escapeHtml(title)}"/>
+                  </div>
+                  <div class="p-6">
+                    <h3 class="font-h3 text-h3 mb-2 text-on-surface">${escapeHtml(title)}</h3>
+                    <p class="text-on-surface-variant mb-4 text-sm line-clamp-2">${escapeHtml(desc)}</p>
+                    <span class="text-[#C5A059] font-bold text-sm group-hover:underline">View Details</span>
+                  </div>
+                </article>
+              `;
+            }).join('');
+            placesSection.classList.remove('hidden');
+            if (placesEmpty) placesEmpty.classList.add('hidden');
+
+            // Make entire place cards clickable
+            placesResults.querySelectorAll('[data-place-id]').forEach((card) => {
+              card.addEventListener('click', () => {
+                const id = card.getAttribute('data-place-id');
+                if (id) navigate(`${routes.place}?id=${encodeURIComponent(id)}`);
+              });
+            });
+          } else {
+            placesResults.innerHTML = '';
+            if (placesEmpty) placesEmpty.classList.remove('hidden');
+            placesSection.classList.remove('hidden');
+          }
+        }
+
+        // Render Hotels
+        if (hotelsSection && hotelsResults) {
+          if (hotels.length) {
+            hotelsResults.innerHTML = hotels.map((h) => {
+              const image = resolveImageUrl(Array.isArray(h.images) && h.images.length ? h.images[0] : '');
+              const title = h.name || h.title || 'Hotel';
+              const desc = h.description || '';
+              const price = formatMoney(h.pricePerNight || h.price || 0);
+              const hotelId = h._id || '';
+              return `
+                <article class="bg-white rounded-xl shadow-sm overflow-hidden border border-stone-100 hover:shadow-lg transition-all duration-300 cursor-pointer group" data-hotel-id="${escapeHtml(hotelId)}">
+                  <div class="h-48 overflow-hidden">
+                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="${escapeHtml(image)}" alt="${escapeHtml(title)}"/>
+                  </div>
+                  <div class="p-6">
+                    <h3 class="font-h3 text-h3 mb-2 text-on-surface">${escapeHtml(title)}</h3>
+                    <p class="text-on-surface-variant mb-4 text-sm line-clamp-2">${escapeHtml(desc)}</p>
+                    <div class="flex justify-between items-center pt-4 border-t border-stone-100">
+                      <span class="text-xl font-h3 text-tertiary">${price}<span class="text-sm text-outline">/night</span></span>
+                      <span class="text-[#C5A059] text-sm font-bold group-hover:underline">View Details</span>
+                    </div>
+                  </div>
+                </article>
+              `;
+            }).join('');
+            hotelsSection.classList.remove('hidden');
+            if (hotelsEmpty) hotelsEmpty.classList.add('hidden');
+
+            // Make entire hotel cards clickable
+            hotelsResults.querySelectorAll('[data-hotel-id]').forEach((card) => {
+              card.addEventListener('click', () => {
+                const id = card.getAttribute('data-hotel-id');
+                if (id) navigate(`${routes.hotelDetails}?id=${encodeURIComponent(id)}`);
+              });
+            });
+          } else {
+            hotelsResults.innerHTML = '';
+            if (hotelsEmpty) hotelsEmpty.classList.remove('hidden');
+            hotelsSection.classList.remove('hidden');
+          }
+        }
+
+        // Show no results message
+        if (!trips.length && !places.length && !hotels.length) {
+          if (noResultsEl) noResultsEl.classList.remove('hidden');
+        }
+
+        applyImageFallbacks(document);
+      } catch (err) {
+        showToast(err.message || 'Search failed. Please try again.');
+        if (noResultsEl) noResultsEl.classList.remove('hidden');
+      } finally {
+        if (loadingEl) loadingEl.classList.add('hidden');
+      }
+    };
+
+    // Perform search on page load if query exists
+    if (query) {
+      await performSearch(query);
+    } else {
+      if (loadingEl) loadingEl.classList.add('hidden');
+    }
+
+    // Handle search button click
+    searchBtn?.addEventListener('click', () => {
+      const newQuery = (searchInput?.value || '').trim();
+      if (newQuery) {
+        window.location.href = `${routes.search}?q=${encodeURIComponent(newQuery)}`;
+      }
+    });
+
+    // Handle Enter key in search input
+    searchInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const newQuery = (searchInput?.value || '').trim();
+        if (newQuery) {
+          window.location.href = `${routes.search}?q=${encodeURIComponent(newQuery)}`;
+        }
+      }
+    });
   }
 
   function wireConfirmationPage() {

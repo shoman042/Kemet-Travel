@@ -34,9 +34,33 @@
         }
     </style>
     <link rel="stylesheet" href="mobile-fix.css">
-    <!-- Leaflet Maps -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WPcM=" crossorigin=""></script>
+    <!-- Leaflet — بدون integrity check عشان ميتبلوكش -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script>
+    // Load Leaflet with CDN fallback chain
+    (function() {
+      var cdns = [
+        'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+        'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js'
+      ];
+      var idx = 0;
+      function tryLoad() {
+        if (idx >= cdns.length) return;
+        var s = document.createElement('script');
+        s.src = cdns[idx++];
+        s.onload  = function() { window._leafletLoaded = true; };
+        s.onerror = function() { tryLoad(); };
+        document.head.appendChild(s);
+      }
+      tryLoad();
+    })();
+    // Also load Leaflet CSS from jsdelivr as fallback
+    var lCss = document.createElement('link');
+    lCss.rel = 'stylesheet';
+    lCss.href = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(lCss);
+    </script>
 </head>
 <body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container">
 <!-- TopAppBar -->
@@ -165,94 +189,287 @@
 </div>
 <!-- Right Column: Map & What's Included -->
 <div class="lg:col-span-4 space-y-stack-md lg:sticky lg:top-[160px] lg:h-fit">
-<!-- Map Section -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<div class="bg-surface-container rounded-xl overflow-hidden shadow-sm border border-stone-200 p-2">
-<div id="trip-map" style="width:100%;height:360px;border-radius:10px;z-index:0;"></div>
-<div class="p-4 text-center">
-<p id="trip-map-route-label" class="font-label-caps text-[11px] text-stone-500 uppercase tracking-widest">Route: Cairo — Luxor — Aswan</p>
+<!-- Map Section — Professional Trip Route Map -->
+<style>
+  #kemet-map-card { font-family: 'Plus Jakarta Sans', sans-serif; }
+  #trip-map { width:100%; height:380px; border-radius:0; z-index:0; background:#f0ede8; }
+  .kemet-tile-btn { padding:4px 10px; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; border:1px solid #e2ddd6; border-radius:6px; cursor:pointer; background:#fff; color:#78716c; transition:all .15s; }
+  .kemet-tile-btn.active { background:#c5a059; color:#fff; border-color:#c5a059; }
+  .kemet-stop-chip { display:flex; align-items:center; gap:6px; padding:4px 10px 4px 6px; border-radius:999px; background:#faf9f6; border:1px solid #e2ddd6; font-size:11px; font-weight:600; color:#44403c; white-space:nowrap; }
+  .kemet-stop-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .kemet-stop-dot.first { background:#c5a059; }
+  .kemet-stop-dot.mid   { background:#a37c32; }
+  .kemet-stop-dot.last  { background:#78350f; }
+  #kemet-map-card .leaflet-popup-content-wrapper { border-radius:12px!important; box-shadow:0 8px 24px rgba(0,0,0,.15)!important; border:1px solid #e2ddd6!important; padding:0!important; overflow:hidden; }
+  #kemet-map-card .leaflet-popup-content { margin:0!important; }
+  #kemet-map-card .leaflet-popup-tip-container { display:none; }
+  .kemet-popup { padding:12px 16px; min-width:140px; }
+  .kemet-popup-day { font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#c5a059; margin-bottom:2px; }
+  .kemet-popup-city { font-size:15px; font-weight:700; color:#1c1917; font-family:serif; }
+  .kemet-popup-desc { font-size:11px; color:#78716c; margin-top:3px; line-height:1.5; }
+  @keyframes kemet-dash { to { stroke-dashoffset:-100; } }
+  .kemet-route-animated { stroke-dasharray: 10 5; animation: kemet-dash 3s linear infinite; }
+</style>
+
+<div id="kemet-map-card" class="bg-white rounded-xl overflow-hidden shadow-md border border-stone-200">
+  <!-- Map Header -->
+  <div class="flex items-center justify-between px-4 py-3 border-b border-stone-100 bg-stone-50">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary text-lg" data-icon="map">map</span>
+      <span class="font-bold text-sm text-stone-800 tracking-wide">Trip Route</span>
+    </div>
+    <div class="flex gap-1.5" id="kemet-tile-btns">
+      <button class="kemet-tile-btn active" data-tile="osm">Street</button>
+      <button class="kemet-tile-btn" data-tile="satellite">Satellite</button>
+      <button class="kemet-tile-btn" data-tile="topo">Topo</button>
+    </div>
+  </div>
+
+  <!-- Map Container -->
+  <div id="trip-map"></div>
+
+  <!-- Stop chips -->
+  <div class="px-4 py-3 border-t border-stone-100 bg-stone-50">
+    <div id="kemet-stop-chips" class="flex flex-wrap gap-2"></div>
+    <p id="trip-map-route-label" class="font-label-caps text-[10px] text-stone-400 uppercase tracking-widest mt-2">
+      ─ ─ ROUTE: CAIRO — LUXOR
+    </p>
+  </div>
 </div>
-</div>
+
 <script>
-// ====================================================
-// Dynamic Trip Map — driven by app.js via buildTripMap()
-// ====================================================
-window.buildTripMap = function(stops, routeLabel) {
-  var mapEl = document.getElementById('trip-map');
-  var routeEl = document.getElementById('trip-map-route-label');
+(function() {
+  // ═══════════════════════════════════════════════════════
+  //  Kemet Professional Trip Map  v2
+  //  All tile providers use public OSM-compatible CDNs
+  // ═══════════════════════════════════════════════════════
 
-  if (!mapEl) return;
+  // ── OSM-based tiles (always work, no API key needed) ──
+  var TILES = {
+    osm:       { url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',       sub: '', attr: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>' },
+    satellite: { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', sub: '', attr: '&copy; Esri' },
+    topo:      { url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',       sub: '', attr: '&copy; OpenStreetMap' }  // OSM fallback while topo loads
+  };
 
-  // Update the route text label
-  if (routeEl && routeLabel) routeEl.textContent = 'Route: ' + routeLabel;
+  // Async-load topo tile URL (opentopomap sometimes slow, pre-check)
+  (function checkTopo() {
+    var img = new Image();
+    img.onload  = function() { TILES.topo = { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', sub: 'abc', attr: '&copy; OpenTopoMap' }; };
+    img.onerror = function() { /* keep OSM fallback */ };
+    img.src = 'https://a.tile.opentopomap.org/6/35/24.png';
+  })();
 
-  // Destroy old map instance if it exists (Leaflet stores it on the element)
-  if (mapEl._leaflet_id) {
-    try { mapEl._leaflet_map && mapEl._leaflet_map.remove(); } catch(e){}
-    // Reset the div
-    mapEl._leaflet_id = undefined;
-    mapEl.innerHTML = '';
-  }
+  var _map = null;
+  var _tileLayer = null;
+  var _shadowLine = null;
+  var _routeLine = null;
+  var _animLine = null;
+  var _stops = [];
+  var _currentTile = 'osm';
+  var _built = false;
 
-  function doInit() {
-    if (typeof L === 'undefined') { setTimeout(doInit, 100); return; }
-
-    var map = L.map(mapEl, {
-      zoomControl: true,
-      scrollWheelZoom: false,
-      minZoom: 4,
-      maxZoom: 17
-    });
-
-    if (stops.length === 1) {
-      map.setView([stops[0].lat, stops[0].lng], 9);
-    } else {
-      map.fitBounds(
-        stops.map(function(s){ return [s.lat, s.lng]; }),
-        { padding: [50, 50], maxZoom: 13 }
-      );
-    }
-
-    mapEl._leaflet_map = map; // store ref for future destroy
-
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
-      maxZoom: 19
-    }).addTo(map);
-
-    var goldIcon = L.divIcon({
+  // ── Icons ─────────────────────────────────────────────
+  function makeIcon(index, total) {
+    var L = window.L;
+    var isFirst = index === 0;
+    var isLast  = index === total - 1;
+    var bg   = isFirst ? '#c5a059' : isLast ? '#78350f' : '#a37c32';
+    var size = (isFirst || isLast) ? 34 : 28;
+    var half = size / 2;
+    var label = isFirst ? '1' : isLast ? String(total) : String(index + 1);
+    return L.divIcon({
       className: '',
-      html: '<div style="width:22px;height:22px;border-radius:50%;background:#c5a059;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>',
-      iconSize: [22, 22],
-      iconAnchor: [11, 11],
-      popupAnchor: [0, -15]
+      html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;'
+          + 'background:' + bg + ';border:3px solid #fff;'
+          + 'box-shadow:0 3px 12px rgba(0,0,0,.4);'
+          + 'display:flex;align-items:center;justify-content:center;'
+          + 'color:#fff;font-size:12px;font-weight:900;font-family:serif;">'
+          + label + '</div>',
+      iconSize:    [size, size],
+      iconAnchor:  [half, half],
+      popupAnchor: [0, -(half + 10)]
     });
-
-    stops.forEach(function(s) {
-      L.marker([s.lat, s.lng], { icon: goldIcon })
-        .addTo(map)
-        .bindPopup('<b style="font-family:serif;color:#c5a059;">' + s.name + '</b>' + (s.desc ? '<br><span style="font-size:11px;">' + s.desc + '</span>' : ''));
-    });
-
-    if (stops.length > 1) {
-      L.polyline(stops.map(function(s){ return [s.lat, s.lng]; }), {
-        color: '#c5a059', weight: 3, dashArray: '8 6', opacity: 0.9
-      }).addTo(map);
-    }
-
-    if (!document.getElementById('kemet-leaflet-style')) {
-      var st = document.createElement('style');
-      st.id = 'kemet-leaflet-style';
-      st.textContent = '.leaflet-popup-content-wrapper{border-radius:10px!important;font-family:"Plus Jakarta Sans",sans-serif!important;}';
-      document.head.appendChild(st);
-    }
-
-    setTimeout(function(){ map.invalidateSize(); }, 200);
   }
 
-  doInit();
-};
+  // ── Popup ─────────────────────────────────────────────
+  function makePopup(s, idx) {
+    return '<div class="kemet-popup">'
+      + '<div class="kemet-popup-day">' + (s.day ? 'Day ' + s.day : 'Stop ' + (idx + 1)) + '</div>'
+      + '<div class="kemet-popup-city">' + s.name + '</div>'
+      + (s.desc ? '<div class="kemet-popup-desc">' + s.desc + '</div>' : '')
+      + '</div>';
+  }
+
+  // ── Route drawing ─────────────────────────────────────
+  function drawRoute(stops) {
+    var L = window.L;
+    if (!_map || !L || stops.length < 2) return;
+    var pts = stops.map(function(s){ return [s.lat, s.lng]; });
+
+    if (_shadowLine) { try { _map.removeLayer(_shadowLine); } catch(e){} }
+    if (_routeLine)  { try { _map.removeLayer(_routeLine);  } catch(e){} }
+    if (_animLine)   { try { _map.removeLayer(_animLine);   } catch(e){} }
+
+    _shadowLine = L.polyline(pts, { color: 'rgba(197,160,89,0.2)', weight: 12, lineCap: 'round', lineJoin: 'round' }).addTo(_map);
+    _routeLine  = L.polyline(pts, { color: '#c5a059', weight: 3.5, lineCap: 'round', lineJoin: 'round' }).addTo(_map);
+    _animLine   = L.polyline(pts, { color: '#fff', weight: 2, dashArray: '10 5', opacity: 0.8, className: 'kemet-route-animated', lineCap: 'round' }).addTo(_map);
+  }
+
+  // ── Switch tile layer ─────────────────────────────────
+  function switchTile(key) {
+    var L = window.L;
+    if (!_map || !L) return;
+    var t = TILES[key] || TILES.osm;
+    if (_tileLayer) { try { _map.removeLayer(_tileLayer); } catch(e){} }
+    _tileLayer = L.tileLayer(t.url, { attribution: t.attr, maxZoom: 19, subdomains: t.sub || '' }).addTo(_map);
+    if (_stops.length > 1) drawRoute(_stops);
+  }
+
+  // ── Core build ────────────────────────────────────────
+  function buildMap(stops, routeLabel) {
+    _stops = (stops && stops.length) ? stops : [
+      { name: 'Cairo',  lat: 30.0444, lng: 31.2357, day: 1, desc: 'Arrival & Welcome' },
+      { name: 'Luxor',  lat: 25.6872, lng: 32.6396, day: 3, desc: 'Temples & Tombs'  },
+      { name: 'Aswan',  lat: 24.0889, lng: 32.8998, day: 5, desc: 'Nile & Abu Simbel' }
+    ];
+    routeLabel = routeLabel || _stops.map(function(s){ return s.name; }).join(' — ');
+
+    var mapEl   = document.getElementById('trip-map');
+    var routeEl = document.getElementById('trip-map-route-label');
+    var chipsEl = document.getElementById('kemet-stop-chips');
+
+    if (!mapEl) return;
+
+    // Update chips & label
+    if (routeEl) routeEl.textContent = '─ ─ ROUTE: ' + routeLabel.toUpperCase();
+    if (chipsEl) {
+      chipsEl.innerHTML = _stops.map(function(s, i) {
+        var cls = i === 0 ? 'first' : i === _stops.length - 1 ? 'last' : 'mid';
+        return '<div class="kemet-stop-chip"><div class="kemet-stop-dot ' + cls + '"></div>' + s.name + '</div>';
+      }).join('');
+    }
+
+    // Tear down old map
+    if (_map) { try { _map.remove(); } catch(e){} _map = null; _tileLayer = null; _shadowLine = _routeLine = _animLine = null; }
+    if (mapEl._leaflet_id) { mapEl._leaflet_id = undefined; }
+    mapEl.innerHTML = '';
+
+    function doInit() {
+      var L = window.L;
+      if (!L || typeof L.map !== 'function') {
+        setTimeout(doInit, 120);
+        return;
+      }
+
+      _map = L.map(mapEl, { zoomControl: false, scrollWheelZoom: false, minZoom: 4, maxZoom: 18 });
+      L.control.zoom({ position: 'bottomright' }).addTo(_map);
+
+      // Tile — use OSM by default (most reliable)
+      var t = TILES[_currentTile] || TILES.osm;
+      _tileLayer = L.tileLayer(t.url, { attribution: t.attr, maxZoom: 19, subdomains: t.sub || '' }).addTo(_map);
+
+      // Fit view
+      if (_stops.length === 1) {
+        _map.setView([_stops[0].lat, _stops[0].lng], 9);
+      } else {
+        _map.fitBounds(
+          L.latLngBounds(_stops.map(function(s){ return [s.lat, s.lng]; })),
+          { padding: [55, 55], maxZoom: 11 }
+        );
+      }
+
+      // Route
+      drawRoute(_stops);
+
+      // Markers + popups
+      _stops.forEach(function(s, i) {
+        var m = L.marker([s.lat, s.lng], { icon: makeIcon(i, _stops.length) }).addTo(_map);
+        m.bindPopup(makePopup(s, i), { maxWidth: 220 });
+        if (i === 0) setTimeout(function(){ try { m.openPopup(); } catch(e){} }, 700);
+      });
+
+      // Fix blank tiles on first render
+      setTimeout(function(){ if (_map) { _map.invalidateSize(); } }, 200);
+      setTimeout(function(){ if (_map) { _map.invalidateSize(); } }, 800);
+
+      _built = true;
+    }
+
+    doInit();
+  }
+
+  // ── Tile buttons ──────────────────────────────────────
+  function wireTileButtons() {
+    document.querySelectorAll('.kemet-tile-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var key = btn.getAttribute('data-tile');
+        if (!key || key === _currentTile) return;
+        _currentTile = key;
+        document.querySelectorAll('.kemet-tile-btn').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        switchTile(key);
+      });
+    });
+  }
+
+  // Wire buttons as soon as DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wireTileButtons);
+  } else {
+    wireTileButtons();
+  }
+
+  // ── Auto-start after Leaflet loads + small delay ──────
+  // Will be overridden by app.js calling buildTripMap()
+  var _autoTimer = setTimeout(function() {
+    if (!_built) buildMap(null, null);
+  }, 1500);
+
+  // ── Hard fallback: if Leaflet never loads, draw SVG map ──
+  setTimeout(function() {
+    if (_built) return;
+    var mapEl = document.getElementById('trip-map');
+    if (!mapEl || window.L) return;
+    // Draw a simple SVG route as last resort
+    mapEl.style.background = '#e8e4dc';
+    mapEl.innerHTML = [
+      '<svg viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">',
+      '<rect width="400" height="380" fill="#e8e4dc"/>',
+      // Egypt outline approximation
+      '<path d="M80,40 L320,40 L340,180 L300,320 L200,360 L100,320 L60,180 Z" fill="#d4cfc6" stroke="#c5b89a" stroke-width="1"/>',
+      // Route line Cairo→Luxor→Aswan
+      '<polyline points="200,120 190,230 185,290" stroke="#c5a059" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-dasharray="10 4"/>',
+      // Cairo marker
+      '<circle cx="200" cy="120" r="14" fill="#c5a059" stroke="#fff" stroke-width="3"/>',
+      '<text x="200" y="125" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-family="serif">1</text>',
+      '<text x="218" y="118" fill="#44403c" font-size="11" font-weight="700" font-family="sans-serif">Cairo</text>',
+      // Luxor marker
+      '<circle cx="190" cy="230" r="12" fill="#a37c32" stroke="#fff" stroke-width="3"/>',
+      '<text x="190" y="235" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="serif">2</text>',
+      '<text x="207" y="228" fill="#44403c" font-size="11" font-weight="700" font-family="sans-serif">Luxor</text>',
+      // Aswan marker
+      '<circle cx="185" cy="290" r="14" fill="#78350f" stroke="#fff" stroke-width="3"/>',
+      '<text x="185" y="295" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-family="serif">3</text>',
+      '<text x="203" y="288" fill="#44403c" font-size="11" font-weight="700" font-family="sans-serif">Aswan</text>',
+      // Map label
+      '<text x="200" y="375" text-anchor="middle" fill="#a09070" font-size="9" font-family="sans-serif">Egypt — Nile Route</text>',
+      '</svg>'
+    ].join('');
+    _built = true;
+  }, 5000);
+
+  // ── Public API ────────────────────────────────────────
+  window.buildTripMap = function(stops, routeLabel) {
+    clearTimeout(_autoTimer);
+    // If Leaflet isn't ready yet, wait a tick
+    if (typeof window.L === 'undefined') {
+      setTimeout(function(){ buildMap(stops, routeLabel); }, 100);
+    } else {
+      buildMap(stops, routeLabel);
+    }
+  };
+
+})();
 </script>
 <!-- What's Included -->
 <div class="bg-white rounded-xl shadow-sm border border-stone-100 p-8">
