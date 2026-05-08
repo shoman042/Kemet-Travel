@@ -131,6 +131,13 @@
 
     wireForms();
 
+    // ── Global plan sync: pull from backend on every page load for logged-in users ──
+    // This ensures cross-device plan visibility even when not on my-trip page
+    if (isAuthenticated() && page !== routes.login && page !== routes.signup) {
+      syncPlanFromBackend().catch(() => {}); // non-blocking, best-effort
+    }
+    // ──────────────────────────────────────────────────────────────────────────────
+
     try {
       switch (page) {
         case routes.home:
@@ -761,8 +768,17 @@
   async function api(path, options = {}) {
     const method = String(options.method || 'GET').toUpperCase();
     const cacheBuster = method === 'GET' ? `${path.includes('?') ? '&' : '?'}_t=${Date.now()}` : '';
+
+    // Auto-attach auth token if user is logged in
+    const sessionUser = getState.__rawGet(SESSION_KEY);
+    const token = sessionUser?.token || sessionUser?.userId || sessionUser?.id || '';
+    const authHeaders = token
+      ? { Authorization: `Bearer ${token}`, 'x-user-id': String(token) }
+      : {};
+
     const mergedHeaders = {
       'Content-Type': 'application/json',
+      ...authHeaders,
       ...(options.headers || {}),
     };
 
@@ -990,6 +1006,43 @@
   }
 
   // ── Backend sync ─────────────────────────────────────────────────────────
+  // ─── Sync helpers ──────────────────────────────────────────────────────────
+  // Tries multiple endpoint patterns until one works.
+  // MongoDB collection is "userplans" but old code used "/api/user-plan".
+  // We try both so it works regardless of which backend route exists.
+
+  async function _planApiCall(method, userId, body) {
+    const user    = getSessionUser();
+    const token   = user?.token || user?.userId || '';
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}`, 'x-user-id': userId } : {}),
+    };
+    const opts = body ? { method, headers, body: JSON.stringify(body) } : { method, headers };
+
+    // Endpoint candidates — tries each in order until one succeeds (2xx)
+    const endpoints = [
+      `/api/userplans/${encodeURIComponent(userId)}`,   // matches MongoDB collection name
+      `/api/user-plan/${encodeURIComponent(userId)}`,   // old endpoint
+      `/api/users/${encodeURIComponent(userId)}/plan`,  // alternative REST style
+    ];
+
+    let lastErr = null;
+    for (const ep of endpoints) {
+      try {
+        const res = await fetch(`${API_BASE_URL}${ep}?_t=${Date.now()}`, opts);
+        if (res.ok || res.status === 404) {
+          // 404 on GET just means empty plan — still a working endpoint
+          const data = await res.json().catch(() => null);
+          return { ok: true, data, endpoint: ep };
+        }
+      } catch (err) {
+        lastErr = err;
+      }
+    }
+    throw lastErr || new Error('All plan endpoints failed');
+  }
+
   async function syncPlanToBackend() {
     const user = getSessionUser();
     if (!user?.userId) return;
@@ -1000,11 +1053,9 @@
         tripDates:    getState(TRIP_DATES_KEY, {}),
         tripMeta:     getState(TRIP_META_KEY, {}),
         selectedTrip: getState(TRIP_PLAN_SELECTED_KEY, ''),
+        updatedAt:    new Date().toISOString(),
       };
-      await api(`/api/user-plan/${encodeURIComponent(user.userId)}`, {
-        method: 'PUT',
-        body: JSON.stringify({ data: planData }),
-      });
+      await _planApiCall('PUT', user.userId, { data: planData });
     } catch (err) {
       console.warn('syncPlanToBackend failed:', err.message);
     }
@@ -1014,14 +1065,40 @@
     const user = getSessionUser();
     if (!user?.userId) return;
     try {
-      const res = await api(`/api/user-plan/${encodeURIComponent(user.userId)}`);
-      const planData = res?.data;
+      const result = await _planApiCall('GET', user.userId, null);
+      const planData = result?.data?.data || result?.data;
       if (!planData || typeof planData !== 'object') return;
-      if (Array.isArray(planData.plan))      setState(PLAN_KEY,               planData.plan);
-      if (Array.isArray(planData.tripNames)) setState(TRIP_CATALOG_KEY,       planData.tripNames);
-      if (planData.tripDates  && typeof planData.tripDates  === 'object') setState(TRIP_DATES_KEY,           planData.tripDates);
-      if (planData.tripMeta   && typeof planData.tripMeta   === 'object') setState(TRIP_META_KEY,            planData.tripMeta);
-      if (planData.selectedTrip) setState(TRIP_PLAN_SELECTED_KEY, planData.selectedTrip);
+
+      // Only overwrite localStorage if backend has *newer* or *more* data
+      const localPlan = getState(PLAN_KEY, []);
+      const remotePlan = Array.isArray(planData.plan) ? planData.plan : [];
+
+      // Merge strategy: take whichever has more items, then merge unique entries
+      if (remotePlan.length > 0) {
+        if (localPlan.length === 0) {
+          // Device has nothing — use backend data fully
+          setState(PLAN_KEY, remotePlan);
+        } else {
+          // Both have data — merge by entryId to avoid duplicates
+          const merged = [...localPlan];
+          const existingIds = new Set(localPlan.map((x) => String(x.entryId || x._id || '')).filter(Boolean));
+          remotePlan.forEach((item) => {
+            const id = String(item.entryId || item._id || '');
+            if (!id || !existingIds.has(id)) merged.push(item);
+          });
+          setState(PLAN_KEY, merged);
+        }
+      }
+
+      if (Array.isArray(planData.tripNames) && planData.tripNames.length)
+        setState(TRIP_CATALOG_KEY, planData.tripNames);
+      if (planData.tripDates && typeof planData.tripDates === 'object')
+        setState(TRIP_DATES_KEY, planData.tripDates);
+      if (planData.tripMeta && typeof planData.tripMeta === 'object')
+        setState(TRIP_META_KEY, planData.tripMeta);
+      if (planData.selectedTrip)
+        setState(TRIP_PLAN_SELECTED_KEY, planData.selectedTrip);
+
     } catch (err) {
       console.warn('syncPlanFromBackend failed:', err.message);
     }
@@ -1494,6 +1571,7 @@
           if (user) {
             setState(SESSION_KEY, user);
             localStorage.setItem('userId', String(user.userId || user.id || ''));
+            await syncPlanFromBackend(); // pull any existing plan for this account
           }
           showSuccess('Account created successfully.');
           navigate(routes.dashboard);
