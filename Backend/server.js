@@ -986,6 +986,88 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// ─── UserPlan: حفظ خطة المستخدم في MongoDB ───────────────────────────────
+const userPlanSchema = new mongoose.Schema(
+  {
+    userId:    { type: String, required: true, unique: true, index: true },
+    data:      { type: mongoose.Schema.Types.Mixed, default: {} },
+    updatedAt: { type: Date, default: Date.now },
+  },
+  { collection: 'userplans' }
+);
+const UserPlan = mongoose.models.UserPlan || mongoose.model('UserPlan', userPlanSchema);
+
+// GET /api/userplans/:userId  — جيب الخطة
+app.get('/api/userplans/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) return res.status(400).json({ message: 'userId required' });
+    const doc = await UserPlan.findOne({ userId }).lean();
+    if (!doc) return res.status(404).json({ message: 'No plan found' });
+    res.json({ data: doc.data, updatedAt: doc.updatedAt });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching plan: ' + err.message });
+  }
+});
+
+// PUT /api/userplans/:userId  — احفظ/حدّث الخطة
+app.put('/api/userplans/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) return res.status(400).json({ message: 'userId required' });
+    const { data } = req.body || {};
+    if (!data || typeof data !== 'object') return res.status(400).json({ message: 'data object required' });
+    const doc = await UserPlan.findOneAndUpdate(
+      { userId },
+      { $set: { data, updatedAt: new Date() } },
+      { upsert: true, new: true, lean: true }
+    );
+    res.json({ ok: true, updatedAt: doc.updatedAt });
+  } catch (err) {
+    res.status(500).json({ message: 'Error saving plan: ' + err.message });
+  }
+});
+
+// DELETE /api/userplans/:userId  — امسح الخطة
+app.delete('/api/userplans/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) return res.status(400).json({ message: 'userId required' });
+    await UserPlan.deleteOne({ userId });
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting plan: ' + err.message });
+  }
+});
+
+// Legacy alias /api/user-plan/:userId (backward compat)
+app.get('/api/user-plan/:userId', async (req, res) => {
+  try {
+    const doc = await UserPlan.findOne({ userId: req.params.userId }).lean();
+    if (!doc) return res.status(404).json({ message: 'No plan found' });
+    res.json({ data: doc.data, updatedAt: doc.updatedAt });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+app.put('/api/user-plan/:userId', async (req, res) => {
+  try {
+    const { data } = req.body || {};
+    if (!data) return res.status(400).json({ message: 'data required' });
+    const doc = await UserPlan.findOneAndUpdate(
+      { userId: req.params.userId },
+      { $set: { data, updatedAt: new Date() } },
+      { upsert: true, new: true, lean: true }
+    );
+    res.json({ ok: true, updatedAt: doc.updatedAt });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+app.delete('/api/user-plan/:userId', async (req, res) => {
+  try {
+    await UserPlan.deleteOne({ userId: req.params.userId });
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Only listen when run directly (local dev), not when required by Vercel
 if (require.main === module) {
   mongoose.connection.asPromise()
@@ -1003,6 +1085,3 @@ if (require.main === module) {
 }
 
 module.exports = app;
-
-
-

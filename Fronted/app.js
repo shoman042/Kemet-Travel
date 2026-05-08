@@ -3234,8 +3234,8 @@
           </div>
           <div class="ml-auto flex gap-2 self-end">
             <button id="my-trip-create-btn" class="px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">+ Create Trip</button>
-            <button id="my-trip-soft-reset-btn" class="px-3 py-2.5 border border-outline text-on-surface rounded-lg text-sm font-bold hover:bg-surface-container-low transition-colors">Soft Reset</button>
-            <button id="my-trip-reset-btn" class="px-3 py-2.5 border border-outline text-on-surface rounded-lg text-sm font-bold hover:bg-surface-container-low transition-colors">Reset</button>
+            <button id="my-trip-soft-reset-btn" class="px-3 py-2.5 border border-outline text-on-surface rounded-lg text-sm font-bold hover:bg-surface-container-low transition-colors"> Reset activities</button>
+            <button id="my-trip-reset-btn" class="px-3 py-2.5 border border-outline text-on-surface rounded-lg text-sm font-bold hover:bg-surface-container-low transition-colors">Reset All</button>
           </div>
         </div>
       </div>
