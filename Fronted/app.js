@@ -4033,8 +4033,10 @@
             const image = resolveImageUrl(Array.isArray(top.images) ? top.images[0] : '');
             return `
               <div class="group overflow-hidden rounded-lg border border-outline-variant/30 p-3 mb-3">
-                <div class="relative h-40 rounded-md overflow-hidden">
+                <div class="relative h-40 rounded-md overflow-hidden cursor-pointer" data-hotel-img-link="${escapeHtml(top._id)}">
                   <img alt="${escapeHtml(top.name || top.title || 'Hotel')}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${escapeHtml(image)}"/>
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                  </div>
                 </div>
                 <div class="pt-3">
                   <div class="flex justify-between items-start mb-1 gap-2">
@@ -4053,7 +4055,14 @@
           })
           .join('');
 
-        cardHost.querySelectorAll('[data-add-hotel-suggested]').forEach((btn) => {
+        cardHost.querySelectorAll("[data-hotel-img-link]").forEach((imgDiv) => {
+          imgDiv.addEventListener("click", () => {
+            const hid = imgDiv.getAttribute("data-hotel-img-link");
+            if (hid) navigate(`${routes.hotelDetails}?id=${encodeURIComponent(hid)}`);
+          });
+        });
+
+        cardHost.querySelectorAll("[data-add-hotel-suggested]").forEach((btn) => {
           btn.addEventListener('click', async (e) => {
             e.preventDefault();
             const hid = btn.getAttribute('data-add-hotel-suggested');
