@@ -5745,9 +5745,9 @@
       const isCitySearch = cityNames.includes(q);
 
       // Detect item type by checking unique fields
-      const isHotel = item._id && (item.pricePerNight !== undefined || item.images || item.amenities || item.stars);
-      const isTrip = item._id && (item.estimatedPrice !== undefined || item.duration || item.days || item.includes);
-      const isPlace = item._id && (item.latitude !== undefined || item.longitude !== undefined || item.category || item.type);
+      const isHotel = item._id && ('pricePerNight' in item || 'amenities' in item || 'stars' in item || Array.isArray(item.images));
+      const isTrip  = !isHotel && item._id && ('estimatedPrice' in item || 'duration' in item || 'days' in item || 'includes' in item);
+      const isPlace = !isHotel && !isTrip && item._id && ('latitude' in item || 'longitude' in item || 'category' in item || 'type' in item);
 
       // For hotels: strictly check location-related fields
       if (isHotel) {
