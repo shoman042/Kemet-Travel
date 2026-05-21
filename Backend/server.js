@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const OpenAI = require('openai');
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const isProduction = String(process.env.NODE_ENV || '').toLowerCase() === 'production';
 const PORT = Number(process.env.PORT || 5000);
@@ -38,6 +40,15 @@ const ChatHistory = require('./models/ChatHistory');
 
 const app = express();
 const frontendDir = path.join(__dirname, '..', 'Fronted');
+
+// ✅ Rate Limiting — يمنع brute force على اللوجين
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 دقيقة
+  max: 5,
+  message: { message: 'كتير أوي محاولات، استنى 15 دقيقة وحاول تاني' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 const OPENROUTER_BASE_URL = cleanEnv(process.env.OPENROUTER_BASE_URL) || 'https://openrouter.ai/api/v1';
 const OPENROUTER_API_KEY = resolveOpenRouterKey();
 const OPENROUTER_MODEL =
@@ -633,11 +644,17 @@ app.post('/api/auth/signup', async (req, res) => {
       return res.status(400).json({ message: 'Name, email and password are required' });
     }
 
+    // ✅ التحقق من قوة الباسورد
+    if (String(password).length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'This email is already registered' });
     }
 
+    // ✅ الباسورد هيتشفر تلقائياً عن طريق pre('save') في الـ Model
     const newUser = new User({ name, email, password, phone: String(phone || '').trim(), loyaltyPoints: 0 });
     await newUser.save();
 
@@ -658,7 +675,7 @@ app.post('/api/auth/signup', async (req, res) => {
   }
 });
 
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', loginLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -666,8 +683,14 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const user = await User.findOne({ email, password });
+    // ✅ ابحث بالإيميل فقط، وبعدين قارن الباسورد بـ bcrypt
+    const user = await User.findOne({ email });
     if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
@@ -703,7 +726,9 @@ app.post('/api/auth/forgot-password', async (req, res) => {
     const otp = String(Math.floor(100000 + Math.random() * 900000));
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    user.resetOtp = otp;
+    // ✅ شفّر الـ OTP قبل الحفظ في الداتابيز
+    const hashedOtp = await bcrypt.hash(otp, 10);
+    user.resetOtp = hashedOtp;
     user.resetOtpExpiresAt = expiresAt;
     await user.save();
 
@@ -770,10 +795,14 @@ app.post('/api/auth/reset-password', async (req, res) => {
     if (new Date(user.resetOtpExpiresAt).getTime() < Date.now()) {
       return res.status(400).json({ message: 'OTP expired. Request a new one.' });
     }
-    if (String(user.resetOtp) !== otp) {
+
+    // ✅ قارن الـ OTP المدخول بالـ OTP المشفر في الداتابيز
+    const otpMatch = await bcrypt.compare(otp, user.resetOtp);
+    if (!otpMatch) {
       return res.status(401).json({ message: 'Invalid OTP' });
     }
 
+    // ✅ الباسورد الجديد هيتشفر تلقائياً عن طريق pre('save')
     user.password = newPassword;
     user.resetOtp = '';
     user.resetOtpExpiresAt = null;
@@ -964,9 +993,14 @@ app.patch('/api/users/:userId/password', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    if (String(user.password) !== String(currentPassword)) {
+
+    // ✅ قارن الباسورد الحالي بـ bcrypt
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
       return res.status(401).json({ message: 'Current password is incorrect' });
     }
+
+    // ✅ الباسورد الجديد هيتشفر تلقائياً عن طريق pre('save')
     user.password = String(newPassword);
     await user.save();
     res.json({ message: 'Password changed successfully' });

@@ -697,13 +697,14 @@
         const messageText = String(text || '').trim();
         const history = state.messages.slice(0, -1).slice(-CHAT_MEMORY_LIMIT);
         const fallbackUserId = localStorage.getItem('userId') || 'guest_user';
-        const chatPath = `/api/chat?userId=${encodeURIComponent(fallbackUserId)}&message=${encodeURIComponent(messageText)}`;
+        const chatPath = `/api/chat?userId=${encodeURIComponent(fallbackUserId)}`;
         const data = await api(chatPath, {
           method: 'POST',
           headers: chatHeaders,
           body: JSON.stringify({
             userId: fallbackUserId,
-            message: messageText
+            message: messageText,
+            history: history.map((m) => ({ role: m.role, content: m.content })),
           }),
         });
         const reply = String(data?.reply || data?.message || '').trim() || 'محتاج ثانيه وأرجعلك بإجابة أدق.';
@@ -712,10 +713,14 @@
       } catch (err) {
         const errorText = String(err?.message || '').toLowerCase();
         const friendlyMessage =
-          errorText.includes('openai_api_key')
+          errorText.includes('aborted') || errorText.includes('abort')
+            ? 'الرد أخد وقت طويل. جرّب تاني بعد لحظة.'
+            : errorText.includes('openai_api_key')
             ? 'الخدمة مش مفعلة حاليًا: مفتاح OpenAI غير موجود في السيرفر.'
             : errorText.includes('request failed: 429')
             ? 'في ضغط كبير حاليًا على الخدمة. جرب تاني بعد دقيقة.'
+            : errorText.includes('request failed: 5')
+            ? 'السيرفر واجه مشكلة مؤقتة. جرّب تاني بعد لحظة.'
             : 'حصلت مشكلة مؤقتة في الاتصال. جرّب تاني بعد لحظة.';
         state.messages.push({
           role: 'assistant',
@@ -784,11 +789,19 @@
 
     showGlobalLoader();
     try {
-      const response = await fetch(`${API_BASE_URL}${path}`, {
-        ...options,
-        headers: mergedHeaders,
-        method,
-      });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 sec timeout
+      let response;
+      try {
+        response = await fetch(`${API_BASE_URL}${path}`, {
+          ...options,
+          headers: mergedHeaders,
+          method,
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
 
       let data = null;
       try {
