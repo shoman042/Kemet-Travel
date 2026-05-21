@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const OpenAI = require('openai');
 const nodemailer = require('nodemailer');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const isProduction = String(process.env.NODE_ENV || '').toLowerCase() === 'production';
