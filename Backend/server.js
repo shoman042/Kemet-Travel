@@ -43,8 +43,8 @@ const frontendDir = path.join(__dirname, '..', 'Fronted');
 
 // ✅ Rate Limiting — يمنع brute force على اللوجين
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 دقيقة
-  max: 5,
+  windowMs:  60 * 60 * 1000, // 15 دقيقة
+  max: 20,
   message: { message: 'كتير أوي محاولات، استنى 15 دقيقة وحاول تاني' },
   standardHeaders: true,
   legacyHeaders: false,
