@@ -1,17 +1,12 @@
 {
-  "name": "backend",
+  "name": "kemet-travel",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "test": "echo \"No tests configured yet\""
+    "start": "node Backend/server.js",
+    "dev": "node Backend/server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
